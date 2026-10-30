@@ -463,22 +463,11 @@
 
     /* FEED HOẠT ĐỘNG */
     .feed-container {
-      position: absolute;
-      bottom: 95px; left: 18px; width: 280px; max-height: 140px;
-      overflow: hidden; pointer-events: none; z-index: 5;
-      display: flex; flex-direction: column-reverse; gap: 6px;
+      display: none !important;
     }
     .feed-item {
-      background: rgba(18, 11, 7, 0.78);
-      border-left: 3px solid var(--gold);
-      padding: 5px 10px;
-      border-radius: 4px;
-      color: #f0e6d6;
-      font-size: 0.76rem;
-      backdrop-filter: blur(6px);
-      animation: fadeIn 0.3s;
+      display: none !important;
     }
-    @keyframes fadeIn { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: translateX(0); } }
 
     /* HƯỚNG DẪN ĐIỀU KHIỂN GÓC TRÁI */
     #controlsHelp {
@@ -498,9 +487,91 @@
     #controlsHelp b { color: var(--gold); }
 
     @media (max-width: 768px) {
-      .top-bar { top: 8px; left: 8px; right: 8px; }
-      .hud-badge { padding: 5px 10px; font-size: 0.74rem; }
-      .btn-hud { padding: 5px 9px; font-size: 0.74rem; }
+      .top-bar {
+        top: 6px;
+        left: 6px;
+        right: 6px;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        align-items: center;
+        gap: 6px;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+        pointer-events: auto;
+        padding-bottom: 4px;
+        z-index: 20;
+      }
+      .top-bar::-webkit-scrollbar { display: none; }
+      .hud-group {
+        display: inline-flex;
+        gap: 6px;
+        flex-shrink: 0;
+      }
+      .hud-badge {
+        padding: 5px 10px;
+        font-size: 0.72rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .btn-hud {
+        padding: 5px 10px;
+        font-size: 0.72rem;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      #btnAudioSettings {
+        border-color: #ffd700 !important;
+        background: rgba(255, 215, 0, 0.22) !important;
+        color: #ffd700 !important;
+        font-weight: bold !important;
+      }
+      #mantraPlayer {
+        top: 54px;
+        left: 6px;
+        right: 6px;
+        max-width: calc(100vw - 12px);
+        box-sizing: border-box;
+        padding: 5px 8px;
+        gap: 6px;
+        z-index: 15;
+      }
+      #interactPrompt, #spatialActionPrompt {
+        bottom: 200px !important;
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        font-size: 0.78rem !important;
+        padding: 6px 14px !important;
+        white-space: nowrap !important;
+        max-width: 85vw !important;
+        text-align: center !important;
+        box-shadow: 0 0 15px rgba(245, 207, 71, 0.4) !important;
+      }
+      .track-title {
+        flex: 1;
+        min-width: 0;
+        max-width: 140px;
+        font-size: 0.72rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .btn-player {
+        width: 28px;
+        height: 28px;
+        font-size: 0.75rem;
+        flex-shrink: 0;
+      }
+      #btnQuickAudio {
+        padding: 3px 8px !important;
+        font-size: 0.72rem !important;
+        height: 28px !important;
+        white-space: nowrap !important;
+        flex-shrink: 0 !important;
+      }
+      .feed-container { display: none !important; }
       #controlsHelp { display: none; }
       #joystickZone {
         display: block;
@@ -526,9 +597,32 @@
       }
       .zen-dock::-webkit-scrollbar { display: none; }
       .btn-tool { min-width: 50px; padding: 6px 7px; font-size: 0.68rem; }
-      #mantraPlayer { top: 52px; left: 8px; max-width: 92vw; padding: 5px 10px; }
-      .track-title { max-width: 130px; font-size: 0.76rem; }
       #sutraModal { width: 96vw; height: 90vh; padding: 14px; }
+      #audioModal {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        width: 320px !important;
+        max-width: 92vw !important;
+        z-index: 9999 !important;
+        background: radial-gradient(circle at center, #2e180e 0%, #150a06 100%) !important;
+        border: 2px solid var(--gold) !important;
+        box-shadow: 0 0 60px rgba(0,0,0,0.95), 0 0 30px rgba(245, 207, 71, 0.45) !important;
+        border-radius: 20px !important;
+        padding: 20px 22px !important;
+      }
+      .slider-row input[type="range"] {
+        height: 28px;
+      }
+      #robeModal, #mantraListModal, #nameChangeModal {
+        position: fixed !important;
+        top: 50% !important;
+        left: 50% !important;
+        transform: translate(-50%, -50%) !important;
+        max-width: 92vw !important;
+        z-index: 9999 !important;
+      }
     }
 
     /* BONG BÓNG NIỆM PHẬT CÁT TƯỜNG (STAGE 3) */
@@ -845,7 +939,8 @@
       <div class="eq-bar"></div>
       <div class="eq-bar"></div>
     </div>
-    <button class="btn-hud" id="btnOpenMantraList" style="padding: 4px 10px; font-size: 0.76rem; border-radius: 14px;">
+    <button class="btn-player" id="btnQuickAudio" title="Điều Chỉnh Âm Lượng" style="font-size:0.8rem; padding:0 8px; width:auto; border-radius:12px; font-weight:bold; color:#ffd700; border:1px solid #d4af37; background:rgba(255,215,0,0.18);">🔊 Âm Lượng</button>
+    <button class="btn-hud" id="btnOpenMantraList" style="padding: 4px 10px; font-size: 0.76rem; border-radius: 14px; flex-shrink:0;">
       📜 Chọn Bài
     </button>
   </div>
@@ -862,21 +957,22 @@
   <!-- ÂM LƯỢNG MODAL -->
   <div id="audioModal">
     <div class="modal-header">
-      <span>🔊 ĐIỀU CHỈNH THANH ÂM</span>
-      <span style="cursor:pointer;" id="btnCloseAudio">✕</span>
+      <span style="color:#ffd700; font-weight:bold; font-size:1.05rem;">🔊 ĐIỀU CHỈNH THANH ÂM</span>
+      <span style="cursor:pointer; font-size:1.2rem; color:#ffd700;" id="btnCloseAudio">✕</span>
     </div>
     <div class="slider-row">
-      <label><span>Tụng Kinh Thần Chú:</span><span id="mantraVolVal">75%</span></label>
+      <label><span>🎵 Tụng Kinh Thần Chú:</span><span id="mantraVolVal">75%</span></label>
       <input type="range" id="mantraVolume" min="0" max="100" value="75">
     </div>
     <div class="slider-row">
-      <label><span>Nhạc Khuôn Viên Thiền:</span><span id="gardenVolVal">60%</span></label>
+      <label><span>🍃 Nhạc Khuôn Viên & Sảnh:</span><span id="gardenVolVal">60%</span></label>
       <input type="range" id="gardenVolume" min="0" max="100" value="60">
     </div>
     <div class="slider-row">
-      <label><span>Tiếng Mõ & Chuông Bát:</span><span id="sfxVolVal">85%</span></label>
+      <label><span>🔔 Tiếng Mõ & Chuông Bát:</span><span id="sfxVolVal">85%</span></label>
       <input type="range" id="sfxVolume" min="0" max="100" value="85">
     </div>
+    <button class="btn-hud" id="btnAudioDone" style="width:100%; margin-top:14px; justify-content:center; padding:10px; font-weight:bold; background:linear-gradient(135deg, #ffd700, #d4af37); color:#221105; border-radius:10px; font-size:0.92rem; border:none; cursor:pointer;">✓ Hoàn Tất & Đóng</button>
   </div>
 
   <!-- ĐỔI ÁO CÀ SA MODAL -->
@@ -2375,42 +2471,29 @@
     };
 
     const treeLayoutConfigs = [
-      // 1. CÂY TÙNG / THÔNG THIỀN MÔN (cay_3.glb) - Bao bọc hàng rào thiên nhiên & lối thiền hành
-      { type: 'cay3', x: -26.0, y: 0, z: 28.0, sx: 2.2, sy: 2.2, sz: 2.2, ry: 0.2 },
-      { type: 'cay3', x: -28.5, y: 0, z: 38.0, sx: 2.5, sy: 2.5, sz: 2.5, ry: 1.4 },
-      { type: 'cay3', x: -27.0, y: 0, z: 50.0, sx: 2.3, sy: 2.3, sz: 2.3, ry: 2.8 },
-      { type: 'cay3', x: -25.5, y: 0, z: 62.0, sx: 2.6, sy: 2.6, sz: 2.6, ry: 0.9 },
-      { type: 'cay3', x: 26.0, y: 0, z: 28.0, sx: 2.2, sy: 2.2, sz: 2.2, ry: 3.1 },
-      { type: 'cay3', x: 28.5, y: 0, z: 38.0, sx: 2.5, sy: 2.5, sz: 2.5, ry: 0.5 },
-      { type: 'cay3', x: 27.0, y: 0, z: 50.0, sx: 2.4, sy: 2.4, sz: 2.4, ry: 2.1 },
-      { type: 'cay3', x: 25.5, y: 0, z: 62.0, sx: 2.6, sy: 2.6, sz: 2.6, ry: 1.7 },
-      { type: 'cay3', x: -18.0, y: 0, z: 72.0, sx: 2.7, sy: 2.7, sz: 2.7, ry: 0.4 },
-      { type: 'cay3', x: 18.0, y: 0, z: 72.0, sx: 2.7, sy: 2.7, sz: 2.7, ry: 2.5 },
+      // 1. HÀNG TÙNG THIỀN MÔN (cay_3.glb) - Bao bọc hàng rào thiên nhiên & lối thiền hành (Sườn ngoài |X| >= 26)
+      // Phía Tây (trái)
+      { type: 'cay3', x: -28.0, y: 0, z: 26.0, sx: 2.2, sy: 2.2, sz: 2.2, ry: 0.2 },
+      { type: 'cay3', x: -32.0, y: 0, z: 38.0, sx: 2.4, sy: 2.4, sz: 2.4, ry: 1.4 },
+      { type: 'cay3', x: -30.0, y: 0, z: 52.0, sx: 2.3, sy: 2.3, sz: 2.3, ry: 2.8 },
+      { type: 'cay3', x: -26.0, y: 0, z: 66.0, sx: 2.5, sy: 2.5, sz: 2.5, ry: 0.9 },
+      { type: 'cay3', x: -20.0, y: 0, z: 75.0, sx: 2.3, sy: 2.3, sz: 2.3, ry: 0.4 },
 
-      // 2. CÂY HOA ANH ĐÀO / BỒ ĐỀ NỞ HOA (cay_4.glb) - Cạnh hồ sen & đầu cầu kiều
-      { type: 'cay4', x: -15.5, y: 0, z: 31.0, sx: 1.8, sy: 1.8, sz: 1.8, ry: 0.6 },
-      { type: 'cay4', x: 15.5, y: 0, z: 31.0, sx: 1.8, sy: 1.8, sz: 1.8, ry: 2.3 },
-      { type: 'cay4', x: -15.0, y: 0, z: 46.0, sx: 2.0, sy: 2.0, sz: 2.0, ry: 1.2 },
-      { type: 'cay4', x: 15.0, y: 0, z: 46.0, sx: 2.0, sy: 2.0, sz: 2.0, ry: 3.7 },
-      { type: 'cay4', x: -7.5, y: 0, z: 64.0, sx: 2.2, sy: 2.2, sz: 2.2, ry: 0.8 },
-      { type: 'cay4', x: 7.5, y: 0, z: 64.0, sx: 2.2, sy: 2.2, sz: 2.2, ry: 2.9 },
-      { type: 'cay4', x: 0, y: 0, z: 74.0, sx: 2.3, sy: 2.3, sz: 2.3, ry: 1.5 },
+      // Phía Đông (phải)
+      { type: 'cay3', x: 28.0, y: 0, z: 26.0, sx: 2.2, sy: 2.2, sz: 2.2, ry: 3.1 },
+      { type: 'cay3', x: 32.0, y: 0, z: 38.0, sx: 2.4, sy: 2.4, sz: 2.4, ry: 0.5 },
+      { type: 'cay3', x: 30.0, y: 0, z: 52.0, sx: 2.3, sy: 2.3, sz: 2.3, ry: 2.1 },
+      { type: 'cay3', x: 26.0, y: 0, z: 66.0, sx: 2.5, sy: 2.5, sz: 2.5, ry: 1.7 },
+      { type: 'cay3', x: 20.0, y: 0, z: 75.0, sx: 2.3, sy: 2.3, sz: 2.3, ry: 2.5 },
 
-      // 3. CÂY CỔ THỤ BÓNG MÁT (cay_1.glb) - Tán rộng hùng vĩ
-      { type: 'cay1', x: -22.0, y: 0, z: 22.0, sx: 5.5, sy: 5.5, sz: 5.5, ry: 0.3 },
-      { type: 'cay1', x: 22.0, y: 0, z: 22.0, sx: 5.5, sy: 5.5, sz: 5.5, ry: 2.4 },
-      { type: 'cay1', x: -32.0, y: 0, z: 44.0, sx: 6.0, sy: 6.0, sz: 6.0, ry: 1.1 },
-      { type: 'cay1', x: 32.0, y: 0, z: 44.0, sx: 6.0, sy: 6.0, sz: 6.0, ry: 3.2 },
-      { type: 'cay1', x: -28.0, y: 0, z: 68.0, sx: 6.2, sy: 6.2, sz: 6.2, ry: 0.7 },
-      { type: 'cay1', x: 28.0, y: 0, z: 68.0, sx: 6.2, sy: 6.2, sz: 6.2, ry: 2.0 },
-
-      // 4. CÂY XANH TỰ NHIÊN (cay_2.glb) - Đan xen thạch lâm
-      { type: 'cay2', x: -19.0, y: 0, z: 39.0, sx: 6.5, sy: 6.5, sz: 6.5, ry: 1.8 },
-      { type: 'cay2', x: 19.0, y: 0, z: 39.0, sx: 6.5, sy: 6.5, sz: 6.5, ry: 0.4 },
-      { type: 'cay2', x: -23.0, y: 0, z: 56.0, sx: 7.0, sy: 7.0, sz: 7.0, ry: 2.6 },
-      { type: 'cay2', x: 23.0, y: 0, z: 56.0, sx: 7.0, sy: 7.0, sz: 7.0, ry: 1.2 },
-      { type: 'cay2', x: -11.0, y: 0, z: 70.0, sx: 6.8, sy: 6.8, sz: 6.8, ry: 3.0 },
-      { type: 'cay2', x: 11.0, y: 0, z: 70.0, sx: 6.8, sy: 6.8, sz: 6.8, ry: 0.9 }
+      // 2. CÂY HOA BỒ ĐỀ / ANH ĐÀO (cay_4.glb) - Thanh tịnh ven hồ sen, KHÔNG che bất kỳ tượng Phật nào
+      // Đặt gọn gàng ở các góc ngoài, scale nhỏ nhắn 1.5 - 1.8
+      { type: 'cay4', x: -18.0, y: 0, z: 28.0, sx: 1.6, sy: 1.6, sz: 1.6, ry: 0.6 },
+      { type: 'cay4', x: 18.0, y: 0, z: 28.0, sx: 1.6, sy: 1.6, sz: 1.6, ry: 2.3 },
+      { type: 'cay4', x: -24.0, y: 0, z: 46.0, sx: 1.7, sy: 1.7, sz: 1.7, ry: 1.2 },
+      { type: 'cay4', x: 24.0, y: 0, z: 46.0, sx: 1.7, sy: 1.7, sz: 1.7, ry: 3.7 },
+      { type: 'cay4', x: -14.0, y: 0, z: 64.0, sx: 1.6, sy: 1.6, sz: 1.6, ry: 0.8 },
+      { type: 'cay4', x: 14.0, y: 0, z: 64.0, sx: 1.6, sy: 1.6, sz: 1.6, ry: 2.9 }
     ];
 
     function spawnTreeType(typeKey) {
@@ -2427,14 +2510,9 @@
 
     if (typeof THREE.GLTFLoader !== 'undefined') {
       const treeLoader = new THREE.GLTFLoader();
-      const treeFiles = isMobileDevice ? [
+      const treeFiles = [
         { key: 'cay3', url: '/cay_3.glb' },
         { key: 'cay4', url: '/cay_4.glb' }
-      ] : [
-        { key: 'cay3', url: '/cay_3.glb' },
-        { key: 'cay4', url: '/cay_4.glb' },
-        { key: 'cay1', url: '/cay_1.glb' },
-        { key: 'cay2', url: '/cay_2.glb' }
       ];
 
       treeFiles.forEach(item => {
@@ -2448,15 +2526,6 @@
             }
           });
           spawnTreeType(item.key);
-          if (isMobileDevice) {
-            if (item.key === 'cay3') {
-              treeTemplates['cay1'] = gltf.scene;
-              spawnTreeType('cay1');
-            } else if (item.key === 'cay4') {
-              treeTemplates['cay2'] = gltf.scene;
-              spawnTreeType('cay2');
-            }
-          }
         }, undefined, (err) => console.log('Error loading tree ' + item.url, err));
       });
     }
@@ -3752,11 +3821,18 @@
       document.getElementById('mantraListModal').style.display = 'none';
     };
 
-    document.getElementById('btnAudioSettings').onclick = () => {
+    const toggleAudioModal = () => {
       const modal = document.getElementById('audioModal');
       modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
     };
+    document.getElementById('btnAudioSettings').onclick = toggleAudioModal;
+    const btnQuickAudio = document.getElementById('btnQuickAudio');
+    if (btnQuickAudio) btnQuickAudio.onclick = toggleAudioModal;
     document.getElementById('btnCloseAudio').onclick = () => {
+      document.getElementById('audioModal').style.display = 'none';
+    };
+    const btnAudioDone = document.getElementById('btnAudioDone');
+    if (btnAudioDone) btnAudioDone.onclick = () => {
       document.getElementById('audioModal').style.display = 'none';
     };
     document.getElementById('mantraVolume').oninput = (e) => {
@@ -5430,12 +5506,8 @@
     // 18. HELPER FUNCTIONS
     // ========================================================
     function addFeed(text) {
-      const fc = document.getElementById('feedContainer');
-      const item = document.createElement('div');
-      item.className = 'feed-item';
-      item.innerText = text;
-      fc.appendChild(item);
-      while (fc.children.length > 5) fc.removeChild(fc.children[0]);
+      // Đã loại bỏ thông báo popup che màn hình điện thoại theo yêu cầu người dùng
+      console.log('[Zen Notification]', text);
     }
 
     function showFloatMerit(text, clientX, clientY) {
