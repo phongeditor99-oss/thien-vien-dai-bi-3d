@@ -3,7 +3,6 @@ services:
     name: thien-vien-dai-bi-3d
     runtime: node
     plan: free
-    region: singapore
     buildCommand: npm install
     startCommand: node src/server.js
     envVars:
