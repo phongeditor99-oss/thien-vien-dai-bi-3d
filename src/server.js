@@ -12,6 +12,11 @@ const MAX_PLAYERS_PER_ROOM = 100;
 const server = http.createServer((req, res) => {
   let reqPath = req.url.split('?')[0];
 
+  if (reqPath === '/favicon.ico') {
+    res.writeHead(204);
+    return res.end();
+  }
+
   if (reqPath === '/' || reqPath.endsWith('.html')) {
     const htmlFile = reqPath === '/' ? 'index.html' : path.basename(reqPath);
     const filePath = path.join(__dirname, '..', 'public', htmlFile);

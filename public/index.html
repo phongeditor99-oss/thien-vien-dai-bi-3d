@@ -1105,14 +1105,14 @@
   <div class="feed-container" id="feedContainer"></div>
   <div id="joystickZone"><div id="joystickThumb"></div></div>
 
-  <!-- HTML5 AUDIO ELEMENTS CHUẨN FILE GỐC MP3 -->
-  <audio id="audioMantra" loop preload="auto"></audio>
-  <audio id="audioHall" loop preload="auto" src="/audio/zen_relaxation.mp3"></audio>
-  <audio id="audioGarden" loop preload="auto" src="/audio/zen_relaxation.mp3"></audio>
-  <audio id="audioBell" preload="auto" src="/audio/bell.mp3"></audio>
-  <audio id="audioSingingBowl" preload="auto" src="/audio/singing_bowl.mp3"></audio>
-  <audio id="audioMuyu" preload="auto" src="/audio/muyu.mp3"></audio>
-  <audio id="audioMuyuDeep" preload="auto" src="/audio/muyu_deep.mp3"></audio>
+  <!-- HTML5 AUDIO ELEMENTS CHUẨN FILE GỐC MP3 (Preload none tối ưu chống crash bộ nhớ điện thoại) -->
+  <audio id="audioMantra" loop preload="none"></audio>
+  <audio id="audioHall" loop preload="none" src="/audio/zen_relaxation.mp3"></audio>
+  <audio id="audioGarden" loop preload="none" src="/audio/zen_relaxation.mp3"></audio>
+  <audio id="audioBell" preload="none" src="/audio/bell.mp3"></audio>
+  <audio id="audioSingingBowl" preload="none" src="/audio/singing_bowl.mp3"></audio>
+  <audio id="audioMuyu" preload="none" src="/audio/muyu.mp3"></audio>
+  <audio id="audioMuyuDeep" preload="none" src="/audio/muyu_deep.mp3"></audio>
 
   <script>
     // ========================================================
@@ -1471,15 +1471,29 @@
     const fireflySystem = new THREE.Points(fireflyGeo, fireflyMat);
     scene.add(fireflySystem);
 
-    const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 1200);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+    const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
+    const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const renderer = new THREE.WebGLRenderer({
+      antialias: !isMobileDevice,
+      powerPreference: 'high-performance',
+      precision: isMobileDevice ? 'mediump' : 'highp'
+    });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.setPixelRatio(isMobileDevice ? 1.0 : Math.min(window.devicePixelRatio, 1.5));
+    if (!isMobileDevice) {
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    } else {
+      renderer.shadowMap.enabled = false;
+    }
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.18;
-    document.getElementById('canvas3d').appendChild(renderer.domElement);
+    const canvasDom = renderer.domElement;
+    canvasDom.addEventListener('webglcontextlost', (e) => {
+      e.preventDefault();
+      console.warn('WebGL context lost prevented on mobile');
+    }, false);
+    document.getElementById('canvas3d').appendChild(canvasDom);
 
     // Procedural Canvas Textures
     function createWoodTexture() {
@@ -2413,7 +2427,10 @@
 
     if (typeof THREE.GLTFLoader !== 'undefined') {
       const treeLoader = new THREE.GLTFLoader();
-      const treeFiles = [
+      const treeFiles = isMobileDevice ? [
+        { key: 'cay3', url: '/cay_3.glb' },
+        { key: 'cay4', url: '/cay_4.glb' }
+      ] : [
         { key: 'cay3', url: '/cay_3.glb' },
         { key: 'cay4', url: '/cay_4.glb' },
         { key: 'cay1', url: '/cay_1.glb' },
@@ -2426,11 +2443,20 @@
           treeTemplates[item.key].traverse(c => {
             if (c.isMesh) {
               if (c.geometry) c.geometry.computeVertexNormals();
-              c.castShadow = true;
-              c.receiveShadow = true;
+              c.castShadow = !isMobileDevice;
+              c.receiveShadow = !isMobileDevice;
             }
           });
           spawnTreeType(item.key);
+          if (isMobileDevice) {
+            if (item.key === 'cay3') {
+              treeTemplates['cay1'] = gltf.scene;
+              spawnTreeType('cay1');
+            } else if (item.key === 'cay4') {
+              treeTemplates['cay2'] = gltf.scene;
+              spawnTreeType('cay2');
+            }
+          }
         }, undefined, (err) => console.log('Error loading tree ' + item.url, err));
       });
     }
@@ -2492,15 +2518,22 @@
       const rockLoader = new THREE.GLTFLoader();
       rockLoader.load('/da.glb', (gltf) => {
         rockModelA = gltf.scene;
-        rockModelA.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
-        if (rockModelB) spawnRocks();
+        rockModelA.traverse(c => { if (c.isMesh) { c.castShadow = !isMobileDevice; c.receiveShadow = !isMobileDevice; } });
+        if (isMobileDevice) {
+          rockModelB = rockModelA;
+          spawnRocks();
+        } else if (rockModelB) {
+          spawnRocks();
+        }
       });
 
-      rockLoader.load('/cuc_da_2.glb', (gltf) => {
-        rockModelB = gltf.scene;
-        rockModelB.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
-        if (rockModelA) spawnRocks();
-      });
+      if (!isMobileDevice) {
+        rockLoader.load('/cuc_da_2.glb', (gltf) => {
+          rockModelB = gltf.scene;
+          rockModelB.traverse(c => { if (c.isMesh) { c.castShadow = true; c.receiveShadow = true; } });
+          if (rockModelA) spawnRocks();
+        });
+      }
     }
 
     const pondGeo = new THREE.CircleGeometry(11, 32);
