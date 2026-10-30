@@ -1,0 +1,15 @@
+node_modules/
+3d/
+*.skp
+scripts/
+*.py
+.DS_Store
+Thumbs.db
+public/models/
+public/*_raw*
+public/chu_tieu_animated.glb
+public/chu_tieu_original.glb
+public/chua.glb
+public/thang_da.glb
+public/buddha.glb
+public/buddha_model_with_normals.glb

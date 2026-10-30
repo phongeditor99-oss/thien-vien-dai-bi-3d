@@ -1,0 +1,219 @@
+{
+  "format_version": "1.0",
+  "source_file": "buddha",
+  "model_source": "sketchup",
+  "sketchup_version": "{26.1.194}",
+  "total_definitions": 1,
+  "total_meshes": 1,
+  "total_layers": 7,
+  "layers": [
+    {
+      "name": "Layer0",
+      "color": {
+        "r": 255,
+        "g": 84,
+        "b": 84
+      }
+    },
+    {
+      "name": "Scene",
+      "color": {
+        "r": 0,
+        "g": 102,
+        "b": 153
+      }
+    },
+    {
+      "name": "3D Plants",
+      "color": {
+        "r": 102,
+        "g": 68,
+        "b": 0
+      }
+    },
+    {
+      "name": "Light objects",
+      "color": {
+        "r": 0,
+        "g": 153,
+        "b": 135
+      }
+    },
+    {
+      "name": "Animated objects",
+      "color": {
+        "r": 119,
+        "g": 119,
+        "b": 153
+      }
+    },
+    {
+      "name": "Billboards",
+      "color": {
+        "r": 153,
+        "g": 0,
+        "b": 255
+      }
+    },
+    {
+      "name": "Objects",
+      "color": {
+        "r": 204,
+        "g": 68,
+        "b": 0
+      }
+    }
+  ],
+  "layer_hidden": {
+    "Layer0": false,
+    "Scene": false,
+    "3D Plants": false,
+    "Light objects": false,
+    "Animated objects": false,
+    "Billboards": false,
+    "Objects": false
+  },
+  "materials": [
+    {
+      "name": "DEFAULT_0_0",
+      "color": {
+        "r": 128,
+        "g": 128,
+        "b": 128
+      },
+      "transparency": 1.0,
+      "colorized": false,
+      "colorize_type": 0
+    },
+    {
+      "name": "01_-_Default_0_1",
+      "color": {
+        "r": 127,
+        "g": 127,
+        "b": 127
+      },
+      "transparency": 1.0,
+      "colorized": false,
+      "colorize_type": 0
+    },
+    {
+      "name": "Layer_Layer0",
+      "color": {
+        "r": 255,
+        "g": 84,
+        "b": 84
+      },
+      "transparency": 1.0,
+      "colorized": false,
+      "colorize_type": 0
+    },
+    {
+      "name": "Layer_Scene",
+      "color": {
+        "r": 0,
+        "g": 102,
+        "b": 153
+      },
+      "transparency": 1.0,
+      "colorized": false,
+      "colorize_type": 0
+    },
+    {
+      "name": "Layer_3D Plants",
+      "color": {
+        "r": 102,
+        "g": 68,
+        "b": 0
+      },
+      "transparency": 1.0,
+      "colorized": false,
+      "colorize_type": 0
+    },
+    {
+      "name": "Layer_Light objects",
+      "color": {
+        "r": 0,
+        "g": 153,
+        "b": 135
+      },
+      "transparency": 1.0,
+      "colorized": false,
+      "colorize_type": 0
+    },
+    {
+      "name": "Layer_Animated objects",
+      "color": {
+        "r": 119,
+        "g": 119,
+        "b": 153
+      },
+      "transparency": 1.0,
+      "colorized": false,
+      "colorize_type": 0
+    },
+    {
+      "name": "Layer_Billboards",
+      "color": {
+        "r": 153,
+        "g": 0,
+        "b": 255
+      },
+      "transparency": 1.0,
+      "colorized": false,
+      "colorize_type": 0
+    },
+    {
+      "name": "Layer_Objects",
+      "color": {
+        "r": 204,
+        "g": 68,
+        "b": 0
+      },
+      "transparency": 1.0,
+      "colorized": false,
+      "colorize_type": 0
+    }
+  ],
+  "mesh_index": {
+    "mesh_0_ROOT__Scene_0_Scene": {
+      "name": "Scene_0",
+      "definition_name": "Group#1",
+      "layer": "Scene",
+      "position_mm": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "properties": {},
+      "attribute_dictionaries": {},
+      "path": "ROOT / Scene_0"
+    }
+  },
+  "scene_hierarchy": {
+    "name": "ROOT",
+    "definition_name": "ROOT_MODEL",
+    "layer": "Layer0",
+    "position_mm": [
+      0.0,
+      0.0,
+      0.0
+    ],
+    "properties": {},
+    "attribute_dictionaries": {},
+    "children": [
+      {
+        "name": "Scene_0",
+        "definition_name": "Group#1",
+        "layer": "Scene",
+        "position_mm": [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "properties": {},
+        "attribute_dictionaries": {},
+        "children": []
+      }
+    ]
+  }
+}
