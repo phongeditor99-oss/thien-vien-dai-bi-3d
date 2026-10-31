@@ -426,10 +426,10 @@
     /* THÔNG BÁO TƯƠNG TÁC SPATIAL 3D */
     #interactPrompt, #spatialActionPrompt {
       position: absolute;
-      bottom: 140px; left: 50%; transform: translateX(-50%);
-      background: rgba(26, 14, 8, 0.94);
-      border: 1.8px solid var(--gold);
-      border-radius: 24px;
+      bottom: 145px; left: 50%; transform: translateX(-50%);
+      background: rgba(36, 18, 10, 0.96);
+      border: 2px solid var(--gold);
+      border-radius: 26px;
       padding: 10px 24px;
       color: #ffd700;
       font-weight: bold;
@@ -440,17 +440,17 @@
       user-select: none;
       -webkit-user-select: none;
       touch-action: manipulation;
-      z-index: 100 !important;
-      box-shadow: 0 0 22px rgba(245, 207, 71, 0.55), 0 4px 12px rgba(0,0,0,0.8);
-      animation: bouncePrompt 1.6s infinite alternate;
+      z-index: 9999 !important;
+      box-shadow: 0 0 22px rgba(245, 207, 71, 0.65), 0 4px 14px rgba(0,0,0,0.85);
+      transition: background 0.15s, box-shadow 0.2s;
+    }
+    #interactPrompt:hover, #spatialActionPrompt:hover {
+      background: rgba(65, 32, 15, 0.98);
+      box-shadow: 0 0 28px rgba(245, 207, 71, 0.85), 0 4px 16px rgba(0,0,0,0.9);
     }
     #interactPrompt:active, #spatialActionPrompt:active {
-      transform: translateX(-50%) scale(0.96);
-      background: rgba(60, 32, 16, 0.98);
-    }
-    @keyframes bouncePrompt {
-      0% { transform: translateX(-50%) translateY(0); }
-      100% { transform: translateX(-50%) translateY(-6px); }
+      transform: translateX(-50%) scale(0.95);
+      background: rgba(90, 45, 20, 1.0);
     }
 
     /* DÒNG CÔNG ĐỨC BAY LÊN */
@@ -496,7 +496,7 @@
 
     @media (max-width: 768px) {
       .top-bar {
-        top: 6px;
+        top: calc(env(safe-area-inset-top, 0px) + 6px);
         left: 6px;
         right: 6px;
         display: flex;
@@ -510,7 +510,7 @@
         scrollbar-width: none;
         pointer-events: auto;
         padding-bottom: 4px;
-        z-index: 20;
+        z-index: 30;
       }
       .top-bar::-webkit-scrollbar { display: none; }
       .hud-group {
@@ -537,14 +537,14 @@
         font-weight: bold !important;
       }
       #mantraPlayer {
-        top: 54px;
+        top: calc(env(safe-area-inset-top, 0px) + 48px);
         left: 6px;
         right: 6px;
         max-width: calc(100vw - 12px);
         box-sizing: border-box;
         padding: 5px 8px;
         gap: 6px;
-        z-index: 15;
+        z-index: 25;
       }
       #interactPrompt, #spatialActionPrompt {
         bottom: 175px !important;
@@ -841,6 +841,119 @@
       transform: translate(-50%, -125%);
       font-family: 'Noto Serif', serif;
     }
+
+    /* MODAL LỊCH TỤNG KINH 19H HÀNG NGÀY & LIVE BANNER */
+    #scheduledSutraLiveBanner {
+      position: absolute;
+      top: calc(env(safe-area-inset-top, 0px) + 98px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, rgba(80, 25, 10, 0.96), rgba(40, 15, 5, 0.98));
+      border: 2px solid #ffd700;
+      border-radius: 30px;
+      padding: 8px 18px;
+      color: #fff;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      z-index: 40;
+      box-shadow: 0 0 25px rgba(255, 215, 0, 0.65), 0 6px 20px rgba(0,0,0,0.8);
+      backdrop-filter: blur(10px);
+      animation: pulseBanner 2s infinite alternate;
+    }
+    @keyframes pulseBanner {
+      0% { box-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
+      100% { box-shadow: 0 0 30px rgba(255, 215, 0, 0.85); }
+    }
+    #weeklyScheduleModal {
+      position: fixed;
+      top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: min(720px, 94vw);
+      max-height: 88vh;
+      background: rgba(22, 12, 7, 0.98);
+      border: 2px solid var(--gold);
+      border-radius: 20px;
+      padding: 20px;
+      box-sizing: border-box;
+      z-index: 10000;
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.9), 0 0 30px rgba(245, 207, 71, 0.35);
+      backdrop-filter: blur(14px);
+      color: #f7eedd;
+    }
+    .sutra-schedule-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      overflow-y: auto;
+      max-height: calc(88vh - 160px);
+      padding-right: 6px;
+      margin-top: 12px;
+    }
+    .sutra-schedule-card {
+      background: rgba(45, 24, 14, 0.85);
+      border: 1px solid #7d4d29;
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      transition: all 0.2s;
+    }
+    .sutra-schedule-card:hover {
+      border-color: var(--gold);
+      background: rgba(65, 34, 18, 0.95);
+      transform: translateY(-2px);
+    }
+    .sutra-schedule-card.active-today {
+      border: 2px solid #ffd700;
+      background: linear-gradient(135deg, rgba(80, 45, 15, 0.95), rgba(50, 25, 10, 0.95));
+      box-shadow: 0 0 16px rgba(255, 215, 0, 0.35);
+    }
+    .sutra-day-pill {
+      background: #ffd700;
+      color: #1a0e05;
+      font-weight: bold;
+      font-size: 0.78rem;
+      padding: 3px 8px;
+      border-radius: 8px;
+      white-space: nowrap;
+    }
+    .sutra-card-info {
+      flex: 1;
+      min-width: 0;
+    }
+    .sutra-card-title {
+      font-size: 0.95rem;
+      font-weight: bold;
+      color: var(--gold);
+      margin-bottom: 3px;
+    }
+    .sutra-card-desc {
+      font-size: 0.78rem;
+      color: #e5d8c3;
+      line-height: 1.35;
+    }
+    .btn-play-schedule {
+      background: linear-gradient(135deg, #d4af37, #b8860b);
+      color: #1a0e05;
+      font-weight: bold;
+      font-size: 0.82rem;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 14px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s;
+    }
+    .btn-play-schedule:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
+    }
+
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
@@ -917,6 +1030,9 @@
       <button class="btn-hud" id="btnOpenSutraTop" title="Mở Bộ Kinh Phật Gia">
         <span>Bộ Kinh Phật</span>
       </button>
+      <button class="btn-hud" id="btnOpenScheduleTop" style="border-color:#ffd700; background:rgba(255,215,0,0.18); color:#ffd700; font-weight:bold;" title="Thời Khóa Tụng Kinh 19h Hàng Ngày">
+        <span>⏰ Lịch 19h</span>
+      </button>
     </div>
 
     <div class="hud-group">
@@ -983,7 +1099,11 @@
       <label><span>🔔 Tiếng Mõ & Chuông Bát:</span><span id="sfxVolVal">85%</span></label>
       <input type="range" id="sfxVolume" min="0" max="100" value="85">
     </div>
-    <button class="btn-hud" id="btnAudioDone" style="width:100%; margin-top:14px; justify-content:center; padding:10px; font-weight:bold; background:linear-gradient(135deg, #ffd700, #d4af37); color:#221105; border-radius:10px; font-size:0.92rem; border:none; cursor:pointer;">✓ Hoàn Tất & Đóng</button>
+    <div style="margin-top:12px; display:flex; gap:8px;">
+      <button class="btn-hud" id="btnMuteAllAudio" style="flex:1; justify-content:center; padding:8px; border-color:#e57373; background:rgba(229,115,115,0.18); color:#ffcdd2; font-size:0.82rem; font-weight:bold; cursor:pointer;">🔇 Tắt Hết Âm Thanh</button>
+      <button class="btn-hud" id="btnUnmuteAllAudio" style="flex:1; justify-content:center; padding:8px; border-color:#81c784; background:rgba(129,199,132,0.18); color:#c8e6c9; font-size:0.82rem; font-weight:bold; cursor:pointer;">🔊 Bật Chuẩn 75%</button>
+    </div>
+    <button class="btn-hud" id="btnAudioDone" style="width:100%; margin-top:12px; justify-content:center; padding:10px; font-weight:bold; background:linear-gradient(135deg, #ffd700, #d4af37); color:#221105; border-radius:10px; font-size:0.92rem; border:none; cursor:pointer;">✓ Hoàn Tất & Đóng</button>
   </div>
 
   <!-- ĐỔI ÁO CÀ SA MODAL -->
@@ -1165,7 +1285,42 @@
     <div id="tooltipLanternWish" style="font-size:0.82rem; color:#f0e4d0; font-style:italic; line-height:1.4;">Lời nguyện...</div>
   </div>
 
-  <!-- ACTION DOCK -->
+
+  <!-- BANNER BÁO KHÓA LỄ 19H TRỰC TUYẾN -->
+  <div id="scheduledSutraLiveBanner">
+    <span style="font-size:1.2rem;">🔔</span>
+    <div>
+      <div style="font-size:0.75rem; color:#ffd700; font-weight:bold; letter-spacing:0.5px;">ĐANG DIỄN RA KHÓA LỄ 19H TOÀN DIỆN</div>
+      <div id="liveBannerSutraTitle" style="font-size:0.88rem; font-weight:bold; max-width:240px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">Trì Tụng Chú Đại Bi</div>
+    </div>
+    <button id="btnJoinLiveRecite" style="background:#ffd700; color:#1a0e05; border:none; border-radius:12px; font-weight:bold; padding:5px 12px; cursor:pointer; font-size:0.80rem;">Vào Tụng Ngay</button>
+    <span id="btnCloseLiveBanner" style="cursor:pointer; font-size:1.1rem; color:#f0e4d0; padding-left:4px;">✕</span>
+  </div>
+
+  <!-- MODAL THỜI KHÓA TỤNG KINH 19H HÀNG NGÀY TRONG TUẦN -->
+  <div id="weeklyScheduleModal">
+    <div class="modal-header">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="color:#ffd700; font-size:1.15rem; font-weight:bold;">⏰ THỜI KHÓA TỤNG KINH 19:00 HÀNG NGÀY</span>
+      </div>
+      <span style="cursor:pointer; font-size:1.25rem; color:#ffd700;" id="btnCloseSchedule">✕</span>
+    </div>
+
+    <!-- Banner hôm nay -->
+    <div id="scheduleTodayBanner" style="background:rgba(255,215,0,0.12); border:1.5px solid #ffd700; border-radius:12px; padding:10px 14px; margin-top:8px; display:flex; justify-content:space-between; align-items:center; gap:10px;">
+      <div>
+        <div style="font-size:0.75rem; color:#ffd700; font-weight:bold;">📅 HÔM NAY TẠI THIỀN VIỆN (GIỜ VIỆT NAM UTC+7)</div>
+        <div id="scheduleTodayTitle" style="font-size:0.95rem; font-weight:bold; color:#fff; margin-top:2px;">Trì Tụng Chú Đại Bi</div>
+        <div id="scheduleTodayTime" style="font-size:0.78rem; color:#d4c4b0; margin-top:2px;">Giờ khóa lễ: 19:00:00 (Mặc định toàn thể phòng cùng tụng)</div>
+      </div>
+      <button id="btnTodayAction" class="btn-play-schedule">▶ Tụng Khóa Hôm Nay</button>
+    </div>
+
+    <div style="font-size:0.82rem; color:#ffd700; font-weight:bold; margin-top:12px;">🗓️ LỊCH TRỌN VẸN 7 NGÀY TRONG TUẦN (MỌI NGƯỜI CHƠI CÓ THỂ CHỌN TỤNG BẤT KỲ LÚC NÀO):</div>
+    <div class="sutra-schedule-grid" id="weeklySutraCardsContainer"></div>
+  </div>
+
+    <!-- ACTION DOCK -->
   <div class="zen-dock">
     <button class="btn-tool" id="btnWoodenFish" title="Gõ Mõ Kinh">
       <span class="icon">🐟</span>
@@ -1283,6 +1438,62 @@
         title: "9. Nhạc Thiền Tĩnh Tâm - Sáo Trúc & Cổ Cầm Đông Phương",
         desc: "Thanh âm thiền vị tĩnh tại, thư giãn sâu lắng lòng người",
         url: "/audio/zen_relaxation.mp3"
+      },
+      {
+        id: 9,
+        title: "10. [Khóa Lễ Thứ Hai 19h] Trì Tụng Chú Đại Bi & Niệm Bồ Tát Quán Thế Âm",
+        desc: "Thời Khóa Tối Thứ Hai (22.4 phút) - Lòng Từ Bi che chở, xua tan tai ương ách nạn",
+        url: "/audio/sutra_mon_dai_bi.mp3",
+        isWeeklySutra: true,
+        dayName: "Thứ Hai"
+      },
+      {
+        id: 10,
+        title: "11. [Khóa Lễ Thứ Ba 19h] Kinh Dược Sư Lưu Ly Quang Vương Như Lai",
+        desc: "Thời Khóa Tối Thứ Ba (82.5 phút) - Tiêu trừ tật bệnh, thân tâm thanh tịnh an lạc",
+        url: "/audio/sutra_tue_duoc_su.mp3",
+        isWeeklySutra: true,
+        dayName: "Thứ Ba"
+      },
+      {
+        id: 11,
+        title: "12. [Khóa Lễ Thứ Tư 19h] Kinh Bát Nhã Ba La Mật Đa (7 Biến)",
+        desc: "Thời Khóa Tối Thứ Tư (24.1 phút) - Phá tan vô minh phiền não, khai mở bồ đề tâm",
+        url: "/audio/sutra_wed_bat_nha.mp3",
+        isWeeklySutra: true,
+        dayName: "Thứ Tư"
+      },
+      {
+        id: 12,
+        title: "13. [Khóa Lễ Thứ Năm 19h] Kinh Diệu Pháp Liên Hoa - Phẩm Phổ Môn",
+        desc: "Thời Khóa Tối Thứ Năm (48.2 phút) - Linh ứng tầm thinh cứu khổ cứu nạn",
+        url: "/audio/sutra_thu_pho_mon.mp3",
+        isWeeklySutra: true,
+        dayName: "Thứ Năm"
+      },
+      {
+        id: 13,
+        title: "14. [Khóa Lễ Thứ Sáu 19h] Kinh Địa Tạng Bồ Tát Bổn Nguyện (Trọn Bộ)",
+        desc: "Thời Khóa Tối Thứ Sáu (3.8 giờ) - Hồi hướng cửu huyền thất tổ, siêu tiến tiền nhân",
+        url: "/audio/sutra_fri_dia_tang.mp3",
+        isWeeklySutra: true,
+        dayName: "Thứ Sáu"
+      },
+      {
+        id: 14,
+        title: "15. [Khóa Lễ Thứ Bảy 19h] Kinh Phật Thuyết A Di Đà",
+        desc: "Thời Khóa Tối Thứ Bảy (70.1 phút) - Gieo duyên Tịnh Độ Cực Lạc Tây Phương",
+        url: "/audio/sutra_sat_a_di_da.mp3",
+        isWeeklySutra: true,
+        dayName: "Thứ Bảy"
+      },
+      {
+        id: 15,
+        title: "16. [Khóa Lễ Chủ Nhật 19h] Kinh Đại Thừa Vô Lượng Thọ Trang Nghiêm",
+        desc: "Thời Khóa Tối Chủ Nhật (2.1 giờ) - Viên mãn tuần tu tập, phước huệ trang nghiêm",
+        url: "/audio/sutra_sun_vo_luong_tho.mp3",
+        isWeeklySutra: true,
+        dayName: "Chủ Nhật"
       }
     ];
 
@@ -1423,7 +1634,7 @@
           const isMantraMuted = (userMantraVolume <= 0.01) || !isMantraPlaying;
           audioElements.mantra.muted = isMantraMuted;
           if (isMantraMuted) {
-            if (userMantraVolume <= 0.01 && !audioElements.mantra.paused) {
+            if (!audioElements.mantra.paused) {
               audioElements.mantra.pause();
             }
           } else {
@@ -1442,7 +1653,7 @@
             if (!audioElements.hall.paused) audioElements.hall.pause();
           } else {
             audioElements.hall.volume = (1 - gardenFactor * 0.8) * userGardenVolume * 0.75;
-            if (audioElements.hall.paused && SoundEngine.isUnlocked) {
+            if (audioElements.hall.paused && SoundEngine.isUnlocked && userGardenVolume > 0.01) {
               audioElements.hall.play().catch(() => {});
             }
           }
@@ -1453,7 +1664,7 @@
             if (!audioElements.garden.paused) audioElements.garden.pause();
           } else {
             audioElements.garden.volume = gardenFactor * userGardenVolume;
-            if (audioElements.garden.paused && SoundEngine.isUnlocked) {
+            if (audioElements.garden.paused && SoundEngine.isUnlocked && userGardenVolume > 0.01) {
               audioElements.garden.play().catch(() => {});
             }
           }
@@ -1630,9 +1841,9 @@
     const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
     const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({
-      antialias: !isMobileDevice,
+      antialias: true,
       powerPreference: 'high-performance',
-      precision: isMobileDevice ? 'mediump' : 'highp'
+      precision: 'highp'
     });
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.setPixelRatio(isMobileDevice ? 1.0 : Math.min(window.devicePixelRatio, 1.5));
@@ -1975,13 +2186,13 @@
     scene.add(lotusBaseLight);
 
     // CHẤT LIỆU HOÀNG KIM THẾP VÀNG 24K CHO PHO TƯỢNG (MỊN MÀNG, KHÔNG NHIỄU HẠT, ĐỦ 2 MẶT KHÔNG BỊ XUYÊN THẤU)
-    const goldStatueMat = new THREE.MeshStandardMaterial({
-      color: 0xf3ca4c,      // Sắc vàng hoàng kim 24K ấm áp
-      roughness: 0.38,      // Mịn màng thếp vàng, satin sheen nhẹ nhàng
-      metalness: 0.28,      // Phản xạ kim loại trang nhã, triệt tiêu đốm đen/nhiễu hạt
-      emissive: 0x5a3c08,   // Tự phát kim quang ấm áp từ bi
-      emissiveIntensity: 0.20,
-      side: THREE.DoubleSide
+    const goldStatueMat = new THREE.MeshPhongMaterial({
+      color: 0xf6d155,       // Sắc vàng hoàng kim 24K rực rỡ ấm áp
+      specular: 0xffea85,    // Phản chiếu ánh kim lấp lánh sang trọng
+      shininess: 48,         // Mịn màng thếp vàng, triệt tiêu 100% nhiễu hạt và lấm tấm
+      emissive: 0x4a2e05,    // Tự phát kim quang ấm áp từ bi
+      side: THREE.DoubleSide,
+      flatShading: false
     });
 
     let buddhaCustomMesh = null;
@@ -2876,21 +3087,27 @@
       flameLight.position.set(0, 0.22, 0);
       lanternObj.add(flameLight);
 
-      // Hào quang ấm áp tỏa ra từ ngọn nến hoa đăng
-      if (typeof glowParticleTexture !== 'undefined') {
-        const flameGlowMat = new THREE.SpriteMaterial({
-          map: glowParticleTexture,
-          color: 0xffaa33,
+      // Ngọn lửa hoa đăng 3D ấm áp, không dùng billboard sprite tránh lỗi ô vuông
+      const flameCore = new THREE.Mesh(
+        new THREE.SphereGeometry(0.06, 12, 12),
+        new THREE.MeshBasicMaterial({ color: 0xffea55 })
+      );
+      flameCore.scale.set(0.8, 1.8, 0.8);
+      flameCore.position.set(0, 0.20, 0);
+      lanternObj.add(flameCore);
+
+      const flameAura = new THREE.Mesh(
+        new THREE.SphereGeometry(0.18, 12, 12),
+        new THREE.MeshBasicMaterial({
+          color: 0xff9900,
           transparent: true,
-          opacity: 0.75,
+          opacity: 0.35,
           blending: THREE.AdditiveBlending,
           depthWrite: false
-        });
-        const flameSprite = new THREE.Sprite(flameGlowMat);
-        flameSprite.scale.set(0.65, 0.65, 1.0);
-        flameSprite.position.set(0, 0.22, 0);
-        lanternObj.add(flameSprite);
-      }
+        })
+      );
+      flameAura.position.set(0, 0.20, 0);
+      lanternObj.add(flameAura);
 
       // Tọa độ khởi tạo trên mặt hồ sen
       const initX = typeof data.x === 'number' ? data.x : (Math.random() - 0.5) * 6;
@@ -3874,6 +4091,150 @@
       document.querySelectorAll('.mantra-item').forEach((el, i) => el.classList.toggle('active', i === prev));
       SoundEngine.playMantraTrack(prev);
     };
+
+    // ========================================================
+    // 12.1. THỜI KHÓA TỤNG KINH 19H HÀNG NGÀY & LỊCH 7 NGÀY
+    // ========================================================
+    const WEEKLY_SCHEDULE_DATA = {
+      1: { day: 1, name: 'Thứ Hai', title: 'Trì Tụng Chú Đại Bi & Niệm Quán Âm', duration: '22 phút', url: '/audio/sutra_mon_dai_bi.mp3', trackIdx: 9, merits: 30, desc: 'Khởi đầu tuần mới bình an - Tâm từ bi che chở gia đạo an khang.' },
+      2: { day: 2, name: 'Thứ Ba', title: 'Kinh Dược Sư Lưu Ly Quang Vương Như Lai', duration: '82.5 phút', url: '/audio/sutra_tue_duoc_su.mp3', trackIdx: 10, merits: 35, desc: 'Khóa lễ cầu an - Tiêu trừ tật bệnh, thân tâm thanh tịnh an lạc.' },
+      3: { day: 3, name: 'Thứ Tư', title: 'Kinh Bát Nhã Ba La Mật Đa (7 Biến)', duration: '24.1 phút', url: '/audio/sutra_wed_bat_nha.mp3', trackIdx: 11, merits: 25, desc: 'Khóa lễ trí tuệ - Phá tan vô minh phiền não, khai mở bồ đề tâm.' },
+      4: { day: 4, name: 'Thứ Năm', title: 'Kinh Diệu Pháp Liên Hoa - Phẩm Phổ Môn', duration: '48.2 phút', url: '/audio/sutra_thu_pho_mon.mp3', trackIdx: 12, merits: 30, desc: 'Linh ứng tầm thinh cứu khổ cứu nạn của Bồ Tát Quán Thế Âm.' },
+      5: { day: 5, name: 'Thứ Sáu', title: 'Kinh Địa Tạng Bồ Tát Bổn Nguyện (Trọn Bộ)', duration: '3.8 giờ', url: '/audio/sutra_fri_dia_tang.mp3', trackIdx: 13, merits: 50, desc: 'Báo hiếu cha mẹ, cửu huyền thất tổ, giải trừ nghiệp chướng nhiều đời.' },
+      6: { day: 6, name: 'Thứ Bảy', title: 'Kinh Phật Thuyết A Di Đà', duration: '70.1 phút', url: '/audio/sutra_sat_a_di_da.mp3', trackIdx: 14, merits: 35, desc: 'Gieo duyên Tịnh Độ Cực Lạc Tây Phương, tâm an định vãng sanh.' },
+      0: { day: 0, name: 'Chủ Nhật', title: 'Kinh Đại Thừa Vô Lượng Thọ Trang Nghiêm', duration: '2.1 giờ', url: '/audio/sutra_sun_vo_luong_tho.mp3', trackIdx: 15, merits: 40, desc: 'Viên mãn một tuần tu tập, phước đức vô lượng, huệ mạng trang nghiêm.' }
+    };
+
+    function getVietnamDayOfWeek() {
+      const now = new Date();
+      const utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      const vnTime = new Date(utc + (3600000 * 7));
+      return { day: vnTime.getDay(), hours: vnTime.getHours(), minutes: vnTime.getMinutes() };
+    }
+
+    function renderWeeklyScheduleModal() {
+      const vn = getVietnamDayOfWeek();
+      const container = document.getElementById('weeklySutraCardsContainer');
+      if (!container) return;
+      container.innerHTML = '';
+
+      const todayData = WEEKLY_SCHEDULE_DATA[vn.day];
+      const todayTitleEl = document.getElementById('scheduleTodayTitle');
+      const todayTimeEl = document.getElementById('scheduleTodayTime');
+      if (todayTitleEl) todayTitleEl.innerText = `${todayData.name}: ${todayData.title}`;
+      if (todayTimeEl) {
+        const isReciteTime = (vn.hours === 19 || (vn.hours === 20 && vn.minutes <= 30));
+        todayTimeEl.innerHTML = isReciteTime 
+          ? '<b style="color:#69f0ae;">🔔 ĐANG DIỄN RA KHÓA LỄ TRỰC TUYẾN TOÀN VIỆN!</b>'
+          : `Khóa lễ mặc định: 19:00:00 (Hiện tại: ${String(vn.hours).padStart(2, '0')}:${String(vn.minutes).padStart(2, '0')} VN)`;
+      }
+
+      const btnTodayAction = document.getElementById('btnTodayAction');
+      if (btnTodayAction) {
+        btnTodayAction.onclick = () => {
+          SoundEngine.playMantraTrack(todayData.trackIdx);
+          document.getElementById('weeklyScheduleModal').style.display = 'none';
+          showFloatMerit(`Bắt đầu khóa lễ hôm nay: ${todayData.title} 🙏`, window.innerWidth / 2, window.innerHeight / 2);
+        };
+      }
+
+      // Thứ Tự hiển thị: Thứ 2 -> Thứ 7 -> Chủ Nhật
+      const displayOrder = [1, 2, 3, 4, 5, 6, 0];
+      displayOrder.forEach(dayIdx => {
+        const item = WEEKLY_SCHEDULE_DATA[dayIdx];
+        const isToday = (dayIdx === vn.day);
+        const card = document.createElement('div');
+        card.className = 'sutra-schedule-card' + (isToday ? ' active-today' : '');
+        card.innerHTML = `
+          <div class="sutra-day-pill" style="${isToday ? 'background:#ffd700; color:#1a0e05;' : 'background:rgba(255,215,0,0.18); color:#ffd700;'}">${item.name}</div>
+          <div class="sutra-card-info">
+            <div class="sutra-card-title">${item.title} ${isToday ? '<span style="color:#69f0ae; font-size:0.75rem;">(Hôm Nay 19h)</span>' : ''}</div>
+            <div class="sutra-card-desc">${item.desc} • Thời lượng: <b>${item.duration}</b></div>
+          </div>
+          <button class="btn-play-schedule" data-track="${item.trackIdx}">▶ Tụng Khóa Này</button>
+        `;
+        const playBtn = card.querySelector('.btn-play-schedule');
+        playBtn.onclick = (e) => {
+          e.stopPropagation();
+          SoundEngine.playMantraTrack(item.trackIdx);
+          document.getElementById('weeklyScheduleModal').style.display = 'none';
+          showFloatMerit(`Bắt đầu trì tụng: ${item.title} 🙏`, window.innerWidth / 2, window.innerHeight / 2);
+        };
+        container.appendChild(card);
+      });
+    }
+
+    const btnOpenScheduleTop = document.getElementById('btnOpenScheduleTop');
+    if (btnOpenScheduleTop) {
+      btnOpenScheduleTop.onclick = () => {
+        renderWeeklyScheduleModal();
+        document.getElementById('weeklyScheduleModal').style.display = 'flex';
+        if (!SoundEngine.isUnlocked) SoundEngine.unlockAndPlay();
+      };
+    }
+    const btnCloseSchedule = document.getElementById('btnCloseSchedule');
+    if (btnCloseSchedule) {
+      btnCloseSchedule.onclick = () => {
+        document.getElementById('weeklyScheduleModal').style.display = 'none';
+      };
+    }
+
+    // Xử lý Live Banner khi có khóa lễ 19h
+    function handleScheduledSutraLive(sutra, elapsedSec = 0) {
+      const banner = document.getElementById('scheduledSutraLiveBanner');
+      const titleEl = document.getElementById('liveBannerSutraTitle');
+      if (!banner || !sutra) return;
+      if (titleEl) titleEl.innerText = `${sutra.dayName}: ${sutra.title}`;
+      banner.style.display = 'flex';
+
+      const btnJoin = document.getElementById('btnJoinLiveRecite');
+      if (btnJoin) {
+        btnJoin.onclick = () => {
+          // Tìm track index tương ứng
+          const trackIdx = MANTRA_PLAYLIST.findIndex(t => t.url === sutra.url);
+          if (trackIdx !== -1) {
+            SoundEngine.playMantraTrack(trackIdx);
+            if (elapsedSec > 0 && audioElements.mantra) {
+              try { audioElements.mantra.currentTime = elapsedSec; } catch (e) {}
+            }
+          }
+          banner.style.display = 'none';
+          showFloatMerit(`🙏 Đồng tu đã hòa nhập Khóa Lễ 19h: ${sutra.title}`, window.innerWidth / 2, window.innerHeight / 2);
+        };
+      }
+      const btnCloseBanner = document.getElementById('btnCloseLiveBanner');
+      if (btnCloseBanner) {
+        btnCloseBanner.onclick = () => { banner.style.display = 'none'; };
+      }
+    }
+
+    // Nút Tắt Hết / Bật Lại Toàn Bộ Âm Thanh
+    const btnMuteAllAudio = document.getElementById('btnMuteAllAudio');
+    if (btnMuteAllAudio) {
+      btnMuteAllAudio.onclick = () => {
+        applyMantraVolume(0);
+        applyGardenVolume(0);
+        applySfxVolume(0);
+        if (mantraSlider) mantraSlider.value = 0;
+        if (gardenSlider) gardenSlider.value = 0;
+        if (sfxSlider) sfxSlider.value = 0;
+        showFloatMerit('🔇 Đã tắt toàn bộ âm thanh', window.innerWidth / 2, window.innerHeight / 2);
+      };
+    }
+    const btnUnmuteAllAudio = document.getElementById('btnUnmuteAllAudio');
+    if (btnUnmuteAllAudio) {
+      btnUnmuteAllAudio.onclick = () => {
+        applyMantraVolume(75);
+        applyGardenVolume(60);
+        applySfxVolume(85);
+        if (mantraSlider) mantraSlider.value = 75;
+        if (gardenSlider) gardenSlider.value = 60;
+        if (sfxSlider) sfxSlider.value = 85;
+        if (!SoundEngine.isUnlocked) SoundEngine.unlockAndPlay();
+        showFloatMerit('🔊 Đã khôi phục mức âm thanh chuẩn', window.innerWidth / 2, window.innerHeight / 2);
+      };
+    }
+
     document.getElementById('btnOpenMantraList').onclick = () => {
       const modal = document.getElementById('mantraListModal');
       modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
@@ -4688,24 +5049,32 @@
     // GẮN SỰ KIỆN CHẠM & CLICK CHO CÁC NÚT TƯƠNG TÁC POPUP MÀN HÌNH
     const interactEl = document.getElementById('interactPrompt');
     if (interactEl) {
+      let lastTapTime = 0;
       const onInteractTap = (e) => {
+        const now = Date.now();
+        if (now - lastTapTime < 250) return;
+        lastTapTime = now;
         e.preventDefault();
         e.stopPropagation();
         triggerMainInteraction();
       };
+      interactEl.addEventListener('pointerup', onInteractTap);
       interactEl.addEventListener('click', onInteractTap);
-      interactEl.addEventListener('touchend', onInteractTap);
     }
 
     const actionEl = document.getElementById('spatialActionPrompt');
     if (actionEl) {
+      let lastActionTapTime = 0;
       const onActionTap = (e) => {
+        const now = Date.now();
+        if (now - lastActionTapTime < 250) return;
+        lastActionTapTime = now;
         e.preventDefault();
         e.stopPropagation();
         triggerSpatialAction();
       };
+      actionEl.addEventListener('pointerup', onActionTap);
       actionEl.addEventListener('click', onActionTap);
-      actionEl.addEventListener('touchend', onActionTap);
     }
 
     // ========================================================
@@ -4763,6 +5132,11 @@
             // Đồng bộ hoa đăng đang bập bềnh trên hồ sen
             if (data.roomState && data.roomState.lanterns) {
               data.roomState.lanterns.forEach(l => spawnLanternMesh(l));
+            }
+
+            // Kiểm tra khóa lễ 19h đang diễn ra khi vừa vào phòng
+            if (data.roomState && data.roomState.scheduledSutra && data.roomState.scheduledSutra.isRecitingNow) {
+              handleScheduledSutraLive(data.roomState.scheduledSutra.sutra, data.roomState.scheduledSutra.elapsedSec);
             }
 
             // Đồng bộ toàn bộ người chơi đang có trong phòng
@@ -4983,6 +5357,14 @@
               myMerits = data.merits;
               document.getElementById('myMerits').innerText = myMerits;
               localPlayerObj.updateNametag(myNickname, myMerits);
+            }
+            break;
+          }
+
+          case 'SCHEDULED_SUTRA_START': {
+            if (data.sutra) {
+              handleScheduledSutraLive(data.sutra, data.elapsedSec || 0);
+              addFeed(`🔔 Khóa lễ 19h bắt đầu: ${data.sutra.title}`);
             }
             break;
           }

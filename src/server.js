@@ -117,11 +117,129 @@ const server = http.createServer((req, res) => {
       activeRooms: roomManager.getRoomsSummary(),
       uptime: process.uptime()
     }));
+  } else if (reqPath === '/api/sutra-schedule') {
+    res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+    res.end(JSON.stringify(getScheduledSutraInfo()));
   } else {
     res.writeHead(404);
     res.end('Not Found');
   }
 });
+
+// ==========================================
+// THỜI KHÓA TỤNG KINH 19H HÀNG NGÀY (GIỜ VIỆT NAM - UTC+7)
+// ==========================================
+const WEEKLY_SUTRA_SCHEDULE = {
+  1: { // Thứ Hai
+    dayIndex: 1,
+    dayName: 'Thứ Hai',
+    sutraId: 'sutra_mon',
+    title: 'Trì Tụng Chú Đại Bi & Niệm Bồ Tát Quán Thế Âm',
+    subTitle: 'Khóa Lễ Đầu Tuần (22 phút) - Lòng Từ Bi che chở, cầu an lành vạn sự',
+    url: '/audio/sutra_mon_dai_bi.mp3',
+    durationMinutes: 22.4,
+    durationSec: 1342,
+    merits: 30
+  },
+  2: { // Thứ Ba
+    dayIndex: 2,
+    dayName: 'Thứ Ba',
+    sutraId: 'sutra_tue',
+    title: 'Kinh Dược Sư Lưu Ly Quang Vương Như Lai',
+    subTitle: 'Khóa Lễ Cầu An (82 phút) - Tiêu trừ tật bệnh, thân tâm an lạc',
+    url: '/audio/sutra_tue_duoc_su.mp3',
+    durationMinutes: 82.5,
+    durationSec: 4950,
+    merits: 35
+  },
+  3: { // Thứ Tư
+    dayIndex: 3,
+    dayName: 'Thứ Tư',
+    sutraId: 'sutra_wed',
+    title: 'Kinh Bát Nhã Ba La Mật Đa (7 Biến)',
+    subTitle: 'Khóa Lễ Trí Tuệ (24 phút) - Phá vô minh phiền não, khai mở giác ngộ',
+    url: '/audio/sutra_wed_bat_nha.mp3',
+    durationMinutes: 24.1,
+    durationSec: 1448,
+    merits: 25
+  },
+  4: { // Thứ Năm
+    dayIndex: 4,
+    dayName: 'Thứ Năm',
+    sutraId: 'sutra_thu',
+    title: 'Kinh Diệu Pháp Liên Hoa - Phẩm Phổ Môn',
+    subTitle: 'Khóa Lễ Cứu Khổ (48 phút) - Linh ứng tầm thinh cứu khổ cứu nạn',
+    url: '/audio/sutra_thu_pho_mon.mp3',
+    durationMinutes: 48.2,
+    durationSec: 2892,
+    merits: 30
+  },
+  5: { // Thứ Sáu
+    dayIndex: 5,
+    dayName: 'Thứ Sáu',
+    sutraId: 'sutra_fri',
+    title: 'Kinh Địa Tạng Bồ Tát Bổn Nguyện (Trọn Bộ)',
+    subTitle: 'Khóa Lễ Báo Hiếu (3.8 giờ) - Hồi hướng cửu huyền thất tổ, siêu tiến độ sanh',
+    url: '/audio/sutra_fri_dia_tang.mp3',
+    durationMinutes: 232.1,
+    durationSec: 13926,
+    merits: 50
+  },
+  6: { // Thứ Bảy
+    dayIndex: 6,
+    dayName: 'Thứ Bảy',
+    sutraId: 'sutra_sat',
+    title: 'Kinh Phật Thuyết A Di Đà',
+    subTitle: 'Khóa Lễ Tịnh Độ Cuối Tuần (70 phút) - Gieo duyên Tịnh Độ Cực Lạc Tây Phương',
+    url: '/audio/sutra_sat_a_di_da.mp3',
+    durationMinutes: 70.1,
+    durationSec: 4206,
+    merits: 35
+  },
+  0: { // Chủ Nhật
+    dayIndex: 0,
+    dayName: 'Chủ Nhật',
+    sutraId: 'sutra_sun',
+    title: 'Kinh Phật Thuyết Đại Thừa Vô Lượng Thọ Trang Nghiêm',
+    subTitle: 'Khóa Lễ Đại Hoan Hỷ (2.1 giờ) - Viên mãn tuần tu tập, phước huệ trang nghiêm',
+    url: '/audio/sutra_sun_vo_luong_tho.mp3',
+    durationMinutes: 128.6,
+    durationSec: 7716,
+    merits: 50
+  }
+};
+
+function getVietnamDate() {
+  const now = new Date();
+  const utcMs = now.getTime() + now.getTimezoneOffset() * 60000;
+  return new Date(utcMs + 7 * 3600000); // UTC+7 (Giờ Việt Nam)
+}
+
+function getScheduledSutraInfo() {
+  const vnDate = getVietnamDate();
+  const day = vnDate.getDay();
+  const sutra = WEEKLY_SUTRA_SCHEDULE[day];
+  const hours = vnDate.getHours();
+  const minutes = vnDate.getMinutes();
+  const seconds = vnDate.getSeconds();
+  const currentSec = hours * 3600 + minutes * 60 + seconds;
+  const startSec = 19 * 3600; // 19:00:00 = 68400s
+  const endSec = startSec + sutra.durationSec;
+  
+  const isRecitingNow = (currentSec >= startSec && currentSec < endSec);
+  const elapsedSeconds = isRecitingNow ? (currentSec - startSec) : 0;
+  
+  return {
+    dayOfWeek: day,
+    dayName: sutra.dayName,
+    sutra: sutra,
+    isRecitingNow: isRecitingNow,
+    elapsedSeconds: elapsedSeconds,
+    scheduleTimeStr: '19:00:00 (Hàng Ngày - Giờ Việt Nam GMT+7)',
+    currentVnTimeStr: `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`,
+    scheduleList: WEEKLY_SUTRA_SCHEDULE
+  };
+}
 
 // ==========================================
 // 2. 3D Room & Zen State Manager
@@ -312,7 +430,8 @@ class TempleRoom3D {
       players: playerList,
       totalMerits: this.totalMerits,
       incenseActive: Date.now() < this.incenseBurningUntil,
-      lanterns: this.lanterns
+      lanterns: this.lanterns,
+      scheduledSutra: getScheduledSutraInfo()
     };
   }
 }
@@ -715,6 +834,37 @@ wss.on('connection', (ws) => {
     console.error('WebSocket client error:', err.message);
   });
 });
+
+// ==========================================
+// ĐỒNG HỒ TỰ ĐỘNG KHỞI ĐỘNG KHÓA LỄ TỤNG KINH 19H HÀNG NGÀY
+// ==========================================
+let lastBroadcastSutraDay = -1;
+setInterval(() => {
+  const vnDate = getVietnamDate();
+  const hours = vnDate.getHours();
+  const minutes = vnDate.getMinutes();
+  const seconds = vnDate.getSeconds();
+  const day = vnDate.getDay();
+
+  // Vào đúng 19:00:00 (hoặc trong 3 giây đầu của 19:00)
+  if (hours === 19 && minutes === 0 && seconds <= 3 && lastBroadcastSutraDay !== day) {
+    lastBroadcastSutraDay = day;
+    const sutra = WEEKLY_SUTRA_SCHEDULE[day];
+    console.log(`[KHÓA LỄ 19H] Khởi động khóa tụng kinh hôm nay (${sutra.dayName}): ${sutra.title}`);
+
+    for (const room of roomManager.rooms.values()) {
+      room.totalMerits += 50;
+      room.broadcast({
+        type: 'SCHEDULED_SUTRA_START',
+        sutra: sutra,
+        dayOfWeek: day,
+        dayName: sutra.dayName,
+        elapsedSeconds: 0,
+        message: `🔔 ĐÃ ĐẾN 19:00 (GIỜ VIỆT NAM) - Đại chúng đồng quy khóa tụng ${sutra.title} 🙏 (+50 Công Đức)`
+      });
+    }
+  }
+}, 1000);
 
 server.listen(PORT, () => {
   console.log(`[3D ZEN SERVER V2] Đang hoạt động tại: http://localhost:${PORT}`);
