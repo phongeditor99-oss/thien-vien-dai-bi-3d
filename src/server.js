@@ -235,6 +235,7 @@ function getScheduledSutraInfo() {
     sutra: sutra,
     isRecitingNow: isRecitingNow,
     elapsedSeconds: elapsedSeconds,
+    elapsedSec: elapsedSeconds,
     scheduleTimeStr: '19:00:00 (Hàng Ngày - Giờ Việt Nam GMT+7)',
     currentVnTimeStr: `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`,
     scheduleList: WEEKLY_SUTRA_SCHEDULE
@@ -843,11 +844,10 @@ setInterval(() => {
   const vnDate = getVietnamDate();
   const hours = vnDate.getHours();
   const minutes = vnDate.getMinutes();
-  const seconds = vnDate.getSeconds();
   const day = vnDate.getDay();
 
-  // Vào đúng 19:00:00 (hoặc trong 3 giây đầu của 19:00)
-  if (hours === 19 && minutes === 0 && seconds <= 3 && lastBroadcastSutraDay !== day) {
+  // Khởi động chính xác vào khung giờ 19:00 hàng ngày (Giờ Việt Nam)
+  if (hours === 19 && minutes === 0 && lastBroadcastSutraDay !== day) {
     lastBroadcastSutraDay = day;
     const sutra = WEEKLY_SUTRA_SCHEDULE[day];
     console.log(`[KHÓA LỄ 19H] Khởi động khóa tụng kinh hôm nay (${sutra.dayName}): ${sutra.title}`);
@@ -860,9 +860,15 @@ setInterval(() => {
         dayOfWeek: day,
         dayName: sutra.dayName,
         elapsedSeconds: 0,
+        elapsedSec: 0,
         message: `🔔 ĐÃ ĐẾN 19:00 (GIỜ VIỆT NAM) - Đại chúng đồng quy khóa tụng ${sutra.title} 🙏 (+50 Công Đức)`
       });
     }
+  }
+
+  // Reset cờ phát sóng khi qua khỏi 19:00 để sẵn sàng cho ngày kế tiếp
+  if (hours !== 19 && lastBroadcastSutraDay === day) {
+    lastBroadcastSutraDay = -1;
   }
 }, 1000);
 

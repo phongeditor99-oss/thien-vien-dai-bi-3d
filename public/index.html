@@ -183,6 +183,23 @@
     .eq-playing .eq-bar:nth-child(4) { animation: eqBounce 1.2s infinite alternate ease-in-out 0.1s; }
     @keyframes eqBounce { 0% { height: 3px; } 100% { height: 16px; } }
 
+    
+    /* BẢO ĐẢM TOÀN BỘ MODAL LUÔN NẰM TRÊN CÙNG (Z-INDEX: 10000), KHÔNG BỊ BẤT KỲ GIAO DIỆN NÀO ĐÈ LÊN */
+    #sutraModal, #statueModal, #weeklyScheduleModal, #audioModal,
+    #mantraListModal, #robeModal, #divinationModal, #lanternModal,
+    #zenChatModal, #nameChangeModal, #controlsHelp {
+      z-index: 10000 !important;
+    }
+    #interactPrompt, #spatialActionPrompt {
+      z-index: 50 !important;
+    }
+    body.modal-open #interactPrompt,
+    body.modal-open #spatialActionPrompt,
+    body.modal-open #joystickZone {
+      display: none !important;
+      pointer-events: none !important;
+    }
+
     /* POPUP MODALS */
     #audioModal, #divinationModal, #robeModal, #mantraListModal, #sutraModal {
       position: absolute;
@@ -440,7 +457,7 @@
       user-select: none;
       -webkit-user-select: none;
       touch-action: manipulation;
-      z-index: 9999 !important;
+      z-index: 50 !important;
       box-shadow: 0 0 22px rgba(245, 207, 71, 0.65), 0 4px 14px rgba(0,0,0,0.85);
       transition: background 0.15s, box-shadow 0.2s;
     }
@@ -1839,7 +1856,7 @@
     scene.add(fireflySystem);
 
     const isMobileDevice = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || (window.innerWidth <= 768);
-    const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.1, 1000);
+    const camera = new THREE.PerspectiveCamera(52, window.innerWidth / window.innerHeight, 0.45, 1000);
     const renderer = new THREE.WebGLRenderer({
       antialias: true,
       powerPreference: 'high-performance',
@@ -2192,7 +2209,7 @@
       shininess: 52,         // Mịn màng thếp vàng, bề mặt căng mịn
       emissive: 0x523606,    // Kim quang tự phát ấm áp từ bi
       emissiveIntensity: 0.28,
-      side: THREE.DoubleSide,
+      side: THREE.FrontSide,       // FrontSide ngan ngua z-fighting
       transparent: false,    // Tuyệt đối không trong suốt
       opacity: 1.0,
       depthWrite: true,
@@ -4023,13 +4040,50 @@
 
     sutraSelectEl.onchange = (e) => loadSutra(parseInt(e.target.value, 10));
 
+    
+    // KIỂM TRA XEM CÓ BẤT KỲ MODAL NÀO ĐANG MỞ KHÔNG
+    function isAnyModalOpen() {
+      const modalIds = [
+        'sutraModal', 'statueModal', 'weeklyScheduleModal', 'audioModal',
+        'mantraListModal', 'robeModal', 'divinationModal', 'lanternModal',
+        'zenChatModal', 'nameChangeModal', 'controlsHelp'
+      ];
+      return modalIds.some(id => {
+        const el = document.getElementById(id);
+        if (!el) return false;
+        const disp = el.style.display;
+        return disp !== 'none' && disp !== '';
+      });
+    }
+
+    function syncModalBodyClass() {
+      if (isAnyModalOpen()) {
+        document.body.classList.add('modal-open');
+        const ip = document.getElementById('interactPrompt');
+        const sp = document.getElementById('spatialActionPrompt');
+        if (ip) ip.style.display = 'none';
+        if (sp) sp.style.display = 'none';
+      } else {
+        document.body.classList.remove('modal-open');
+      }
+    }
+
     function openSutraModal() {
+      setTimeout(syncModalBodyClass, 10);
       document.getElementById('sutraModal').style.display = 'flex';
       if (!sutraContentEl.innerHTML.trim()) loadSutra(0);
       if (!SoundEngine.isUnlocked) SoundEngine.unlockAndPlay();
+        if (pendingScheduledSutra) {
+          SoundEngine.playMantraTrack(pendingScheduledSutra.trackIdx);
+          if (pendingScheduledSutra.elapsedSec > 0 && audioElements.mantra) {
+            try { audioElements.mantra.currentTime = pendingScheduledSutra.elapsedSec; } catch (e) {}
+          }
+          pendingScheduledSutra = null;
+        }
     }
 
     function closeSutraModal() {
+      setTimeout(syncModalBodyClass, 10);
       document.getElementById('sutraModal').style.display = 'none';
       stopAutoScroll();
     }
@@ -4195,6 +4249,13 @@
         renderWeeklyScheduleModal();
         document.getElementById('weeklyScheduleModal').style.display = 'flex';
         if (!SoundEngine.isUnlocked) SoundEngine.unlockAndPlay();
+        if (pendingScheduledSutra) {
+          SoundEngine.playMantraTrack(pendingScheduledSutra.trackIdx);
+          if (pendingScheduledSutra.elapsedSec > 0 && audioElements.mantra) {
+            try { audioElements.mantra.currentTime = pendingScheduledSutra.elapsedSec; } catch (e) {}
+          }
+          pendingScheduledSutra = null;
+        }
       };
     }
     const btnCloseSchedule = document.getElementById('btnCloseSchedule');
@@ -4204,32 +4265,48 @@
       };
     }
 
-    // Xử lý Live Banner khi có khóa lễ 19h
+    let pendingScheduledSutra = null;
+
+    // Xử lý TỰ ĐỘNG PHÁT bài tụng khi đến 19h hoặc khi vào phòng đúng lúc đang tụng
     function handleScheduledSutraLive(sutra, elapsedSec = 0) {
+      if (!sutra) return;
       const banner = document.getElementById('scheduledSutraLiveBanner');
       const titleEl = document.getElementById('liveBannerSutraTitle');
-      if (!banner || !sutra) return;
       if (titleEl) titleEl.innerText = `${sutra.dayName}: ${sutra.title}`;
-      banner.style.display = 'flex';
+      if (banner) banner.style.display = 'flex';
+
+      // Tìm track index tương ứng trong danh sách
+      const trackIdx = MANTRA_PLAYLIST.findIndex(t => t.url === sutra.url || (t.title && t.title.toLowerCase().includes(sutra.title.toLowerCase())));
+      if (trackIdx !== -1) {
+        if (SoundEngine.isUnlocked) {
+          SoundEngine.playMantraTrack(trackIdx);
+          if (elapsedSec > 0 && audioElements.mantra) {
+            try { audioElements.mantra.currentTime = elapsedSec; } catch (e) {}
+          }
+          showFloatMerit(`🔔 Khóa lễ 19h tự động phát: ${sutra.title}`, window.innerWidth / 2, window.innerHeight / 2);
+        } else {
+          // Nếu người chơi chưa bấm mở khóa (vừa vào web), lưu lại để phát ngay khi bấm Vào Chùa
+          pendingScheduledSutra = { trackIdx: trackIdx, elapsedSec: elapsedSec, sutra: sutra };
+        }
+      }
 
       const btnJoin = document.getElementById('btnJoinLiveRecite');
       if (btnJoin) {
         btnJoin.onclick = () => {
-          // Tìm track index tương ứng
-          const trackIdx = MANTRA_PLAYLIST.findIndex(t => t.url === sutra.url);
-          if (trackIdx !== -1) {
+          if (trackIdx !== -1 && SoundEngine.isUnlocked) {
             SoundEngine.playMantraTrack(trackIdx);
             if (elapsedSec > 0 && audioElements.mantra) {
               try { audioElements.mantra.currentTime = elapsedSec; } catch (e) {}
             }
           }
-          banner.style.display = 'none';
-          showFloatMerit(`🙏 Đồng tu đã hòa nhập Khóa Lễ 19h: ${sutra.title}`, window.innerWidth / 2, window.innerHeight / 2);
+          if (banner) banner.style.display = 'none';
+          // Mở luôn toàn văn kinh cho đồng tu đọc theo
+          openSutraModal();
         };
       }
       const btnCloseBanner = document.getElementById('btnCloseLiveBanner');
       if (btnCloseBanner) {
-        btnCloseBanner.onclick = () => { banner.style.display = 'none'; };
+        btnCloseBanner.onclick = () => { if (banner) banner.style.display = 'none'; };
       }
     }
 
@@ -4256,6 +4333,13 @@
         if (gardenSlider) gardenSlider.value = 60;
         if (sfxSlider) sfxSlider.value = 85;
         if (!SoundEngine.isUnlocked) SoundEngine.unlockAndPlay();
+        if (pendingScheduledSutra) {
+          SoundEngine.playMantraTrack(pendingScheduledSutra.trackIdx);
+          if (pendingScheduledSutra.elapsedSec > 0 && audioElements.mantra) {
+            try { audioElements.mantra.currentTime = pendingScheduledSutra.elapsedSec; } catch (e) {}
+          }
+          pendingScheduledSutra = null;
+        }
         showFloatMerit('🔊 Đã khôi phục mức âm thanh chuẩn', window.innerWidth / 2, window.innerHeight / 2);
       };
     }
@@ -4680,6 +4764,13 @@
 
       keys[e.key.toLowerCase()] = true;
       if (!SoundEngine.isUnlocked) SoundEngine.unlockAndPlay();
+        if (pendingScheduledSutra) {
+          SoundEngine.playMantraTrack(pendingScheduledSutra.trackIdx);
+          if (pendingScheduledSutra.elapsedSec > 0 && audioElements.mantra) {
+            try { audioElements.mantra.currentTime = pendingScheduledSutra.elapsedSec; } catch (e) {}
+          }
+          pendingScheduledSutra = null;
+        }
 
       if (e.key.toLowerCase() === 'e') {
         if (isSitting) {
@@ -4708,6 +4799,13 @@
       prevMouseX = e.clientX;
       prevMouseY = e.clientY;
       if (!SoundEngine.isUnlocked) SoundEngine.unlockAndPlay();
+        if (pendingScheduledSutra) {
+          SoundEngine.playMantraTrack(pendingScheduledSutra.trackIdx);
+          if (pendingScheduledSutra.elapsedSec > 0 && audioElements.mantra) {
+            try { audioElements.mantra.currentTime = pendingScheduledSutra.elapsedSec; } catch (e) {}
+          }
+          pendingScheduledSutra = null;
+        }
     });
     window.addEventListener('mouseup', () => { isMouseDown = false; });
     window.addEventListener('mousemove', e => {
@@ -4735,6 +4833,13 @@
     window.addEventListener('touchstart', e => {
       if (e.target.closest('.zen-dock, .top-bar, #mantraPlayer, .unlock-card, #audioModal, #robeModal, #mantraListModal, #divinationModal, #sutraModal, #statueModal, #controlsHelp, #lanternModal, #zenChatModal, #joystickZone, #interactPrompt, #spatialActionPrompt')) return;
       if (!SoundEngine.isUnlocked) SoundEngine.unlockAndPlay();
+        if (pendingScheduledSutra) {
+          SoundEngine.playMantraTrack(pendingScheduledSutra.trackIdx);
+          if (pendingScheduledSutra.elapsedSec > 0 && audioElements.mantra) {
+            try { audioElements.mantra.currentTime = pendingScheduledSutra.elapsedSec; } catch (e) {}
+          }
+          pendingScheduledSutra = null;
+        }
 
       if (e.touches.length === 1 && !isTouchingJoystick) {
         isTouchingCamera = true;
@@ -4801,6 +4906,13 @@
       touchStartX = rect.left + rect.width / 2;
       touchStartY = rect.top + rect.height / 2;
       if (!SoundEngine.isUnlocked) SoundEngine.unlockAndPlay();
+        if (pendingScheduledSutra) {
+          SoundEngine.playMantraTrack(pendingScheduledSutra.trackIdx);
+          if (pendingScheduledSutra.elapsedSec > 0 && audioElements.mantra) {
+            try { audioElements.mantra.currentTime = pendingScheduledSutra.elapsedSec; } catch (e) {}
+          }
+          pendingScheduledSutra = null;
+        }
     });
     joystickZone.addEventListener('touchmove', e => {
       if (!isTouchingJoystick) return;
@@ -4910,10 +5022,18 @@
     }
 
     function openStatueModal(statue) {
+      setTimeout(syncModalBodyClass, 10);
       const target = statue || SACRED_STATUES[0];
       updateStatueModalContent(target);
       document.getElementById('statueModal').style.display = 'flex';
       if (!SoundEngine.isUnlocked) SoundEngine.unlockAndPlay();
+        if (pendingScheduledSutra) {
+          SoundEngine.playMantraTrack(pendingScheduledSutra.trackIdx);
+          if (pendingScheduledSutra.elapsedSec > 0 && audioElements.mantra) {
+            try { audioElements.mantra.currentTime = pendingScheduledSutra.elapsedSec; } catch (e) {}
+          }
+          pendingScheduledSutra = null;
+        }
     }
 
     // Tab buttons event
@@ -4948,6 +5068,7 @@
     }
 
     function closeStatueModal() {
+      setTimeout(syncModalBodyClass, 10);
       document.getElementById('statueModal').style.display = 'none';
     }
 
@@ -5161,7 +5282,8 @@
 
             // Kiểm tra khóa lễ 19h đang diễn ra khi vừa vào phòng
             if (data.roomState && data.roomState.scheduledSutra && data.roomState.scheduledSutra.isRecitingNow) {
-              handleScheduledSutraLive(data.roomState.scheduledSutra.sutra, data.roomState.scheduledSutra.elapsedSec);
+              const sec = data.roomState.scheduledSutra.elapsedSeconds || data.roomState.scheduledSutra.elapsedSec || 0;
+              handleScheduledSutraLive(data.roomState.scheduledSutra.sutra, sec);
             }
 
             // Đồng bộ toàn bộ người chơi đang có trong phòng
@@ -5387,7 +5509,8 @@
 
           case 'SCHEDULED_SUTRA_START': {
             if (data.sutra) {
-              handleScheduledSutraLive(data.sutra, data.elapsedSec || 0);
+              const sec = data.elapsedSeconds || data.elapsedSec || 0;
+              handleScheduledSutraLive(data.sutra, sec);
               addFeed(`🔔 Khóa lễ 19h bắt đầu: ${data.sutra.title}`);
             }
             break;
@@ -5536,6 +5659,13 @@
         changeMyNickname(chosen);
         addFeed(`🏷️ Chào mừng ${myNickname} bước vào An Lạc Điện 🙏`);
         SoundEngine.unlockAndPlay();
+        if (pendingScheduledSutra) {
+          SoundEngine.playMantraTrack(pendingScheduledSutra.trackIdx);
+          if (pendingScheduledSutra.elapsedSec > 0 && audioElements.mantra) {
+            try { audioElements.mantra.currentTime = pendingScheduledSutra.elapsedSec; } catch (e) {}
+          }
+          pendingScheduledSutra = null;
+        }
       };
     }
 
@@ -6005,52 +6135,65 @@
       const distToPond = Math.hypot(localPlayerObj.position.x, localPlayerObj.position.z - 42);
 
       const interactPrompt = document.getElementById('interactPrompt');
-      if (closestStatue !== null && !isSitting) {
-        nearbyStatue = closestStatue;
-        nearbySeatId = null;
-        interactPrompt.style.display = 'block';
-        interactPrompt.innerText = `Chạm hoặc Bấm [E]: Chiêm Bái ${closestStatue.name}`;
-      } else if (minSeatDist < 1.7 && !isSitting) {
-        nearbySeatId = closestSeat;
-        nearbyStatue = null;
-        interactPrompt.style.display = 'block';
-        interactPrompt.innerText = `Chạm hoặc Bấm [E]: Tọa Thiền Bồ Đoàn (#${nearbySeatId + 1})`;
-      } else if (distToPond < 13.5 && !isSitting) {
-        nearbyStatue = null;
-        nearbySeatId = null;
-        interactPrompt.style.display = 'block';
-        interactPrompt.innerText = 'Chạm hoặc Bấm [H]: Thả Đèn Hoa Đăng Cầu Nguyện 🏮';
-      } else if (isSitting) {
-        nearbyStatue = null;
-        interactPrompt.style.display = 'block';
-        interactPrompt.innerText = 'Chạm hoặc Bấm [E]: Đứng Dậy Xả Thiền 🙏';
-      } else {
-        nearbySeatId = null;
-        nearbyStatue = null;
-        interactPrompt.style.display = 'none';
-      }
-
-      // KIỂM TRA ĐẠI HỒNG CHUNG & LƯ HƯƠNG GẦN NHẤT
-      const distToBell = Math.hypot(13.5 - localPlayerObj.position.x, -11 - localPlayerObj.position.z);
-      const distToIncense = Math.hypot(0 - localPlayerObj.position.x, -12.4 - localPlayerObj.position.z);
-      const distToFish = Math.hypot(-13.5 - localPlayerObj.position.x, -11 - localPlayerObj.position.z);
       const actionPrompt = document.getElementById('spatialActionPrompt');
 
-      if (distToBell < 3.2) {
-        nearbySpatialTarget = 'bell';
-        actionPrompt.style.display = 'block';
-        actionPrompt.innerText = 'Chạm hoặc Bấm [F]: Thỉnh Đại Hồng Chung 🔔';
-      } else if (distToIncense < 3.2) {
-        nearbySpatialTarget = 'incense';
-        actionPrompt.style.display = 'block';
-        actionPrompt.innerText = 'Chạm hoặc Bấm [F]: Dâng Hương Tam Bảo 🪔';
-      } else if (distToFish < 3.2) {
-        nearbySpatialTarget = 'fish';
-        actionPrompt.style.display = 'block';
-        actionPrompt.innerText = 'Chạm hoặc Bấm [F]: Gõ Đại Mõ Gia Trì 🐟';
-      } else {
+      // NẾU CÓ BẤT KỲ BẢNG KINH, TƯỢNG PHẬT, THỜI KHÓA HOẶC MODAL NÀO ĐANG MỞ -> ẨN TOÀN BỘ NÚT TƯƠNG TÁC
+      if (isAnyModalOpen()) {
+        document.body.classList.add('modal-open');
+        if (interactPrompt) interactPrompt.style.display = 'none';
+        if (actionPrompt) actionPrompt.style.display = 'none';
+        nearbySeatId = null;
+        nearbyStatue = null;
         nearbySpatialTarget = null;
-        actionPrompt.style.display = 'none';
+      } else {
+        document.body.classList.remove('modal-open');
+
+        if (closestStatue !== null && !isSitting) {
+          nearbyStatue = closestStatue;
+          nearbySeatId = null;
+          interactPrompt.style.display = 'block';
+          interactPrompt.innerText = `Chạm hoặc Bấm [E]: Chiêm Bái ${closestStatue.name}`;
+        } else if (minSeatDist < 1.7 && !isSitting) {
+          nearbySeatId = closestSeat;
+          nearbyStatue = null;
+          interactPrompt.style.display = 'block';
+          interactPrompt.innerText = `Chạm hoặc Bấm [E]: Tọa Thiền Bồ Đoàn (#${nearbySeatId + 1})`;
+        } else if (distToPond < 13.5 && !isSitting) {
+          nearbyStatue = null;
+          nearbySeatId = null;
+          interactPrompt.style.display = 'block';
+          interactPrompt.innerText = 'Chạm hoặc Bấm [H]: Thả Đèn Hoa Đăng Cầu Nguyện 🏮';
+        } else if (isSitting) {
+          nearbyStatue = null;
+          interactPrompt.style.display = 'block';
+          interactPrompt.innerText = 'Chạm hoặc Bấm [E]: Đứng Dậy Xả Thiền 🙏';
+        } else {
+          nearbySeatId = null;
+          nearbyStatue = null;
+          interactPrompt.style.display = 'none';
+        }
+
+        // KIỂM TRA ĐẠI HỒNG CHUNG & LƯ HƯƠNG GẦN NHẤT
+        const distToBell = Math.hypot(13.5 - localPlayerObj.position.x, -11 - localPlayerObj.position.z);
+        const distToIncense = Math.hypot(0 - localPlayerObj.position.x, -12.4 - localPlayerObj.position.z);
+        const distToFish = Math.hypot(-13.5 - localPlayerObj.position.x, -11 - localPlayerObj.position.z);
+
+        if (distToBell < 3.2) {
+          nearbySpatialTarget = 'bell';
+          actionPrompt.style.display = 'block';
+          actionPrompt.innerText = 'Chạm hoặc Bấm [F]: Thỉnh Đại Hồng Chung 🔔';
+        } else if (distToIncense < 3.2) {
+          nearbySpatialTarget = 'incense';
+          actionPrompt.style.display = 'block';
+          actionPrompt.innerText = 'Chạm hoặc Bấm [F]: Dâng Hương Tam Bảo 🪔';
+        } else if (distToFish < 3.2) {
+          nearbySpatialTarget = 'fish';
+          actionPrompt.style.display = 'block';
+          actionPrompt.innerText = 'Chạm hoặc Bấm [F]: Gõ Đại Mõ Gia Trì 🐟';
+        } else {
+          nearbySpatialTarget = null;
+          actionPrompt.style.display = 'none';
+        }
       }
 
       // CAMERA QUAY 360° QUANH CHÚ TIỂU (CHUẨN 3RD PERSON & ZOOM)
