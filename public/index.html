@@ -1974,14 +1974,14 @@
     lotusBaseLight.position.set(0, 2.6, -14.0);
     scene.add(lotusBaseLight);
 
-    // CHẤT LIỆU HOÀNG KIM THẾP VÀNG 24K CHO PHO TƯỢNG (MỊN MÀNG, KHÔNG NHIỄU HẠT)
+    // CHẤT LIỆU HOÀNG KIM THẾP VÀNG 24K CHO PHO TƯỢNG (MỊN MÀNG, KHÔNG NHIỄU HẠT, ĐỦ 2 MẶT KHÔNG BỊ XUYÊN THẤU)
     const goldStatueMat = new THREE.MeshStandardMaterial({
       color: 0xf3ca4c,      // Sắc vàng hoàng kim 24K ấm áp
       roughness: 0.38,      // Mịn màng thếp vàng, satin sheen nhẹ nhàng
       metalness: 0.28,      // Phản xạ kim loại trang nhã, triệt tiêu đốm đen/nhiễu hạt
       emissive: 0x5a3c08,   // Tự phát kim quang ấm áp từ bi
       emissiveIntensity: 0.20,
-      side: THREE.FrontSide
+      side: THREE.DoubleSide
     });
 
     let buddhaCustomMesh = null;
@@ -2178,14 +2178,14 @@
     qaHalo.position.set(0, 5.2, 2.5);
     shrineQuanAm.add(qaHalo);
 
-    // Đèn rọi kim quang rực rỡ tôn tượng Quán Âm
-    const qaSpot = new THREE.SpotLight(0xfffae0, 5.5, 40, Math.PI / 3.4, 0.45, 1.0);
+    // Đèn rọi kim quang rực rỡ tôn tượng Quán Âm (dịu dàng trang nghiêm)
+    const qaSpot = new THREE.SpotLight(0xfffae0, 2.2, 36, Math.PI / 3.4, 0.45, 0.8);
     qaSpot.position.set(0, 11.5, 46.0);
     qaSpot.target.position.set(0, 4.0, 54.0);
     scene.add(qaSpot);
     scene.add(qaSpot.target);
 
-    const qaAura = new THREE.PointLight(0xffd53d, 4.0, 18);
+    const qaAura = new THREE.PointLight(0xffd53d, 1.8, 16);
     qaAura.position.set(0, 2.8, 52.5);
     scene.add(qaAura);
 
@@ -2254,14 +2254,14 @@
     recBurner.position.set(-3.6, 1.05, 0);
     shrineReclining.add(recBurner);
 
-    // Đèn rọi vàng kim chiếu sáng kim thân Phật Nằm
-    const recSpot = new THREE.SpotLight(0xfffae0, 5.5, 38, Math.PI / 3.2, 0.45, 1.0);
+    // Đèn rọi vàng kim chiếu sáng kim thân Phật Nằm (dịu dàng trang nghiêm)
+    const recSpot = new THREE.SpotLight(0xfffae0, 2.2, 34, Math.PI / 3.2, 0.45, 0.8);
     recSpot.position.set(10.5, 8.5, 40.0);
     recSpot.target.position.set(16.0, 2.5, 40.0);
     scene.add(recSpot);
     scene.add(recSpot.target);
 
-    const recAura = new THREE.PointLight(0xffd53d, 4.0, 18);
+    const recAura = new THREE.PointLight(0xffd53d, 1.8, 16);
     recAura.position.set(16.0, 3.2, 40.0);
     scene.add(recAura);
 
@@ -2332,14 +2332,14 @@
     standHalo.position.set(-1.8, 5.0, 0);
     shrineStanding.add(standHalo);
 
-    // Đèn rọi kim quang tiếp dẫn
-    const standSpot = new THREE.SpotLight(0xfffae0, 5.5, 38, Math.PI / 3.4, 0.45, 1.0);
+    // Đèn rọi kim quang tiếp dẫn (dịu dàng trang nghiêm)
+    const standSpot = new THREE.SpotLight(0xfffae0, 2.2, 34, Math.PI / 3.4, 0.45, 0.8);
     standSpot.position.set(-10.5, 9.5, 40.0);
     standSpot.target.position.set(-16.0, 3.5, 40.0);
     scene.add(standSpot);
     scene.add(standSpot.target);
 
-    const standAura = new THREE.PointLight(0xffd53d, 4.0, 18);
+    const standAura = new THREE.PointLight(0xffd53d, 1.8, 16);
     standAura.position.set(-16.0, 2.5, 40.0);
     scene.add(standAura);
 
