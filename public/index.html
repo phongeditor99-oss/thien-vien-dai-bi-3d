@@ -2187,11 +2187,16 @@
 
     // CHẤT LIỆU HOÀNG KIM THẾP VÀNG 24K CHO PHO TƯỢNG (MỊN MÀNG, KHÔNG NHIỄU HẠT, ĐỦ 2 MẶT KHÔNG BỊ XUYÊN THẤU)
     const goldStatueMat = new THREE.MeshPhongMaterial({
-      color: 0xf6d155,       // Sắc vàng hoàng kim 24K rực rỡ ấm áp
-      specular: 0xffea85,    // Phản chiếu ánh kim lấp lánh sang trọng
-      shininess: 48,         // Mịn màng thếp vàng, triệt tiêu 100% nhiễu hạt và lấm tấm
-      emissive: 0x4a2e05,    // Tự phát kim quang ấm áp từ bi
+      color: 0xf5cf42,       // Hoàng kim 24K dát vàng sáng rực
+      specular: 0xfff0a0,    // Ánh kim bóng sáng trang nghiêm
+      shininess: 52,         // Mịn màng thếp vàng, bề mặt căng mịn
+      emissive: 0x523606,    // Kim quang tự phát ấm áp từ bi
+      emissiveIntensity: 0.28,
       side: THREE.DoubleSide,
+      transparent: false,    // Tuyệt đối không trong suốt
+      opacity: 1.0,
+      depthWrite: true,
+      depthTest: true,
       flatShading: false
     });
 
@@ -2204,9 +2209,14 @@
         buddhaCustomMesh.traverse((child) => {
           if (child.isMesh) {
             if (child.geometry) child.geometry.computeVertexNormals();
-            child.material = goldStatueMat;
-            child.castShadow = true;
-            child.receiveShadow = false; // Tránh tự đổ bóng đen lên chính kim thân
+            child.material = goldStatueMat.clone();
+            child.material.transparent = false;
+            child.material.opacity = 1.0;
+            child.material.depthWrite = true;
+            child.material.depthTest = true;
+            child.renderOrder = 2;
+            child.castShadow = false;
+            child.receiveShadow = false;
           }
         });
 
@@ -2410,8 +2420,13 @@
         mesh.traverse((child) => {
           if (child.isMesh) {
             if (child.geometry) child.geometry.computeVertexNormals();
-            child.material = goldStatueMat;
-            child.castShadow = true;
+            child.material = goldStatueMat.clone();
+            child.material.transparent = false;
+            child.material.opacity = 1.0;
+            child.material.depthWrite = true;
+            child.material.depthTest = true;
+            child.renderOrder = 2;
+            child.castShadow = false;
             child.receiveShadow = false;
           }
         });
@@ -2486,8 +2501,13 @@
         mesh.traverse((child) => {
           if (child.isMesh) {
             if (child.geometry) child.geometry.computeVertexNormals();
-            child.material = goldStatueMat;
-            child.castShadow = true;
+            child.material = goldStatueMat.clone();
+            child.material.transparent = false;
+            child.material.opacity = 1.0;
+            child.material.depthWrite = true;
+            child.material.depthTest = true;
+            child.renderOrder = 2;
+            child.castShadow = false;
             child.receiveShadow = false;
           }
         });
@@ -2564,8 +2584,13 @@
         mesh.traverse((child) => {
           if (child.isMesh) {
             if (child.geometry) child.geometry.computeVertexNormals();
-            child.material = goldStatueMat;
-            child.castShadow = true;
+            child.material = goldStatueMat.clone();
+            child.material.transparent = false;
+            child.material.opacity = 1.0;
+            child.material.depthWrite = true;
+            child.material.depthTest = true;
+            child.renderOrder = 2;
+            child.castShadow = false;
             child.receiveShadow = false;
           }
         });
@@ -5247,7 +5272,7 @@
           }
 
           case 'SOUND_WOODEN_FISH': {
-            playSpatialSound('fish', data.x, data.z);
+            // Chỉ người gõ tự nghe âm thanh mõ của mình, không phát sang loa người khác để giữ không gian thanh tịnh
             if (data.playerId === myPlayerId) {
               myMerits = data.merits;
               document.getElementById('myMerits').innerText = myMerits;
@@ -5260,9 +5285,9 @@
           }
 
           case 'SOUND_BELL': {
-            playSpatialSound('bell', data.x, data.z);
+            // Chỉ người thỉnh chuông tự nghe âm thanh, người khác chỉ thấy sóng hào quang lan tỏa
             shockwaveScale = 1.0;
-            shockwaveRing.material.opacity = 0.9;
+            shockwaveRing.material.opacity = 0.85;
             if (data.playerId === myPlayerId) {
               myMerits = data.merits;
               document.getElementById('myMerits').innerText = myMerits;
@@ -5275,13 +5300,12 @@
           }
 
           case 'SOUND_BOWL': {
-            playSpatialSound('bowl', data.x, data.z);
+            // Chuông Bát / Chuông Xoay chỉ phát trên tai người thỉnh
             if (data.playerId === myPlayerId) {
               myMerits = data.merits;
               document.getElementById('myMerits').innerText = myMerits;
               localPlayerObj.updateNametag(myNickname, myMerits);
             } else {
-              addFeed(`🥣 ${data.nickname} vừa thỉnh Chuông Bát`);
               const mesh = remoteMonkMeshes.get(data.playerId);
               if (mesh && typeof data.merits === 'number') mesh.updateNametag(data.nickname, data.merits);
             }
