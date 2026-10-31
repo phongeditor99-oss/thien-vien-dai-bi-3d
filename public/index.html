@@ -427,18 +427,26 @@
     #interactPrompt, #spatialActionPrompt {
       position: absolute;
       bottom: 140px; left: 50%; transform: translateX(-50%);
-      background: rgba(16, 10, 6, 0.92);
-      border: 1.5px solid var(--gold);
+      background: rgba(26, 14, 8, 0.94);
+      border: 1.8px solid var(--gold);
       border-radius: 24px;
-      padding: 9px 24px;
+      padding: 10px 24px;
       color: #ffd700;
       font-weight: bold;
       font-size: 0.92rem;
       display: none;
-      pointer-events: none;
-      z-index: 10;
-      box-shadow: 0 0 20px rgba(245, 207, 71, 0.4);
+      pointer-events: auto !important;
+      cursor: pointer;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: manipulation;
+      z-index: 100 !important;
+      box-shadow: 0 0 22px rgba(245, 207, 71, 0.55), 0 4px 12px rgba(0,0,0,0.8);
       animation: bouncePrompt 1.6s infinite alternate;
+    }
+    #interactPrompt:active, #spatialActionPrompt:active {
+      transform: translateX(-50%) scale(0.96);
+      background: rgba(60, 32, 16, 0.98);
     }
     @keyframes bouncePrompt {
       0% { transform: translateX(-50%) translateY(0); }
@@ -539,15 +547,18 @@
         z-index: 15;
       }
       #interactPrompt, #spatialActionPrompt {
-        bottom: 200px !important;
+        bottom: 175px !important;
         left: 50% !important;
         transform: translateX(-50%) !important;
-        font-size: 0.78rem !important;
-        padding: 6px 14px !important;
-        white-space: nowrap !important;
-        max-width: 85vw !important;
+        font-size: 0.84rem !important;
+        padding: 9px 18px !important;
+        white-space: normal !important;
+        max-width: 90vw !important;
         text-align: center !important;
-        box-shadow: 0 0 15px rgba(245, 207, 71, 0.4) !important;
+        pointer-events: auto !important;
+        cursor: pointer !important;
+        z-index: 100 !important;
+        box-shadow: 0 0 22px rgba(245, 207, 71, 0.65) !important;
       }
       .track-title {
         flex: 1;
@@ -1062,8 +1073,8 @@
   </div>
 
   <!-- INTERACTION PROMPTS -->
-  <div id="interactPrompt" onclick="if(isSitting){toggleSitNearbyCushion();}else if(nearbyStatue!==null){openStatueModal(nearbyStatue);}else if(nearbySeatId!==null){toggleSitNearbyCushion();}else{openLanternModal();}">Bấm [E] hoặc Chạm để Tọa Thiền</div>
-  <div id="spatialActionPrompt">Bấm [F] Thỉnh Đại Hồng Chung</div>
+  <div id="interactPrompt" role="button" tabindex="0" title="Chạm để tương tác">Chạm hoặc Bấm [E]: Tọa Thiền</div>
+  <div id="spatialActionPrompt" role="button" tabindex="0" title="Chạm để thực hiện">Chạm hoặc Bấm [F]: Thỉnh Đại Hồng Chung 🔔</div>
 
   <!-- POPUP NIỆM PHẬT & TRÒ CHUYỆN (BONG BÓNG CHAT 3D ĐỒNG BỘ) -->
   <div id="zenChatModal">
@@ -1330,11 +1341,14 @@
         isMantraPlaying = true;
 
         audioElements.mantra.src = track.url;
-        // Phần nghe thần chú là RIÊNG BIỆT cho từng người nghe tùy thích
-        audioElements.mantra.volume = userMantraVolume;
-        audioElements.mantra.play().catch(e => {
-          console.log('Mantra auto-play waiting for user interaction:', e);
-        });
+        const isMuted = userMantraVolume <= 0.01;
+        audioElements.mantra.muted = isMuted;
+        if (!isMuted) {
+          audioElements.mantra.volume = userMantraVolume;
+          audioElements.mantra.play().catch(e => {
+            console.log('Mantra auto-play waiting for user interaction:', e);
+          });
+        }
 
         addFeed('🪔 Đang trì tụng: ' + track.title);
       },
@@ -1350,32 +1364,48 @@
           document.getElementById('btnPlayMantra').innerText = '▶';
           document.getElementById('eqVisualizer').classList.remove('eq-playing');
         } else {
-          audioElements.mantra.volume = userMantraVolume;
-          audioElements.mantra.play();
           isMantraPlaying = true;
+          const isMuted = userMantraVolume <= 0.01;
+          audioElements.mantra.muted = isMuted;
+          if (!isMuted) {
+            audioElements.mantra.volume = userMantraVolume;
+            audioElements.mantra.play().catch(() => {});
+          }
           document.getElementById('btnPlayMantra').innerText = '⏸';
           document.getElementById('eqVisualizer').classList.add('eq-playing');
         }
       },
 
       playWoodenFish(customVol) {
+        if (userSfxVolume <= 0.01) return;
         this.muyuToggle = !this.muyuToggle;
         const el = this.muyuToggle ? audioElements.muyu : audioElements.muyuDeep;
-        el.volume = typeof customVol === 'number' ? customVol : userSfxVolume;
-        el.currentTime = 0;
-        el.play().catch(() => {});
+        if (el) {
+          el.muted = false;
+          el.volume = typeof customVol === 'number' ? customVol : userSfxVolume;
+          el.currentTime = 0;
+          el.play().catch(() => {});
+        }
       },
 
       playSingingBowl(customVol) {
-        audioElements.singingBowl.volume = typeof customVol === 'number' ? customVol : userSfxVolume;
-        audioElements.singingBowl.currentTime = 0;
-        audioElements.singingBowl.play().catch(() => {});
+        if (userSfxVolume <= 0.01) return;
+        if (audioElements.singingBowl) {
+          audioElements.singingBowl.muted = false;
+          audioElements.singingBowl.volume = typeof customVol === 'number' ? customVol : userSfxVolume;
+          audioElements.singingBowl.currentTime = 0;
+          audioElements.singingBowl.play().catch(() => {});
+        }
       },
 
       playBell(customVol) {
-        audioElements.bell.volume = typeof customVol === 'number' ? customVol : userSfxVolume;
-        audioElements.bell.currentTime = 0;
-        audioElements.bell.play().catch(() => {});
+        if (userSfxVolume <= 0.01) return;
+        if (audioElements.bell) {
+          audioElements.bell.muted = false;
+          audioElements.bell.volume = typeof customVol === 'number' ? customVol : userSfxVolume;
+          audioElements.bell.currentTime = 0;
+          audioElements.bell.play().catch(() => {});
+        }
       },
 
       playBead() {
@@ -1389,14 +1419,44 @@
         gardenFactor = Math.max(0, Math.min(1, gardenFactor));
 
         // Nhạc thần chú cá nhân độc lập với không gian
-        audioElements.mantra.volume = isMantraPlaying ? userMantraVolume : 0;
+        if (audioElements.mantra) {
+          const isMantraMuted = (userMantraVolume <= 0.01) || !isMantraPlaying;
+          audioElements.mantra.muted = isMantraMuted;
+          if (isMantraMuted) {
+            if (userMantraVolume <= 0.01 && !audioElements.mantra.paused) {
+              audioElements.mantra.pause();
+            }
+          } else {
+            audioElements.mantra.volume = userMantraVolume;
+            if (isMantraPlaying && audioElements.mantra.paused && SoundEngine.isUnlocked) {
+              audioElements.mantra.play().catch(() => {});
+            }
+          }
+        }
 
-        // Âm thanh chung sảnh chùa & sân thiền hòa quyện mượt mà liên tục
+        // Âm thanh môi trường: Sảnh Chùa & Sân Thiền
+        const isGardenMuted = userGardenVolume <= 0.01;
         if (audioElements.hall) {
-          audioElements.hall.volume = (1 - gardenFactor * 0.8) * userGardenVolume * 0.75;
+          audioElements.hall.muted = isGardenMuted;
+          if (isGardenMuted) {
+            if (!audioElements.hall.paused) audioElements.hall.pause();
+          } else {
+            audioElements.hall.volume = (1 - gardenFactor * 0.8) * userGardenVolume * 0.75;
+            if (audioElements.hall.paused && SoundEngine.isUnlocked) {
+              audioElements.hall.play().catch(() => {});
+            }
+          }
         }
         if (audioElements.garden) {
-          audioElements.garden.volume = gardenFactor * userGardenVolume;
+          audioElements.garden.muted = isGardenMuted;
+          if (isGardenMuted) {
+            if (!audioElements.garden.paused) audioElements.garden.pause();
+          } else {
+            audioElements.garden.volume = gardenFactor * userGardenVolume;
+            if (audioElements.garden.paused && SoundEngine.isUnlocked) {
+              audioElements.garden.play().catch(() => {});
+            }
+          }
         }
 
         const isNowGarden = gardenFactor > 0.5;
@@ -1899,28 +1959,29 @@
     buddhaGroup.add(haloPlane);
     scene.add(buddhaGroup);
 
-    // HỆ THỐNG ÁNH SÁNG CHIẾU TÔN TƯỢNG (ĐẢM BẢO HOÀNG KIM 24K BỪNG SÁNG)
-    const buddhaFrontSpot = new THREE.SpotLight(0xfff3a8, 5.2, 38, Math.PI / 3.2, 0.42, 0.8);
-    buddhaFrontSpot.position.set(0, 9.2, -6.5);
-    buddhaFrontSpot.target.position.set(0, 5.0, -15.0);
+    // HỆ THỐNG ÁNH SÁNG CHIẾU TÔN TƯỢNG (ĐẢM BẢO HOÀNG KIM 24K BỪNG SÁNG TRANG NGHIÊM DỊU DÀNG)
+    const buddhaFrontSpot = new THREE.SpotLight(0xfff5c0, 2.8, 32, Math.PI / 3.0, 0.45, 0.7);
+    buddhaFrontSpot.position.set(0, 8.5, -7.0);
+    buddhaFrontSpot.target.position.set(0, 4.5, -15.0);
     scene.add(buddhaFrontSpot);
     scene.add(buddhaFrontSpot.target);
 
-    const altarAuraLight = new THREE.PointLight(0xffdd44, 3.5, 22);
-    altarAuraLight.position.set(0, 5.0, -12.0);
+    const altarAuraLight = new THREE.PointLight(0xffdf66, 1.8, 18);
+    altarAuraLight.position.set(0, 4.5, -12.5);
     scene.add(altarAuraLight);
 
-    const lotusBaseLight = new THREE.PointLight(0xffaa20, 2.5, 12);
-    lotusBaseLight.position.set(0, 2.8, -13.8);
+    const lotusBaseLight = new THREE.PointLight(0xffb844, 1.4, 10);
+    lotusBaseLight.position.set(0, 2.6, -14.0);
     scene.add(lotusBaseLight);
 
-    // CHẤT LIỆU HOÀNG KIM THẾP VÀNG 24K CHO PHO TƯỢNG
+    // CHẤT LIỆU HOÀNG KIM THẾP VÀNG 24K CHO PHO TƯỢNG (MỊN MÀNG, KHÔNG NHIỄU HẠT)
     const goldStatueMat = new THREE.MeshStandardMaterial({
-      color: 0xffd53d,      // Sắc vàng hoàng kim 24K
-      roughness: 0.28,      // Mịn màng thếp vàng
-      metalness: 0.35,      // Phản xạ kim loại vừa phải
-      emissive: 0x5a3e08,   // Tự phát kim quang ấm áp từ bên trong
-      side: THREE.DoubleSide
+      color: 0xf3ca4c,      // Sắc vàng hoàng kim 24K ấm áp
+      roughness: 0.38,      // Mịn màng thếp vàng, satin sheen nhẹ nhàng
+      metalness: 0.28,      // Phản xạ kim loại trang nhã, triệt tiêu đốm đen/nhiễu hạt
+      emissive: 0x5a3c08,   // Tự phát kim quang ấm áp từ bi
+      emissiveIntensity: 0.20,
+      side: THREE.FrontSide
     });
 
     let buddhaCustomMesh = null;
@@ -3835,20 +3896,83 @@
     if (btnAudioDone) btnAudioDone.onclick = () => {
       document.getElementById('audioModal').style.display = 'none';
     };
-    document.getElementById('mantraVolume').oninput = (e) => {
-      userMantraVolume = e.target.value / 100;
-      document.getElementById('mantraVolVal').innerText = e.target.value + '%';
-      if (!isInGardenZone) audioElements.mantra.volume = userMantraVolume;
-    };
-    document.getElementById('gardenVolume').oninput = (e) => {
-      userGardenVolume = e.target.value / 100;
-      document.getElementById('gardenVolVal').innerText = e.target.value + '%';
-      if (isInGardenZone) audioElements.garden.volume = userGardenVolume;
-    };
-    document.getElementById('sfxVolume').oninput = (e) => {
-      userSfxVolume = e.target.value / 100;
-      document.getElementById('sfxVolVal').innerText = e.target.value + '%';
-    };
+    function applyMantraVolume(valPercent) {
+      userMantraVolume = Math.max(0, Math.min(1, parseFloat(valPercent) / 100));
+      document.getElementById('mantraVolVal').innerText = Math.round(userMantraVolume * 100) + '%';
+      if (audioElements.mantra) {
+        if (userMantraVolume <= 0.01) {
+          audioElements.mantra.muted = true;
+          if (!audioElements.mantra.paused) audioElements.mantra.pause();
+        } else {
+          audioElements.mantra.muted = false;
+          audioElements.mantra.volume = userMantraVolume;
+          if (isMantraPlaying && audioElements.mantra.paused && SoundEngine.isUnlocked) {
+            audioElements.mantra.play().catch(() => {});
+          }
+        }
+      }
+    }
+
+    function applyGardenVolume(valPercent) {
+      userGardenVolume = Math.max(0, Math.min(1, parseFloat(valPercent) / 100));
+      document.getElementById('gardenVolVal').innerText = Math.round(userGardenVolume * 100) + '%';
+      const isMuted = userGardenVolume <= 0.01;
+      if (audioElements.hall) {
+        audioElements.hall.muted = isMuted;
+        if (isMuted) {
+          if (!audioElements.hall.paused) audioElements.hall.pause();
+        } else {
+          audioElements.hall.volume = userGardenVolume * 0.75;
+          if (audioElements.hall.paused && SoundEngine.isUnlocked) {
+            audioElements.hall.play().catch(() => {});
+          }
+        }
+      }
+      if (audioElements.garden) {
+        audioElements.garden.muted = isMuted;
+        if (isMuted) {
+          if (!audioElements.garden.paused) audioElements.garden.pause();
+        } else {
+          audioElements.garden.volume = userGardenVolume;
+          if (audioElements.garden.paused && SoundEngine.isUnlocked) {
+            audioElements.garden.play().catch(() => {});
+          }
+        }
+      }
+      if (typeof localPlayerObj !== 'undefined' && localPlayerObj.position) {
+        SoundEngine.updateSpatialZone(localPlayerObj.position.z);
+      }
+    }
+
+    function applySfxVolume(valPercent) {
+      userSfxVolume = Math.max(0, Math.min(1, parseFloat(valPercent) / 100));
+      document.getElementById('sfxVolVal').innerText = Math.round(userSfxVolume * 100) + '%';
+      const isMuted = userSfxVolume <= 0.01;
+      [audioElements.bell, audioElements.singingBowl, audioElements.muyu, audioElements.muyuDeep].forEach(el => {
+        if (el) {
+          el.muted = isMuted;
+          if (!isMuted) el.volume = userSfxVolume;
+        }
+      });
+    }
+
+    const mantraSlider = document.getElementById('mantraVolume');
+    if (mantraSlider) {
+      mantraSlider.addEventListener('input', (e) => applyMantraVolume(e.target.value));
+      mantraSlider.addEventListener('change', (e) => applyMantraVolume(e.target.value));
+    }
+
+    const gardenSlider = document.getElementById('gardenVolume');
+    if (gardenSlider) {
+      gardenSlider.addEventListener('input', (e) => applyGardenVolume(e.target.value));
+      gardenSlider.addEventListener('change', (e) => applyGardenVolume(e.target.value));
+    }
+
+    const sfxSlider = document.getElementById('sfxVolume');
+    if (sfxSlider) {
+      sfxSlider.addEventListener('input', (e) => applySfxVolume(e.target.value));
+      sfxSlider.addEventListener('change', (e) => applySfxVolume(e.target.value));
+    }
 
     document.getElementById('btnRobeSelect').onclick = () => {
       const modal = document.getElementById('robeModal');
@@ -4193,7 +4317,7 @@
     let camDist = 6.8;
 
     window.addEventListener('mousedown', e => {
-      if (e.target.closest('.zen-dock, .top-bar, #mantraPlayer, .unlock-card, #audioModal, #robeModal, #mantraListModal, #divinationModal, #sutraModal, #statueModal, #controlsHelp, #lanternModal, #zenChatModal')) return;
+      if (e.target.closest('.zen-dock, .top-bar, #mantraPlayer, .unlock-card, #audioModal, #robeModal, #mantraListModal, #divinationModal, #sutraModal, #statueModal, #controlsHelp, #lanternModal, #zenChatModal, #interactPrompt, #spatialActionPrompt')) return;
       isMouseDown = true;
       prevMouseX = e.clientX;
       prevMouseY = e.clientY;
@@ -4223,7 +4347,7 @@
     let prevPinchDist = null;
 
     window.addEventListener('touchstart', e => {
-      if (e.target.closest('.zen-dock, .top-bar, #mantraPlayer, .unlock-card, #audioModal, #robeModal, #mantraListModal, #divinationModal, #sutraModal, #statueModal, #controlsHelp, #lanternModal, #zenChatModal, #joystickZone')) return;
+      if (e.target.closest('.zen-dock, .top-bar, #mantraPlayer, .unlock-card, #audioModal, #robeModal, #mantraListModal, #divinationModal, #sutraModal, #statueModal, #controlsHelp, #lanternModal, #zenChatModal, #joystickZone, #interactPrompt, #spatialActionPrompt')) return;
       if (!SoundEngine.isUnlocked) SoundEngine.unlockAndPlay();
 
       if (e.touches.length === 1 && !isTouchingJoystick) {
@@ -4547,6 +4671,41 @@
         }
         showFloatMerit('Chí Thành Đảnh Lễ Dâng Hương Tam Bảo 🪔 (+5 Công Đức)', window.innerWidth / 2, window.innerHeight / 2);
       }
+    }
+
+    function triggerMainInteraction() {
+      if (isSitting) {
+        toggleSitNearbyCushion();
+      } else if (nearbyStatue !== null) {
+        openStatueModal(nearbyStatue);
+      } else if (nearbySeatId !== null) {
+        toggleSitNearbyCushion();
+      } else {
+        openLanternModal();
+      }
+    }
+
+    // GẮN SỰ KIỆN CHẠM & CLICK CHO CÁC NÚT TƯƠNG TÁC POPUP MÀN HÌNH
+    const interactEl = document.getElementById('interactPrompt');
+    if (interactEl) {
+      const onInteractTap = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        triggerMainInteraction();
+      };
+      interactEl.addEventListener('click', onInteractTap);
+      interactEl.addEventListener('touchend', onInteractTap);
+    }
+
+    const actionEl = document.getElementById('spatialActionPrompt');
+    if (actionEl) {
+      const onActionTap = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        triggerSpatialAction();
+      };
+      actionEl.addEventListener('click', onActionTap);
+      actionEl.addEventListener('touchend', onActionTap);
     }
 
     // ========================================================
@@ -5444,21 +5603,21 @@
         nearbyStatue = closestStatue;
         nearbySeatId = null;
         interactPrompt.style.display = 'block';
-        interactPrompt.innerText = `Bấm [E] hoặc Chạm để Chiêm Bái & Đọc Chú Giải: ${closestStatue.name}`;
+        interactPrompt.innerText = `Chạm hoặc Bấm [E]: Chiêm Bái ${closestStatue.name}`;
       } else if (minSeatDist < 1.7 && !isSitting) {
         nearbySeatId = closestSeat;
         nearbyStatue = null;
         interactPrompt.style.display = 'block';
-        interactPrompt.innerText = `Bấm [E] hoặc Chạm để Tọa Thiền (#${nearbySeatId + 1})`;
+        interactPrompt.innerText = `Chạm hoặc Bấm [E]: Tọa Thiền Bồ Đoàn (#${nearbySeatId + 1})`;
       } else if (distToPond < 13.5 && !isSitting) {
         nearbyStatue = null;
         nearbySeatId = null;
         interactPrompt.style.display = 'block';
-        interactPrompt.innerText = 'Bấm [H] hoặc Chạm để Thả Đèn Hoa Đăng Cầu Nguyện 🏮';
+        interactPrompt.innerText = 'Chạm hoặc Bấm [H]: Thả Đèn Hoa Đăng Cầu Nguyện 🏮';
       } else if (isSitting) {
         nearbyStatue = null;
         interactPrompt.style.display = 'block';
-        interactPrompt.innerText = 'Bấm [E] hoặc Chạm để Đứng Dậy';
+        interactPrompt.innerText = 'Chạm hoặc Bấm [E]: Đứng Dậy Xả Thiền 🙏';
       } else {
         nearbySeatId = null;
         nearbyStatue = null;
@@ -5474,15 +5633,15 @@
       if (distToBell < 3.2) {
         nearbySpatialTarget = 'bell';
         actionPrompt.style.display = 'block';
-        actionPrompt.innerText = 'Bấm [F] Thỉnh Đại Hồng Chung';
+        actionPrompt.innerText = 'Chạm hoặc Bấm [F]: Thỉnh Đại Hồng Chung 🔔';
       } else if (distToIncense < 3.2) {
         nearbySpatialTarget = 'incense';
         actionPrompt.style.display = 'block';
-        actionPrompt.innerText = 'Bấm [F] Dâng Hương Tam Bảo';
+        actionPrompt.innerText = 'Chạm hoặc Bấm [F]: Dâng Hương Tam Bảo 🪔';
       } else if (distToFish < 3.2) {
         nearbySpatialTarget = 'fish';
         actionPrompt.style.display = 'block';
-        actionPrompt.innerText = 'Bấm [F] Gõ Đại Mõ Gia Trì';
+        actionPrompt.innerText = 'Chạm hoặc Bấm [F]: Gõ Đại Mõ Gia Trì 🐟';
       } else {
         nearbySpatialTarget = null;
         actionPrompt.style.display = 'none';
