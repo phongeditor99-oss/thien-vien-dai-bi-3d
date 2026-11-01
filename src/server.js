@@ -301,26 +301,41 @@ class TempleRoom3D {
 
   join(ws, playerInfo) {
     const playerId = playerInfo.id || 'p_' + Math.random().toString(36).substring(2, 9);
-    // Xuất phát ở cửa chánh điện trên thảm đỏ (Z = 23, X = 0)
-    const spawnX = Number(((Math.random() - 0.5) * 2.0).toFixed(2));
-    const spawnZ = 23.5;
+    // Xuất phát ở cửa chánh điện trên thảm đỏ (Z = 22.0, X = 0) hoặc khôi phục vị trí khi kết nối lại
+    const defaultSpawnX = Number(((Math.random() - 0.5) * 2.0).toFixed(2));
+    const defaultSpawnZ = 22.0;
+
+    const hasReconnectPos = typeof playerInfo.x === 'number' && typeof playerInfo.z === 'number' && !isNaN(playerInfo.x) && !isNaN(playerInfo.z);
+    const initX = hasReconnectPos ? Math.max(-25, Math.min(25, Number(playerInfo.x))) : defaultSpawnX;
+    const initY = (typeof playerInfo.y === 'number' && !isNaN(playerInfo.y)) ? Math.max(0, Math.min(10, Number(playerInfo.y))) : 0.0;
+    const initZ = hasReconnectPos ? Math.max(-19, Math.min(62, Number(playerInfo.z))) : defaultSpawnZ;
+    const initRotY = (typeof playerInfo.rotY === 'number' && !isNaN(playerInfo.rotY)) ? Number(playerInfo.rotY) : Math.PI;
+
+    const savedMerits = Number.isFinite(Number(playerInfo.meritPoints))
+      ? Math.max(0, Math.min(999999, Math.floor(Number(playerInfo.meritPoints))))
+      : 0;
+    const savedBeads = Number.isFinite(Number(playerInfo.beadCount))
+      ? Math.max(0, Math.min(107, Math.floor(Number(playerInfo.beadCount))))
+      : 0;
 
     const player = {
       id: playerId,
       nickname: playerInfo.nickname || `Chú Tiểu #${Math.floor(100 + Math.random() * 900)}`,
       avatar: playerInfo.avatar || 'monk_apprentice',
       robeColor: typeof playerInfo.robeColor === 'number' ? playerInfo.robeColor : 0x7a3f20,
-      x: spawnX,
-      y: 0.0,
-      z: spawnZ,
-      rotY: Math.PI, // Quay mặt nhìn lên Phật đài
+      x: initX,
+      y: initY,
+      z: initZ,
+      rotY: initRotY, // Quay mặt nhìn lên Phật đài
       isMoving: false,
       isSitting: false,
       seatId: null,
-      meritPoints: 0,
-      beadCount: 0,
+      meritPoints: savedMerits,
+      beadCount: savedBeads,
       fishHits: 0,
       lastMoveTime: 0,
+      lastMeditateTick: Date.now(),
+      blessedLanterns: new Set(),
       ws: ws
     };
 
@@ -361,6 +376,7 @@ class TempleRoom3D {
     };
     player.seatId = seatId;
     player.isSitting = true;
+    player.lastMeditateTick = Date.now();
     player.x = targetSeat.x;
     player.y = 0.25;
     player.z = targetSeat.z;
@@ -502,7 +518,13 @@ wss.on('connection', (ws) => {
           player = room.join(ws, {
             nickname: msg.nickname,
             avatar: msg.avatar,
-            robeColor: msg.robeColor
+            robeColor: msg.robeColor,
+            meritPoints: msg.meritPoints,
+            beadCount: msg.beadCount,
+            x: msg.x,
+            y: msg.y,
+            z: msg.z,
+            rotY: msg.rotY
           });
 
           ws.send(JSON.stringify({
@@ -518,12 +540,14 @@ wss.on('connection', (ws) => {
               z: player.z,
               rotY: player.rotY,
               seatId: player.seatId,
-              meritPoints: player.meritPoints
+              meritPoints: player.meritPoints,
+              beadCount: player.beadCount
             },
             room: {
               id: room.id,
               seats: room.seats,
-              onlineCount: room.players.size
+              onlineCount: room.players.size,
+              roomTotalMerits: room.totalMerits
             },
             roomState: room.getPublicRoomState()
           }));
@@ -567,9 +591,9 @@ wss.on('connection', (ws) => {
           const rot = Number(msg.rotY);
 
           if (!isNaN(px) && !isNaN(py) && !isNaN(pz) && !isNaN(rot)) {
-            player.x = Math.max(-21, Math.min(21, px));
+            player.x = Math.max(-25.0, Math.min(25.0, px));
             player.y = Math.max(0, Math.min(10, py));
-            player.z = Math.max(-20, Math.min(54, pz));
+            player.z = Math.max(-19.0, Math.min(62.0, pz));
             player.rotY = rot;
             player.isMoving = !!msg.isMoving;
           }
@@ -806,6 +830,70 @@ wss.on('connection', (ws) => {
             merits: player.meritPoints,
             roomTotalMerits: currentRoom.totalMerits
           });
+          break;
+        }
+
+        case 'MEDITATE_TICK': {
+          if (!currentRoom || !player || !player.isSitting) return;
+          const now = Date.now();
+          if (now - (player.lastMeditateTick || 0) < 25000) return;
+          player.lastMeditateTick = now;
+          player.meritPoints += 2;
+          currentRoom.totalMerits += 2;
+
+          ws.send(JSON.stringify({
+            type: 'MERIT_UPDATED',
+            playerId: player.id,
+            merits: player.meritPoints,
+            delta: 2,
+            reason: 'meditate',
+            roomTotalMerits: currentRoom.totalMerits
+          }));
+
+          currentRoom.broadcast({
+            type: 'PLAYER_MERIT_SYNC',
+            playerId: player.id,
+            merits: player.meritPoints,
+            roomTotalMerits: currentRoom.totalMerits
+          }, ws);
+          break;
+        }
+
+        case 'BLESS_LANTERN': {
+          if (!currentRoom || !player) return;
+          if (!checkRateLimit(5)) return;
+          const lanternId = String(msg.lanternId || '').substring(0, 80);
+          if (!lanternId) return;
+          if (player.blessedLanterns && player.blessedLanterns.has(lanternId)) {
+            return ws.send(JSON.stringify({ type: 'WARN', message: 'Bạn đã tùy hỷ cầu an cho hoa đăng này rồi 🙏' }));
+          }
+          if (player.blessedLanterns) {
+            player.blessedLanterns.add(lanternId);
+            if (player.blessedLanterns.size > 120) {
+              const firstKey = player.blessedLanterns.values().next().value;
+              player.blessedLanterns.delete(firstKey);
+            }
+          }
+
+          player.meritPoints += 1;
+          currentRoom.totalMerits += 1;
+
+          ws.send(JSON.stringify({
+            type: 'MERIT_UPDATED',
+            playerId: player.id,
+            merits: player.meritPoints,
+            delta: 1,
+            reason: 'bless_lantern',
+            lanternId: lanternId,
+            roomTotalMerits: currentRoom.totalMerits
+          }));
+
+          currentRoom.broadcast({
+            type: 'PLAYER_MERIT_SYNC',
+            playerId: player.id,
+            merits: player.meritPoints,
+            roomTotalMerits: currentRoom.totalMerits
+          }, ws);
           break;
         }
 
