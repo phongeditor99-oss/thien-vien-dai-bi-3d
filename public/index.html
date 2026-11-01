@@ -5557,14 +5557,10 @@
     }
 
     function isAnyModalOpen() {
-      const backdrop = document.getElementById('modalBackdrop');
-      if (backdrop && backdrop.style.display !== 'none' && backdrop.style.display !== '') return true;
-      const d3d = document.getElementById('dharma3DOverlay');
-      if (d3d && (document.body.classList.contains('dharma-3d-open') || d3d.style.display === 'block')) return true;
       return ALL_MODAL_IDS.some(id => {
         const el = document.getElementById(id);
         if (!el) return false;
-        const disp = el.style.display || window.getComputedStyle(el).display;
+        const disp = el.style.display;
         return disp !== 'none' && disp !== '';
       });
     }
@@ -5582,8 +5578,8 @@
       } else {
         document.body.classList.remove('modal-open');
         if (backdrop) backdrop.style.display = 'none';
-        if (ip) ip.style.visibility = 'visible';
-        if (sp) sp.style.visibility = 'visible';
+        if (ip) { ip.style.visibility = 'visible'; }
+        if (sp) { sp.style.visibility = 'visible'; }
       }
     }
 
@@ -5592,6 +5588,8 @@
         const el = document.getElementById(id);
         if (el) el.style.display = 'none';
       });
+      const backdrop = document.getElementById('modalBackdrop');
+      if (backdrop) backdrop.style.display = 'none';
       if (typeof stopAutoScroll === 'function') stopAutoScroll();
       syncModalBodyClass();
     }
@@ -9549,7 +9547,6 @@
 
       // NẾU CÓ BẤT KỲ BẢNG KINH, TƯỢNG PHẬT, THỜI KHÓA, MÀN HÌNH CHÀO, CHẾ ĐỘ NGẮM CẢNH, PHÁP KHÍ 3D HOẶC CAMERA TOÀN CẢNH ĐANG MỞ -> ẨN TOÀN BỘ NÚT TƯƠNG TÁC MẶT ĐẤT
       if (isAnyModalOpen() || isWelcomeBannerOpen() || isZenPhotoMode || aerialCamIdx > 0 || (typeof activeDharma3DMode !== 'undefined' && activeDharma3DMode)) {
-        document.body.classList.add('modal-open');
         if (interactPrompt) { interactPrompt.style.display = 'none'; interactPrompt.style.visibility = 'hidden'; }
         if (actionPrompt) { actionPrompt.style.display = 'none'; actionPrompt.style.visibility = 'hidden'; }
         nearbySeatId = null;
@@ -9557,7 +9554,6 @@
         nearbyWishingTree = false;
         nearbySpatialTarget = null;
       } else {
-        document.body.classList.remove('modal-open');
 
         if (closestStatue !== null && !isSitting) {
           nearbyStatue = closestStatue;
