@@ -2388,23 +2388,30 @@
     });
 
     [[-7, -7], [7, -7], [-7, 7], [7, 7]].forEach(([lx, lz]) => {
-      const lantern = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.85, 1.4, 8), new THREE.MeshStandardMaterial({ color: 0xb5321f, roughness: 0.6 }));
+      const lantern = new THREE.Mesh(
+        new THREE.CylinderGeometry(0.65, 0.85, 1.4, 8),
+        new THREE.MeshStandardMaterial({ color: 0xb5321f, roughness: 0.45, emissive: 0xff6611, emissiveIntensity: 0.65 })
+      );
       lantern.position.set(lx, 11.5, lz);
       scene.add(lantern);
 
-      const lampLight = new THREE.PointLight(0xffa834, 1.3, 16);
-      lampLight.position.set(lx, 11.0, lz);
-      scene.add(lampLight);
+      if (!isMobileDevice) {
+        const lampLight = new THREE.PointLight(0xffa834, 1.2, 16);
+        lampLight.position.set(lx, 11.0, lz);
+        scene.add(lampLight);
+      }
     });
 
     // ========================================================
-    // 6. BÀN THỜ TAM CẤP & TƯỢNG PHẬT THÍCH CA THẾP VÀNG RỰC RỠ
+    // 6. ÁN GIAN TAM BẢO 3D BLENDER 5.2 & TƯỢNG PHẬT THÍCH CA THẾP VÀNG
     // ========================================================
+    const altarFallbackGroup = new THREE.Group();
     const altar = new THREE.Mesh(new THREE.BoxGeometry(18, 2.6, 6.2), woodMat);
     altar.position.set(0, 1.3, -15);
-    altar.receiveShadow = true;
-    altar.castShadow = true;
-    scene.add(altar);
+    altar.receiveShadow = !isMobileDevice;
+    altar.castShadow = !isMobileDevice;
+    altarFallbackGroup.add(altar);
+    scene.add(altarFallbackGroup);
 
     const plaqueMesh = new THREE.Mesh(new THREE.PlaneGeometry(8.5, 2.7), new THREE.MeshStandardMaterial({
       map: createPlaqueTexture('AN LẠC ĐIỆN'),
@@ -2441,30 +2448,32 @@
     buddhaGroup.add(haloPlane);
     scene.add(buddhaGroup);
 
-    // HỆ THỐNG ÁNH SÁNG CHIẾU TÔN TƯỢNG (ĐẢM BẢO HOÀNG KIM 24K BỪNG SÁNG TRANG NGHIÊM DỊU DÀNG)
-    const buddhaFrontSpot = new THREE.SpotLight(0xfff5c0, 2.8, 32, Math.PI / 3.0, 0.45, 0.7);
-    buddhaFrontSpot.position.set(0, 8.5, -7.0);
-    buddhaFrontSpot.target.position.set(0, 4.5, -15.0);
-    scene.add(buddhaFrontSpot);
-    scene.add(buddhaFrontSpot.target);
+    // HỆ THỐNG ÁNH SÁNG CHIẾU TÔN TƯỢNG (TỐI ƯU HÓA GPU CHO ĐIỆN THOẠI)
+    if (!isMobileDevice) {
+      const buddhaFrontSpot = new THREE.SpotLight(0xfff5c0, 2.8, 32, Math.PI / 3.0, 0.45, 0.7);
+      buddhaFrontSpot.position.set(0, 8.5, -7.0);
+      buddhaFrontSpot.target.position.set(0, 4.5, -15.0);
+      scene.add(buddhaFrontSpot);
+      scene.add(buddhaFrontSpot.target);
 
-    const altarAuraLight = new THREE.PointLight(0xffdf66, 1.8, 18);
-    altarAuraLight.position.set(0, 4.5, -12.5);
+      const lotusBaseLight = new THREE.PointLight(0xffb844, 1.4, 10);
+      lotusBaseLight.position.set(0, 2.6, -14.0);
+      scene.add(lotusBaseLight);
+    }
+
+    const altarAuraLight = new THREE.PointLight(0xffdf66, isMobileDevice ? 2.1 : 1.8, 22);
+    altarAuraLight.position.set(0, 5.2, -11.5);
     scene.add(altarAuraLight);
 
-    const lotusBaseLight = new THREE.PointLight(0xffb844, 1.4, 10);
-    lotusBaseLight.position.set(0, 2.6, -14.0);
-    scene.add(lotusBaseLight);
-
-    // CHẤT LIỆU HOÀNG KIM THẾP VÀNG 24K CHO PHO TƯỢNG (MỊN MÀNG, KHÔNG NHIỄU HẠT, ĐỦ 2 MẶT KHÔNG BỊ XUYÊN THẤU)
+    // CHẤT LIỆU HOÀNG KIM THẾP VÀNG 24K CHO PHO TƯỢNG (MỊN MÀNG, KHÔNG XUYÊN THẤU)
     const goldStatueMat = new THREE.MeshPhongMaterial({
-      color: 0xf5cf42,       // Hoàng kim 24K dát vàng sáng rực
-      specular: 0xfff0a0,    // Ánh kim bóng sáng trang nghiêm
-      shininess: 52,         // Mịn màng thếp vàng, bề mặt căng mịn
-      emissive: 0x523606,    // Kim quang tự phát ấm áp từ bi
-      emissiveIntensity: 0.28,
-      side: THREE.FrontSide,       // FrontSide ngan ngua z-fighting
-      transparent: false,    // Tuyệt đối không trong suốt
+      color: 0xf5cf42,
+      specular: 0xfff0a0,
+      shininess: 52,
+      emissive: 0x523606,
+      emissiveIntensity: isMobileDevice ? 0.36 : 0.28,
+      side: THREE.FrontSide,
+      transparent: false,
       opacity: 1.0,
       depthWrite: true,
       depthTest: true,
@@ -2499,16 +2508,16 @@
       });
     }
 
-    // Đồ Pháp Bảo Trên Bàn Thờ
+    // Đồ Pháp Bảo Trên Bàn Thờ (Fallback ẩn tự động khi ban_tho_tam_bao.glb tải xong)
     [-7.5, 7.5].forEach(vx => {
-      const vase = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.75, 2.4, 16), new THREE.MeshStandardMaterial({ color: 0xf0ebe1, roughness: 0.2 }));
+      const vase = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.75, 2.4, 12), new THREE.MeshStandardMaterial({ color: 0xf0ebe1, roughness: 0.2 }));
       vase.position.set(vx, 3.8, -13.8);
-      scene.add(vase);
+      altarFallbackGroup.add(vase);
     });
 
-    const incenseBurner = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.70, 1.3, 16), new THREE.MeshStandardMaterial({ color: 0x8a5d2b, metalness: 0.85, roughness: 0.28 }));
+    const incenseBurner = new THREE.Mesh(new THREE.CylinderGeometry(0.95, 0.70, 1.3, 12), new THREE.MeshStandardMaterial({ color: 0x8a5d2b, metalness: 0.85, roughness: 0.28 }));
     incenseBurner.position.set(0, 3.25, -12.4);
-    scene.add(incenseBurner);
+    altarFallbackGroup.add(incenseBurner);
 
     const incenseSticks = [];
     [-0.16, 0, 0.16].forEach(ix => {
@@ -2524,21 +2533,24 @@
 
     const candleLights = [];
     [-4.8, 4.8].forEach(x => {
-      const candleBase = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.65, 0.85, 14), new THREE.MeshStandardMaterial({ color: 0xb53526 }));
+      const candleBase = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.65, 0.85, 10), new THREE.MeshStandardMaterial({ color: 0xb53526 }));
       candleBase.position.set(x, 3.0, -13.0);
-      scene.add(candleBase);
+      altarFallbackGroup.add(candleBase);
 
-      const candleFlame = new THREE.Mesh(new THREE.ConeGeometry(0.14, 0.5, 8), new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
-      candleFlame.position.set(x, 3.7, -13.0);
+      const candleFlame = new THREE.Mesh(new THREE.ConeGeometry(0.13, 0.46, 8), new THREE.MeshBasicMaterial({ color: 0xffbb22 }));
+      candleFlame.position.set(x, 3.68, -13.0);
       scene.add(candleFlame);
 
-      const candleLight = new THREE.PointLight(0xff9900, 1.3, 10);
-      candleLight.position.set(x, 3.8, -13.0);
-      scene.add(candleLight);
+      let candleLight = null;
+      if (!isMobileDevice) {
+        candleLight = new THREE.PointLight(0xff9900, 1.2, 10);
+        candleLight.position.set(x, 3.8, -13.0);
+        scene.add(candleLight);
+      }
       candleLights.push({ mesh: candleFlame, light: candleLight });
     });
 
-    const smokeCount = 55;
+    const smokeCount = isMobileDevice ? 24 : 50;
     const smokeGeo = new THREE.BufferGeometry();
     const smokePos = new Float32Array(smokeCount * 3);
     for (let i = 0; i < smokeCount; i++) {
@@ -2555,12 +2567,12 @@
     }));
     scene.add(smokeParticles);
 
-    // Mưa Cánh Hoa Sen Hồng Tịnh Độ
-    const petalCount = 45;
+    // Mưa Cánh Hoa Sen Hồng Tịnh Độ (giảm nhẹ hạt trên di động để giữ 60 FPS)
+    const petalCount = isMobileDevice ? 18 : 42;
     const fallingPetalGroup = new THREE.Group();
     const petalObjects = [];
-    const fallingPetalMat = new THREE.MeshStandardMaterial({ color: 0xff88bb, side: THREE.DoubleSide, roughness: 0.4 });
-    const petalMeshGeo = new THREE.PlaneGeometry(0.24, 0.35);
+    const fallingPetalMat = new THREE.MeshBasicMaterial({ color: 0xff94c2, side: THREE.DoubleSide });
+    const petalMeshGeo = new THREE.PlaneGeometry(0.22, 0.32);
 
     for (let i = 0; i < petalCount; i++) {
       const petal = new THREE.Mesh(petalMeshGeo, fallingPetalMat);
@@ -2626,7 +2638,7 @@
         roughness: 0.35, metalness: 0.2
       })
     );
-    plaqueAltar.position.set(0, 1.3, -11.85);
+    plaqueAltar.position.set(0, 1.3, -11.82);
     scene.add(plaqueAltar);
 
     // 2. ĐÀI SEN TÔN TƯỢNG ĐỨC MẸ QUÁN THẾ ÂM BỒ TÁT (HỒ SEN - CẦU KIỀU)
@@ -2635,14 +2647,14 @@
 
     // Đảo thềm đá bạch ngọc quanh Đài Quán Âm (bán kính 6.8m nối liền nhịp Nam của Cầu Kiều)
     const qaWalkTerrace = new THREE.Mesh(
-      new THREE.CylinderGeometry(6.8, 7.0, 0.14, 40),
+      new THREE.CylinderGeometry(6.8, 7.0, 0.14, 36),
       new THREE.MeshStandardMaterial({ color: 0xe8e4da, roughness: 0.45, metalness: 0.08 })
     );
     qaWalkTerrace.position.y = 0.05;
     shrineQuanAm.add(qaWalkTerrace);
 
     const qaTerraceRim = new THREE.Mesh(
-      new THREE.TorusGeometry(6.82, 0.08, 8, 40),
+      new THREE.TorusGeometry(6.82, 0.08, 8, 36),
       new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.32, metalness: 0.65 })
     );
     qaTerraceRim.rotation.x = Math.PI / 2;
@@ -2650,15 +2662,15 @@
     shrineQuanAm.add(qaTerraceRim);
 
     // Đài sen bạch ngọc viền vàng 3 tầng
-    const qaTier1 = new THREE.Mesh(new THREE.CylinderGeometry(4.2, 4.6, 0.5, 32), new THREE.MeshStandardMaterial({ color: 0xedebe4, roughness: 0.35 }));
+    const qaTier1 = new THREE.Mesh(new THREE.CylinderGeometry(4.2, 4.6, 0.5, 24), new THREE.MeshStandardMaterial({ color: 0xedebe4, roughness: 0.35 }));
     qaTier1.position.y = 0.25;
     shrineQuanAm.add(qaTier1);
 
-    const qaTier2 = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 4.0, 0.5, 32), new THREE.MeshStandardMaterial({ color: 0xffd53d, metalness: 0.3, roughness: 0.3 }));
+    const qaTier2 = new THREE.Mesh(new THREE.CylinderGeometry(3.6, 4.0, 0.5, 24), new THREE.MeshStandardMaterial({ color: 0xffd53d, metalness: 0.3, roughness: 0.3 }));
     qaTier2.position.y = 0.75;
     shrineQuanAm.add(qaTier2);
 
-    const qaTier3 = new THREE.Mesh(new THREE.TorusGeometry(3.2, 0.45, 12, 32), new THREE.MeshStandardMaterial({ color: 0xf5cf47, roughness: 0.3 }));
+    const qaTier3 = new THREE.Mesh(new THREE.TorusGeometry(3.2, 0.45, 10, 24), new THREE.MeshStandardMaterial({ color: 0xf5cf47, roughness: 0.3 }));
     qaTier3.rotation.x = Math.PI / 2;
     qaTier3.position.y = 1.15;
     shrineQuanAm.add(qaTier3);
@@ -2675,7 +2687,7 @@
     shrineQuanAm.add(plaqueQuanAm);
 
     // Lư đồng dâng hương trước đài Quán Âm
-    const qaBurner = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.3, 0.5, 16), new THREE.MeshStandardMaterial({ color: 0x8a5d2b, metalness: 0.85, roughness: 0.28 }));
+    const qaBurner = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.3, 0.5, 12), new THREE.MeshStandardMaterial({ color: 0x8a5d2b, metalness: 0.85, roughness: 0.28 }));
     qaBurner.position.set(0, 1.35, -3.2);
     shrineQuanAm.add(qaBurner);
 
@@ -2686,16 +2698,18 @@
     qaHalo.position.set(0, 5.2, 2.5);
     shrineQuanAm.add(qaHalo);
 
-    // Đèn rọi kim quang rực rỡ tôn tượng Quán Âm (dịu dàng trang nghiêm)
-    const qaSpot = new THREE.SpotLight(0xfffae0, 2.2, 36, Math.PI / 3.4, 0.45, 0.8);
-    qaSpot.position.set(0, 11.5, 46.0);
-    qaSpot.target.position.set(0, 4.0, 54.0);
-    scene.add(qaSpot);
-    scene.add(qaSpot.target);
+    // Đèn rọi kim quang rực rỡ tôn tượng Quán Âm (chỉ bật trên PC để giữ 60 FPS trên điện thoại)
+    if (!isMobileDevice) {
+      const qaSpot = new THREE.SpotLight(0xfffae0, 2.2, 36, Math.PI / 3.4, 0.45, 0.8);
+      qaSpot.position.set(0, 11.5, 46.0);
+      qaSpot.target.position.set(0, 4.0, 54.0);
+      scene.add(qaSpot);
+      scene.add(qaSpot.target);
 
-    const qaAura = new THREE.PointLight(0xffd53d, 1.8, 16);
-    qaAura.position.set(0, 2.8, 52.5);
-    scene.add(qaAura);
+      const qaAura = new THREE.PointLight(0xffd53d, 1.8, 16);
+      qaAura.position.set(0, 2.8, 52.5);
+      scene.add(qaAura);
+    }
 
     scene.add(shrineQuanAm);
 
@@ -2718,7 +2732,7 @@
           }
         });
         mesh.position.set(0, 1.15, 54);
-        mesh.rotation.y = Math.PI; // Quay mặt hướng Bắc về phía hồ sen & chánh điện
+        mesh.rotation.y = Math.PI;
         scene.add(mesh);
         addFeed('🙏 Đã an vị Tôn Tượng Đại Bi Quán Thế Âm Bồ Tát dát vàng tại Đài Sen Hồ Ngọc');
       }, undefined, (err) => {
@@ -2726,63 +2740,63 @@
       });
     }
 
-    // 3. ĐÌNH SA LA - TÔN TƯỢNG PHẬT THÍCH CA NHẬP NIẾT BÀN (PHÍA ĐÔNG)
+    // 3. ĐÌNH SA LA MÁI ĐAO CONG 3D BLENDER 5.2 - TÔN TƯỢNG PHẬT NHẬP NIẾT BÀN (PHÍA ĐÔNG)
     const shrineReclining = new THREE.Group();
     shrineReclining.position.set(18.0, 0, 40);
 
-    // Bệ ngọc thạch thếp vàng cho Phật nằm (dài 9.8m, rộng 4.2m)
-    const recBase = new THREE.Mesh(new THREE.BoxGeometry(9.8, 0.9, 4.2), new THREE.MeshStandardMaterial({ color: 0x2e1a12, roughness: 0.4 }));
+    const salaFallbackGroup = new THREE.Group();
+    const recBase = new THREE.Mesh(new THREE.BoxGeometry(4.4, 0.9, 9.6), new THREE.MeshStandardMaterial({ color: 0x2e1a12, roughness: 0.4 }));
     recBase.position.y = 0.45;
-    shrineReclining.add(recBase);
+    salaFallbackGroup.add(recBase);
+    shrineReclining.add(salaFallbackGroup);
 
-    const recMatTrim = new THREE.Mesh(new THREE.BoxGeometry(10.0, 0.15, 4.4), new THREE.MeshStandardMaterial({ color: 0xffd53d, metalness: 0.35, roughness: 0.28 }));
-    recMatTrim.position.y = 0.95;
-    shrineReclining.add(recMatTrim);
-
-    // Đình Sa La: 4 cột gỗ son & mái ngói che chở
-    [[-4.4, -1.8], [4.4, -1.8], [-4.4, 1.8], [4.4, 1.8]].forEach(cp => {
-      const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.32, 6.5, 12), woodMat);
-      pillar.position.set(cp[0], 3.25, cp[1]);
-      shrineReclining.add(pillar);
-    });
-
-    const recRoof = new THREE.Mesh(new THREE.BoxGeometry(11.2, 0.8, 5.6), new THREE.MeshStandardMaterial({ color: 0x7c2419, roughness: 0.6 }));
-    recRoof.position.set(0, 6.8, 0);
-    shrineReclining.add(recRoof);
-
-    // Bia Ký Phật Nhập Niết Bàn (Quay mặt hướng Tây nhìn ra lối đi)
+    // Bia Ký Phật Nhập Niết Bàn (Quay mặt hướng Tây nhìn ra lối đi, khớp chuẩn bệ Bắc-Nam)
     const plaqueReclining = new THREE.Mesh(
-      new THREE.PlaneGeometry(4.8, 1.15),
+      new THREE.PlaneGeometry(4.6, 1.10),
       new THREE.MeshStandardMaterial({
         map: createStatuePlaqueTexture('NAM MÔ PHẬT THÍCH CA MÂU NI NHẬP NIẾT BÀN', 'Tịch Tịnh Vô Vi - Đại Bát Niết Bàn Bất Sanh Bất Diệt'),
         roughness: 0.35, metalness: 0.2
       })
     );
     plaqueReclining.rotation.y = -Math.PI / 2;
-    plaqueReclining.position.set(-4.95, 0.55, 0);
+    plaqueReclining.position.set(-2.32, 0.56, 0);
     shrineReclining.add(plaqueReclining);
 
-    // Lư đồng dâng hương
-    const recBurner = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.25, 0.45, 16), new THREE.MeshStandardMaterial({ color: 0x8a5d2b, metalness: 0.85, roughness: 0.28 }));
-    recBurner.position.set(-3.6, 1.05, 0);
+    // Lư đồng dâng hương đặt trên bậc đá phía trước bia ký
+    const recBurner = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.26, 0.46, 12), new THREE.MeshStandardMaterial({ color: 0x8a5d2b, metalness: 0.85, roughness: 0.28 }));
+    recBurner.position.set(-3.05, 0.25, 0);
     shrineReclining.add(recBurner);
 
-    // Đèn rọi vàng kim chiếu sáng kim thân Phật Nằm (dịu dàng trang nghiêm)
-    const recSpot = new THREE.SpotLight(0xfffae0, 2.2, 34, Math.PI / 3.2, 0.45, 0.8);
-    recSpot.position.set(12.5, 8.5, 40.0);
-    recSpot.target.position.set(18.0, 2.5, 40.0);
-    scene.add(recSpot);
-    scene.add(recSpot.target);
+    if (!isMobileDevice) {
+      const recSpot = new THREE.SpotLight(0xfffae0, 2.2, 34, Math.PI / 3.2, 0.45, 0.8);
+      recSpot.position.set(12.0, 8.5, 40.0);
+      recSpot.target.position.set(18.0, 2.5, 40.0);
+      scene.add(recSpot);
+      scene.add(recSpot.target);
 
-    const recAura = new THREE.PointLight(0xffd53d, 1.8, 16);
-    recAura.position.set(18.0, 3.2, 40.0);
-    scene.add(recAura);
+      const recAura = new THREE.PointLight(0xffd53d, 1.8, 16);
+      recAura.position.set(15.5, 3.2, 40.0);
+      scene.add(recAura);
+    }
 
     scene.add(shrineReclining);
 
-    // Tải Tôn Tượng Phật Nhập Niết Bàn 3D (/statue_reclining.glb)
+    // Tải Đình Sa La Mái Đao Cong 2 Tầng (/mai_dinh_sala.glb) & Tôn Tượng Phật Nhập Niết Bàn (/statue_reclining.glb)
     if (typeof THREE.GLTFLoader !== 'undefined') {
       const recLoader = new THREE.GLTFLoader();
+      recLoader.load('/mai_dinh_sala.glb', (gltf) => {
+        const salaModel = gltf.scene;
+        salaModel.traverse(c => {
+          if (c.isMesh) {
+            if (c.geometry) c.geometry.computeVertexNormals();
+            c.castShadow = !isMobileDevice;
+            c.receiveShadow = !isMobileDevice;
+          }
+        });
+        salaFallbackGroup.visible = false;
+        shrineReclining.add(salaModel);
+      }, undefined, (err) => console.error('Lỗi tải mai_dinh_sala.glb:', err));
+
       recLoader.load('/statue_reclining.glb', (gltf) => {
         const mesh = gltf.scene;
         mesh.traverse((child) => {
@@ -2799,9 +2813,9 @@
           }
         });
         mesh.position.set(18.0, 1.0, 40);
-        mesh.rotation.y = -Math.PI / 2; // Nằm an nhiên đầu hướng Bắc, mặt hướng Tây
+        mesh.rotation.y = -Math.PI / 2;
         scene.add(mesh);
-        addFeed('🙏 Đã an vị Tôn Tượng Đức Phật Nhập Niết Bàn dát vàng tại Đình Sa La');
+        addFeed('🙏 Đã an vị Tôn Tượng Đức Phật Nhập Niết Bàn dát vàng tại Đình Sa La Mái Đao');
       }, undefined, (err) => {
         console.error('Lỗi khi tải file statue_reclining.glb:', err);
       });
@@ -2838,7 +2852,7 @@
     shrineStanding.add(plaqueStanding);
 
     // Lư đồng dâng hương
-    const standBurner = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.25, 0.45, 16), new THREE.MeshStandardMaterial({ color: 0x8a5d2b, metalness: 0.85, roughness: 0.28 }));
+    const standBurner = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.25, 0.45, 12), new THREE.MeshStandardMaterial({ color: 0x8a5d2b, metalness: 0.85, roughness: 0.28 }));
     standBurner.position.set(2.8, 1.15, 0);
     shrineStanding.add(standBurner);
 
@@ -2850,16 +2864,17 @@
     standHalo.position.set(-1.8, 5.0, 0);
     shrineStanding.add(standHalo);
 
-    // Đèn rọi kim quang tiếp dẫn (dịu dàng trang nghiêm)
-    const standSpot = new THREE.SpotLight(0xfffae0, 2.2, 34, Math.PI / 3.4, 0.45, 0.8);
-    standSpot.position.set(-12.5, 9.5, 40.0);
-    standSpot.target.position.set(-18.0, 3.5, 40.0);
-    scene.add(standSpot);
-    scene.add(standSpot.target);
+    if (!isMobileDevice) {
+      const standSpot = new THREE.SpotLight(0xfffae0, 2.2, 34, Math.PI / 3.4, 0.45, 0.8);
+      standSpot.position.set(-12.5, 9.5, 40.0);
+      standSpot.target.position.set(-18.0, 3.5, 40.0);
+      scene.add(standSpot);
+      scene.add(standSpot.target);
 
-    const standAura = new THREE.PointLight(0xffd53d, 1.8, 16);
-    standAura.position.set(-18.0, 2.5, 40.0);
-    scene.add(standAura);
+      const standAura = new THREE.PointLight(0xffd53d, 1.8, 16);
+      standAura.position.set(-18.0, 2.5, 40.0);
+      scene.add(standAura);
+    }
 
     scene.add(shrineStanding);
 
@@ -2882,7 +2897,7 @@
           }
         });
         mesh.position.set(-18.0, 1.05, 40);
-        mesh.rotation.y = Math.PI / 2; // Thân đứng trang nghiêm hướng Đông về phía lối đi & cầu kiều
+        mesh.rotation.y = Math.PI / 2;
         scene.add(mesh);
         addFeed('🙏 Đã an vị Tôn Tượng Đức Phật A Di Đà Tiếp Dẫn dát vàng tại Bảo Đài Tây Phương');
       }, undefined, (err) => {
@@ -3190,7 +3205,7 @@
     }
 
     const pondGeo = new THREE.CircleGeometry(11, 32);
-    const pondWaterMat = new THREE.MeshStandardMaterial({ color: 0x1a454d, roughness: 0.1, metalness: 0.7, transparent: true, opacity: 0.88 });
+    const pondWaterMat = new THREE.MeshStandardMaterial({ color: 0x184b52, roughness: 0.12, metalness: 0.62, transparent: true, opacity: 0.78 });
     const pondWater = new THREE.Mesh(pondGeo, pondWaterMat);
     pondWater.rotation.x = -Math.PI / 2;
     pondWater.position.set(0, 0.05, 42);
@@ -3201,8 +3216,13 @@
     pondRim.position.set(0, 0.1, 42);
     scene.add(pondRim);
 
+    // 1 nguồn sáng ấm dùng chung cho mặt Hồ Liên Hoa (thay cho hàng chục PointLight rời gây giật lag điện thoại)
+    const sharedPondLight = new THREE.PointLight(0xffb44c, isMobileDevice ? 1.5 : 1.8, 24);
+    sharedPondLight.position.set(0, 2.2, 42);
+    scene.add(sharedPondLight);
+
     // ========================================================
-    // ĐÀN CÁ CHÉP KOI & CÁ CẢNH 3D BƠI LƯỢN (3d/cá/cá 1.glb & cá 2.glb)
+    // ĐÀN CÁ KOI NHỎ XINH BƠI DƯỚI MẶT HỒ SEN (ĐÃ THU NHỎ TỰ NHIÊN ~30CM & NHẸ GPU)
     // ========================================================
     const koiGroup = new THREE.Group();
     scene.add(koiGroup);
@@ -3210,20 +3230,17 @@
     const koiFishList = [];
     const koiMixers = [];
 
-    // Cấu hình đàn cá bơi sinh động nhiều tầng nước quanh hồ sen
+    // Raw model dài ~8-10m -> scale 0.028 - 0.036 tạo cá Koi nhỏ nhắn ~26-35cm bơi chìm thanh tao dưới làn nước
     const fishConfigs = [
-      { type: 1, radius: 4.2, speed: 0.28, baseAngle: 0.0, scale: 0.28, y: -0.06, timeScale: 1.1 },
-      { type: 2, radius: 6.2, speed: 0.22, baseAngle: 1.2, scale: 0.25, y: -0.08, timeScale: 0.95 },
-      { type: 1, radius: 7.8, speed: 0.32, baseAngle: 2.3, scale: 0.30, y: -0.05, timeScale: 1.25 },
-      { type: 2, radius: 5.0, speed: -0.24, baseAngle: 3.4, scale: 0.24, y: -0.10, timeScale: 1.0 },
-      { type: 1, radius: 8.8, speed: -0.20, baseAngle: 4.5, scale: 0.32, y: -0.07, timeScale: 0.88 },
-      { type: 2, radius: 3.5, speed: 0.35, baseAngle: 5.3, scale: 0.22, y: -0.09, timeScale: 1.3 },
-      { type: 1, radius: 5.8, speed: 0.26, baseAngle: 0.8, scale: 0.27, y: -0.11, timeScale: 1.05 },
-      { type: 2, radius: 7.0, speed: -0.29, baseAngle: 2.9, scale: 0.26, y: -0.06, timeScale: 1.15 }
+      { type: 1, radius: 4.6, speed: 0.24, baseAngle: 0.2, scale: 0.032, y: -0.05, timeScale: 1.05 },
+      { type: 2, radius: 6.4, speed: 0.20, baseAngle: 1.5, scale: 0.034, y: -0.06, timeScale: 0.95 },
+      { type: 1, radius: 7.9, speed: -0.22, baseAngle: 2.8, scale: 0.030, y: -0.05, timeScale: 1.12 },
+      { type: 2, radius: 5.4, speed: -0.19, baseAngle: 4.1, scale: 0.035, y: -0.07, timeScale: 1.0 },
+      { type: 1, radius: 8.7, speed: 0.18, baseAngle: 5.3, scale: 0.028, y: -0.06, timeScale: 0.92 }
     ];
 
-    let fishModelA = null; // cá 1.glb
-    let fishModelB = null; // cá 2.glb
+    let fishModelA = null;
+    let fishModelB = null;
     let fishAnimClipA = null;
     let fishAnimClipB = null;
 
@@ -3243,13 +3260,12 @@
 
         fishInstance.scale.setScalar(cfg.scale);
 
-        // Khởi tạo hoạt ảnh bơi lội (Skeletal Swim Animation)
         if (sourceClip) {
           const mixer = new THREE.AnimationMixer(fishInstance);
           const action = mixer.clipAction(sourceClip);
           action.play();
           action.timeScale = cfg.timeScale;
-          action.time = Math.random() * 1.5; // lệch pha bơi tự nhiên
+          action.time = Math.random() * 1.5;
           koiMixers.push(mixer);
         }
 
@@ -3262,10 +3278,10 @@
           speed: cfg.speed,
           baseY: cfg.y,
           phase: idx * 1.3,
-          bobSpeed: 2.2 + (idx % 3) * 0.4
+          bobSpeed: 2.0 + (idx % 3) * 0.35
         });
       });
-      addFeed('🐟 Đã an vị đàn Cá 3D uyển chuyển bơi lượn trong hồ sen');
+      addFeed('🐟 Đã an vị đàn Cá Koi nhỏ nhắn bơi thanh tịnh dưới mặt hồ sen');
     }
 
     if (typeof THREE.GLTFLoader !== 'undefined') {
@@ -3278,8 +3294,8 @@
         }
         fishModelA.traverse(c => {
           if (c.isMesh) {
-            c.castShadow = true;
-            c.receiveShadow = true;
+            c.castShadow = false;
+            c.receiveShadow = false;
           }
         });
         if (fishModelB) spawnKoiFishes();
@@ -3292,8 +3308,8 @@
         }
         fishModelB.traverse(c => {
           if (c.isMesh) {
-            c.castShadow = true;
-            c.receiveShadow = true;
+            c.castShadow = false;
+            c.receiveShadow = false;
           }
         });
         if (fishModelA) spawnKoiFishes();
@@ -3301,12 +3317,33 @@
     }
 
     // ========================================================
-    // ĐÈN HOA ĐĂNG 3D BẬP BỀNH TRÊN HỒ SEN (public/hoa_dang.glb)
+    // ĐÈN HOA ĐĂNG 3D BẬP BỀNH TRÊN HỒ SEN (ĐÃ GỘP MESH & BỎ POINTLIGHT RỜI TỐI ƯU DI ĐỘNG)
     // ========================================================
     const lanternsGroup = new THREE.Group();
     scene.add(lanternsGroup);
     let hoaDangLoadedModel = null;
     const floatingLanterns = [];
+
+    const sharedFlameCoreGeo = new THREE.SphereGeometry(0.06, 8, 8);
+    const sharedFlameCoreMat = new THREE.MeshBasicMaterial({ color: 0xffea55 });
+    const sharedFlameAuraGeo = new THREE.SphereGeometry(0.18, 8, 8);
+    const sharedFlameAuraMat = new THREE.MeshBasicMaterial({
+      color: 0xff9900,
+      transparent: true,
+      opacity: 0.36,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const sharedWaterGlowGeo = new THREE.CircleGeometry(0.58, 12);
+    const sharedWaterGlowMat = new THREE.MeshBasicMaterial({
+      color: 0xffa62b,
+      transparent: true,
+      opacity: 0.24,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const sharedTouchSphereGeo = new THREE.SphereGeometry(0.75, 8, 8);
+    const sharedTouchSphereMat = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.0, depthWrite: false });
 
     if (typeof THREE.GLTFLoader !== 'undefined') {
       const lanternLoader = new THREE.GLTFLoader();
@@ -3314,14 +3351,13 @@
         hoaDangLoadedModel = gltf.scene;
         hoaDangLoadedModel.traverse(c => {
           if (c.isMesh) {
-            c.castShadow = true;
-            c.receiveShadow = true;
+            c.castShadow = false;
+            c.receiveShadow = false;
             if (c.material) {
               c.material.side = THREE.DoubleSide;
             }
           }
         });
-        console.log('Đã tải mô hình 3D Hoa Đăng thành công');
       }, undefined, (err) => console.log('Tải hoa_dang.glb:', err));
     }
 
@@ -3329,12 +3365,12 @@
       const g = new THREE.Group();
       const colorHex = (colorType === 'gold') ? 0xffd700 : ((colorType === 'white') ? 0xfcfcfc : 0xff69b4);
       const leafMat = new THREE.MeshStandardMaterial({ color: 0x1f5c2b, roughness: 0.6, side: THREE.DoubleSide });
-      const leaf = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.025, 24), leafMat);
+      const leaf = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.025, 16), leafMat);
       g.add(leaf);
 
       const petalMat = new THREE.MeshStandardMaterial({ color: colorHex, roughness: 0.3, emissive: colorHex, emissiveIntensity: 0.35, side: THREE.DoubleSide });
-      for (let i = 0; i < 10; i++) {
-        const ang = (i / 10) * Math.PI * 2;
+      for (let i = 0; i < 8; i++) {
+        const ang = (i / 8) * Math.PI * 2;
         const p = new THREE.Mesh(new THREE.ConeGeometry(0.12, 0.32, 6), petalMat);
         p.position.set(Math.cos(ang) * 0.22, 0.12, Math.sin(ang) * 0.22);
         p.rotation.x = 0.5 * Math.sin(ang);
@@ -3342,14 +3378,9 @@
         g.add(p);
       }
 
-      const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.11, 16), new THREE.MeshStandardMaterial({ color: 0xcc2222 }));
+      const candle = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 0.11, 10), new THREE.MeshStandardMaterial({ color: 0xcc2222 }));
       candle.position.y = 0.08;
       g.add(candle);
-
-      const flame = new THREE.Mesh(new THREE.SphereGeometry(0.025, 10, 10), new THREE.MeshBasicMaterial({ color: 0xffaa00 }));
-      flame.scale.set(0.7, 2.0, 0.7);
-      flame.position.y = 0.18;
-      g.add(flame);
       return g;
     }
 
@@ -3364,12 +3395,11 @@
         lanternObj = createProceduralLanternFallback(data.color);
       }
 
-      // Điều chỉnh sắc màu cánh hoa theo nguyện ước & làm cánh hoa sáng rực rỡ
       const colorHex = (data.color === 'gold') ? 0xffd700 : ((data.color === 'white') ? 0xfbfbfb : 0xff4f88);
       lanternObj.traverse(c => {
         if (c.isMesh) {
-          c.castShadow = true;
-          c.receiveShadow = true;
+          c.castShadow = false;
+          c.receiveShadow = false;
           if (c.material) {
             c.material = c.material.clone();
             c.material.side = THREE.DoubleSide;
@@ -3394,42 +3424,25 @@
         }
       });
 
-      // Ánh sáng ngọn nến hoa đăng ấm áp lan tỏa trên mặt nước
-      const flameLight = new THREE.PointLight(0xffa834, 2.8, 6.5);
-      flameLight.position.set(0, 0.22, 0);
-      lanternObj.add(flameLight);
-
-      // Ngọn lửa hoa đăng 3D ấm áp, không dùng billboard sprite tránh lỗi ô vuông
-      const flameCore = new THREE.Mesh(
-        new THREE.SphereGeometry(0.06, 12, 12),
-        new THREE.MeshBasicMaterial({ color: 0xffea55 })
-      );
+      const flameCore = new THREE.Mesh(sharedFlameCoreGeo, sharedFlameCoreMat);
       flameCore.scale.set(0.8, 1.8, 0.8);
       flameCore.position.set(0, 0.20, 0);
       lanternObj.add(flameCore);
 
-      const flameAura = new THREE.Mesh(
-        new THREE.SphereGeometry(0.18, 12, 12),
-        new THREE.MeshBasicMaterial({
-          color: 0xff9900,
-          transparent: true,
-          opacity: 0.35,
-          blending: THREE.AdditiveBlending,
-          depthWrite: false
-        })
-      );
+      const flameAura = new THREE.Mesh(sharedFlameAuraGeo, sharedFlameAuraMat);
       flameAura.position.set(0, 0.20, 0);
       lanternObj.add(flameAura);
 
-      // Vùng chạm cảm ứng mở rộng vô hình giúp người chơi trên điện thoại dễ dàng 1 chạm xem lời nguyện
-      const touchHitSphere = new THREE.Mesh(
-        new THREE.SphereGeometry(0.75, 10, 10),
-        new THREE.MeshBasicMaterial({ transparent: true, opacity: 0.0, depthWrite: false })
-      );
+      // Quầng sáng phản chiếu mặt nước (0 GPU PointLight shader cost!)
+      const waterGlow = new THREE.Mesh(sharedWaterGlowGeo, sharedWaterGlowMat);
+      waterGlow.rotation.x = -Math.PI / 2;
+      waterGlow.position.set(0, -0.015, 0);
+      lanternObj.add(waterGlow);
+
+      const touchHitSphere = new THREE.Mesh(sharedTouchSphereGeo, sharedTouchSphereMat);
       touchHitSphere.position.set(0, 0.25, 0);
       lanternObj.add(touchHitSphere);
 
-      // Tọa độ khởi tạo trên mặt hồ sen
       const initX = typeof data.x === 'number' ? data.x : (Math.random() - 0.5) * 6;
       const initZ = typeof data.z === 'number' ? data.z : 42 + (Math.random() - 0.5) * 6;
       lanternObj.position.set(initX, 0.08, initZ);
@@ -3438,13 +3451,14 @@
       lanternsGroup.add(lanternObj);
 
       const pondDist = Math.hypot(initX, initZ - 42) || 4;
-      const clampedDist = Math.min(9.8, Math.max(3.2, pondDist));
+      const clampedDist = Math.min(9.6, Math.max(3.4, pondDist));
       const initAngle = Math.atan2(initX, initZ - 42);
 
       const lanternEntry = {
         data: data,
         mesh: lanternObj,
-        light: flameLight,
+        light: null,
+        auraMesh: flameAura,
         radius: clampedDist,
         angle: initAngle,
         speed: 0.045 + (Math.random() - 0.5) * 0.02,
@@ -3452,14 +3466,14 @@
         flamePhase: Math.random() * 10
       };
 
-      // Gắn data vào userData để Raycaster bắt tương tác
       lanternObj.traverse(c => {
         if (c.isMesh) c.userData.parentLantern = lanternEntry;
       });
 
       floatingLanterns.push(lanternEntry);
 
-      if (floatingLanterns.length > 50) {
+      const maxLanterns = isMobileDevice ? 24 : 45;
+      if (floatingLanterns.length > maxLanterns) {
         const oldest = floatingLanterns.shift();
         lanternsGroup.remove(oldest.mesh);
       }
@@ -3469,7 +3483,7 @@
       }
     }
 
-    // Khởi tạo sẵn 3 ngọn Hoa Đăng Cát Tường trên Hồ Sen để đồng tu dễ dàng chiêm ngưỡng & chạm xem lời nguyện
+    // Khởi tạo sẵn 3 ngọn Hoa Đăng Cát Tường trên Hồ Sen
     [
       { id: 'seed_lantern_1', nickname: 'Đại Chúng Thiền Viện', wish: 'Nguyện cầu quốc thái dân an, mưa thuận gió hòa, muôn nhà ấm no hạnh phúc.', color: 'gold', x: -5.2, z: 39.5 },
       { id: 'seed_lantern_2', nickname: 'Chú Tiểu Diệu Âm', wish: 'Cầu chúc cha mẹ hai bên dồi dào sức khỏe, thân tâm thường an lạc.', color: 'pink', x: 5.6, z: 43.8 },
@@ -3477,7 +3491,7 @@
     ].forEach(seed => spawnLanternMesh(seed));
 
     // ========================================================
-    // KIẾN TRÚC 3D BLENDER 5.2: CẦU KIỀU CONG, CỔNG TAM QUAN, TƯỜNG PHÁP LUÂN & LAN CAN ĐÁ SEN
+    // QUẦN THỂ KIẾN TRÚC CHÙA VIỆT 3D BLENDER 5.2 (MỘT MESH GỘP SIÊU NHẸ MỖI CÔNG TRÌNH)
     // ========================================================
     const bridgeGroup = new THREE.Group();
     bridgeGroup.position.set(0, 0, 39.2);
@@ -3487,7 +3501,6 @@
     gateGroup.position.set(0, 0, 24.5);
     scene.add(gateGroup);
 
-    // Biển Hoành Phi Tiếng Việt Thế Vàng gắn trên Cổng Tam Quan (mặt trước & mặt sau)
     const gatePlaqueFront = new THREE.Mesh(
       new THREE.PlaneGeometry(4.85, 1.05),
       new THREE.MeshStandardMaterial({ map: createPlaqueTexture('ĐẠI BI THIỀN TỰ'), roughness: 0.35, metalness: 0.2 })
@@ -3509,122 +3522,53 @@
     const stoneBalustradeGroup = new THREE.Group();
     scene.add(stoneBalustradeGroup);
 
-    if (typeof THREE.GLTFLoader !== 'undefined') {
-      const archLoader = new THREE.GLTFLoader();
+    const templeUpgradesGroup = new THREE.Group();
+    scene.add(templeUpgradesGroup);
 
-      // 1. Cầu Kiều Gỗ Son Cong Bắc Qua Hồ Sen (/cau_kieu.glb)
-      archLoader.load('/cau_kieu.glb', (gltf) => {
-        const model = gltf.scene;
-        model.traverse(c => {
-          if (c.isMesh) {
-            if (c.geometry) c.geometry.computeVertexNormals();
-            c.castShadow = !isMobileDevice;
-            c.receiveShadow = true;
-          }
-        });
-        bridgeGroup.add(model);
-        addFeed('🌉 Đã an vị Cầu Kiều Gỗ Son Cong 3D qua Hồ Sen');
-      }, undefined, (err) => console.error('Lỗi tải cau_kieu.glb:', err));
+    // Bia đề danh cho Bảo Tháp Báo Ân 7 Tầng (Đông-Nam: 19.0, 0, 55.5) & Nhà Bia Công Đức (Tây-Nam: -19.0, 0, 55.5)
+    const plaqueStupa = new THREE.Mesh(
+      new THREE.PlaneGeometry(3.4, 0.90),
+      new THREE.MeshStandardMaterial({
+        map: createStatuePlaqueTexture('BẢO THÁP BÁO ÂN THẤT CẤP', 'Thất Bửu Phù Đồ - Pháp Giới Thường An Lạc'),
+        roughness: 0.35, metalness: 0.2
+      })
+    );
+    plaqueStupa.rotation.y = -Math.PI / 2;
+    plaqueStupa.position.set(15.95, 0.62, 55.5);
+    templeUpgradesGroup.add(plaqueStupa);
 
-      // 2. Cổng Tam Quan Mái Đao Cong Cổ Truyền (/cong_tam_quan.glb)
-      archLoader.load('/cong_tam_quan.glb', (gltf) => {
-        const model = gltf.scene;
-        model.traverse(c => {
-          if (c.isMesh) {
-            if (c.geometry) c.geometry.computeVertexNormals();
-            c.castShadow = !isMobileDevice;
-            c.receiveShadow = !isMobileDevice;
-          }
-        });
-        gateGroup.add(model);
-        addFeed('⛩️ Đã an vị Cổng Tam Quan Mái Đao Cong 3D');
-      }, undefined, (err) => console.error('Lỗi tải cong_tam_quan.glb:', err));
-
-      // 3. Tường Chánh Điện Cửa Sổ Bánh Xe Pháp Luân (/tuong_chua_phap_luan.glb - module 6m)
-      archLoader.load('/tuong_chua_phap_luan.glb', (gltf) => {
-        const wallTpl = gltf.scene;
-        wallTpl.traverse(c => {
-          if (c.isMesh) {
-            if (c.geometry) c.geometry.computeVertexNormals();
-            c.castShadow = !isMobileDevice;
-            c.receiveShadow = !isMobileDevice;
-          }
-        });
-
-        const addWallSeg = (x, z, rotY) => {
-          const seg = wallTpl.clone();
-          seg.position.set(x, 0, z);
-          seg.rotation.y = rotY;
-          templeWallsGroup.add(seg);
-        };
-
-        // Tường hậu Chánh Điện (Z = -19.5, X từ -18 đến +18)
-        [-15, -9, -3, 3, 9, 15].forEach(wx => addWallSeg(wx, -19.5, 0));
-
-        // Tường tả & hữu Chánh Điện (X = -18 & +18, chừa lối cửa hành lang Z thuộc [4.5, 12.5])
-        [-16.5, -10.5, -4.5, 1.5, 15.5, 21.5].forEach(wz => {
-          addWallSeg(-18.0, wz, Math.PI / 2);
-          addWallSeg(18.0, wz, -Math.PI / 2);
-        });
-
-        // Hai cánh tường mặt tiền nối liền cột ngoài Cổng Tam Quan (Z = 24.5, |X| thuộc [12, 18])
-        addWallSeg(-15.0, 24.5, 0);
-        addWallSeg(15.0, 24.5, 0);
-      }, undefined, (err) => console.error('Lỗi tải tuong_chua_phap_luan.glb:', err));
-
-      // 4. Lan Can Đá Bạch Ngọc Chạm Hoa Sen Bao Quanh Sân Thiền (/lan_can_da_sen.glb - module 4m)
-      archLoader.load('/lan_can_da_sen.glb', (gltf) => {
-        const railTpl = gltf.scene;
-        railTpl.traverse(c => {
-          if (c.isMesh) {
-            if (c.geometry) c.geometry.computeVertexNormals();
-            c.castShadow = false;
-            c.receiveShadow = !isMobileDevice;
-          }
-        });
-
-        const addRailSeg = (x, z, rotY) => {
-          const seg = railTpl.clone();
-          seg.position.set(x, 0, z);
-          seg.rotation.y = rotY;
-          stoneBalustradeGroup.add(seg);
-        };
-
-        // Lan can Đông & Tây (X = -25.5 & +25.5, Z từ -19.5 đến +62.5)
-        for (let rz = -17.5; rz <= 60.6; rz += 4.0) {
-          addRailSeg(-25.5, rz, Math.PI / 2);
-          addRailSeg(25.5, rz, -Math.PI / 2);
-        }
-        // Khép góc Bắc sân vườn ngoài chánh điện (Z = -19.5, |X| thuộc [18, 25.5])
-        [-23.5, -20.0, 20.0, 23.5].forEach(rx => addRailSeg(rx, -19.5, 0));
-        // Lan can vọng cảnh phía Nam nhìn ra sông núi (Z = 62.5, X từ -25.5 đến +25.5)
-        for (let rx = -23.5; rx <= 23.6; rx += 4.0) {
-          addRailSeg(rx, 62.5, 0);
-        }
-        addRailSeg(23.5, 62.5, 0);
-      }, undefined, (err) => console.error('Lỗi tải lan_can_da_sen.glb:', err));
-    }
+    const plaqueStelePavilion = new THREE.Mesh(
+      new THREE.PlaneGeometry(3.4, 0.90),
+      new THREE.MeshStandardMaterial({
+        map: createStatuePlaqueTexture('NHÀ BIA CÔNG ĐỨC ĐẠI CHÚNG', 'Quy Đội Ngàn Năm - Hộ Trì Chánh Pháp Hưng Long'),
+        roughness: 0.35, metalness: 0.2
+      })
+    );
+    plaqueStelePavilion.rotation.y = Math.PI / 2;
+    plaqueStelePavilion.position.set(-16.15, 0.62, 55.5);
+    templeUpgradesGroup.add(plaqueStelePavilion);
 
     // ========================================================
-    // 8. ĐẠI HỒNG CHUNG & ĐẠI MÕ GIA TRÌ
+    // 8. ĐẠI HỒNG CHUNG & ĐẠI MÕ GIA TRÌ 3D BLENDER 5.2
     // ========================================================
     const bellStandGroup = new THREE.Group();
     bellStandGroup.position.set(13.5, 0, -11);
 
+    const bellFallbackFrame = new THREE.Group();
     [-1.5, 1.5].forEach(bx => {
-      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.45, 9, 12), woodMat);
+      const post = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.45, 9, 10), woodMat);
       post.position.set(bx, 4.5, 0);
-      bellStandGroup.add(post);
+      bellFallbackFrame.add(post);
     });
     const topBeam = new THREE.Mesh(new THREE.BoxGeometry(4.2, 0.7, 0.9), woodMat);
     topBeam.position.set(0, 8.8, 0);
-    bellStandGroup.add(topBeam);
+    bellFallbackFrame.add(topBeam);
+    bellStandGroup.add(bellFallbackFrame);
 
-    const greatBell = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.75, 3.2, 24), new THREE.MeshStandardMaterial({ color: 0x8a632b, metalness: 0.85, roughness: 0.28 }));
+    const greatBell = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.75, 3.2, 20), new THREE.MeshStandardMaterial({ color: 0x8a632b, metalness: 0.85, roughness: 0.28 }));
     greatBell.position.set(0, 6.2, 0);
     bellStandGroup.add(greatBell);
 
-    // TẢI & THAY THẾ CHUÔNG CHÙA 3D (chuong_chua.glb)
     let bell3DModel = null;
     if (typeof THREE.GLTFLoader !== 'undefined') {
       const bellLoader = new THREE.GLTFLoader();
@@ -3638,8 +3582,8 @@
               metalness: 0.88,
               roughness: 0.26
             });
-            child.castShadow = true;
-            child.receiveShadow = true;
+            child.castShadow = !isMobileDevice;
+            child.receiveShadow = !isMobileDevice;
           }
         });
         bell3DModel.scale.set(1.4, 1.4, 1.4);
@@ -3652,34 +3596,220 @@
 
     const strikerGroup = new THREE.Group();
     strikerGroup.position.set(0, 6.2, 0);
-    const strikerWood = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 3.2, 12), woodMat);
+    const strikerWood = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.2, 3.2, 10), woodMat);
     strikerWood.rotation.x = Math.PI / 2;
     strikerWood.position.set(0, -1.0, 1.8);
     strikerGroup.add(strikerWood);
     bellStandGroup.add(strikerGroup);
     scene.add(bellStandGroup);
 
-    const shockwaveRing = new THREE.Mesh(new THREE.RingGeometry(1.0, 1.2, 32), new THREE.MeshBasicMaterial({ color: 0xffd700, side: THREE.DoubleSide, transparent: true, opacity: 0 }));
+    const shockwaveRing = new THREE.Mesh(new THREE.RingGeometry(1.0, 1.2, 24), new THREE.MeshBasicMaterial({ color: 0xffd700, side: THREE.DoubleSide, transparent: true, opacity: 0 }));
     shockwaveRing.position.set(13.5, 5.0, -11);
     shockwaveRing.rotation.x = Math.PI / 2;
     scene.add(shockwaveRing);
     let shockwaveScale = 0;
 
-    const bigMokugyo = new THREE.Mesh(new THREE.SphereGeometry(1.25, 20, 20), new THREE.MeshStandardMaterial({ color: 0x5a2d14, roughness: 0.55 }));
+    const daiMoGroup = new THREE.Group();
+    daiMoGroup.position.set(-13.5, 0, -11);
+    daiMoGroup.rotation.y = 0.28;
+    scene.add(daiMoGroup);
+
+    const bigMokugyo = new THREE.Mesh(new THREE.SphereGeometry(1.25, 16, 16), new THREE.MeshStandardMaterial({ color: 0x5a2d14, roughness: 0.55 }));
     bigMokugyo.scale.set(1.2, 0.9, 1.1);
-    bigMokugyo.position.set(-13.5, 2.0, -11);
-    scene.add(bigMokugyo);
+    bigMokugyo.position.set(0, 2.0, 0);
+    daiMoGroup.add(bigMokugyo);
+
+    if (typeof THREE.GLTFLoader !== 'undefined') {
+      const archLoader = new THREE.GLTFLoader();
+      const prepStaticModel = (model, allowReceiveShadow = false) => {
+        model.traverse(c => {
+          if (c.isMesh) {
+            if (c.geometry) c.geometry.computeVertexNormals();
+            c.castShadow = !isMobileDevice;
+            c.receiveShadow = allowReceiveShadow && !isMobileDevice;
+          }
+        });
+        return model;
+      };
+
+      // 1. Cầu Kiều Gỗ Son Cong Bắc Qua Hồ Sen (/cau_kieu.glb - 1 joined mesh)
+      archLoader.load('/cau_kieu.glb', (gltf) => {
+        const model = gltf.scene;
+        model.traverse(c => {
+          if (c.isMesh) {
+            if (c.geometry) c.geometry.computeVertexNormals();
+            c.castShadow = !isMobileDevice;
+            c.receiveShadow = true;
+          }
+        });
+        bridgeGroup.add(model);
+      }, undefined, (err) => console.error('Lỗi tải cau_kieu.glb:', err));
+
+      // 2. Cổng Tam Quan Mái Đao Cong Cổ Truyền (/cong_tam_quan.glb - 1 joined mesh)
+      archLoader.load('/cong_tam_quan.glb', (gltf) => {
+        gateGroup.add(prepStaticModel(gltf.scene, true));
+      }, undefined, (err) => console.error('Lỗi tải cong_tam_quan.glb:', err));
+
+      // 3. Tường Chánh Điện Cửa Sổ Pháp Luân (/tuong_chua_phap_luan.glb - 1 joined mesh)
+      archLoader.load('/tuong_chua_phap_luan.glb', (gltf) => {
+        const wallTpl = prepStaticModel(gltf.scene, true);
+        const addWallSeg = (x, z, rotY) => {
+          const seg = wallTpl.clone();
+          seg.position.set(x, 0, z);
+          seg.rotation.y = rotY;
+          templeWallsGroup.add(seg);
+        };
+        [-15, -9, -3, 3, 9, 15].forEach(wx => addWallSeg(wx, -19.5, 0));
+        [-16.5, -10.5, -4.5, 1.5, 15.5, 21.5].forEach(wz => {
+          addWallSeg(-18.0, wz, Math.PI / 2);
+          addWallSeg(18.0, wz, -Math.PI / 2);
+        });
+        addWallSeg(-15.0, 24.5, 0);
+        addWallSeg(15.0, 24.5, 0);
+      }, undefined, (err) => console.error('Lỗi tải tuong_chua_phap_luan.glb:', err));
+
+      // 4. Lan Can Đá Bạch Ngọc Hoa Sen (/lan_can_da_sen.glb - 1 joined mesh)
+      archLoader.load('/lan_can_da_sen.glb', (gltf) => {
+        const railTpl = gltf.scene;
+        railTpl.traverse(c => {
+          if (c.isMesh) {
+            if (c.geometry) c.geometry.computeVertexNormals();
+            c.castShadow = false;
+            c.receiveShadow = false;
+          }
+        });
+        const addRailSeg = (x, z, rotY) => {
+          const seg = railTpl.clone();
+          seg.position.set(x, 0, z);
+          seg.rotation.y = rotY;
+          stoneBalustradeGroup.add(seg);
+        };
+        for (let rz = -17.5; rz <= 60.6; rz += 4.0) {
+          addRailSeg(-25.5, rz, Math.PI / 2);
+          addRailSeg(25.5, rz, -Math.PI / 2);
+        }
+        [-23.5, -20.0, 20.0, 23.5].forEach(rx => addRailSeg(rx, -19.5, 0));
+        for (let rx = -23.5; rx <= 23.6; rx += 4.0) {
+          addRailSeg(rx, 62.5, 0);
+        }
+        addRailSeg(23.5, 62.5, 0);
+      }, undefined, (err) => console.error('Lỗi tải lan_can_da_sen.glb:', err));
+
+      // 5. Mái Chánh Điện Đại Hùng Bảo Điện 2 Tầng Tàu Đao Lá Mái (/mai_chanh_dien.glb)
+      archLoader.load('/mai_chanh_dien.glb', (gltf) => {
+        const roof = prepStaticModel(gltf.scene, false);
+        roof.position.set(0, 0, 2.5);
+        templeUpgradesGroup.add(roof);
+      }, undefined, (err) => console.error('Lỗi tải mai_chanh_dien.glb:', err));
+
+      // 6. Án Gian Bàn Thờ Tam Bảo Chạm Sen & Bộ Ngũ Sự Đồng Cổ (/ban_tho_tam_bao.glb)
+      archLoader.load('/ban_tho_tam_bao.glb', (gltf) => {
+        const altar3D = prepStaticModel(gltf.scene, true);
+        altar3D.position.set(0, 0, -15.0);
+        altarFallbackGroup.visible = false;
+        templeUpgradesGroup.add(altar3D);
+      }, undefined, (err) => console.error('Lỗi tải ban_tho_tam_bao.glb:', err));
+
+      // 7. Giá Treo Đại Hồng Chung Chạm Sen Mái Đao (/gia_dai_hong_chung.glb)
+      archLoader.load('/gia_dai_hong_chung.glb', (gltf) => {
+        const frame3D = prepStaticModel(gltf.scene, true);
+        bellFallbackFrame.visible = false;
+        bellStandGroup.add(frame3D);
+      }, undefined, (err) => console.error('Lỗi tải gia_dai_hong_chung.glb:', err));
+
+      // 8. Đại Mõ Gỗ Mít Chạm Cá Hóa Rồng & Án Kê Đệm Gấm (/dai_mo_ca_rong.glb)
+      archLoader.load('/dai_mo_ca_rong.glb', (gltf) => {
+        const mo3D = prepStaticModel(gltf.scene, true);
+        bigMokugyo.visible = false;
+        daiMoGroup.add(mo3D);
+      }, undefined, (err) => console.error('Lỗi tải dai_mo_ca_rong.glb:', err));
+
+      // 9. Bảo Tháp Báo Ân Bát Giác 7 Tầng (/bao_thap_7_tang.glb)
+      archLoader.load('/bao_thap_7_tang.glb', (gltf) => {
+        const stupa = prepStaticModel(gltf.scene, true);
+        stupa.position.set(19.0, 0, 55.5);
+        templeUpgradesGroup.add(stupa);
+      }, undefined, (err) => console.error('Lỗi tải bao_thap_7_tang.glb:', err));
+
+      // 10. Nhà Bia Bát Giác Rùa Đá Đội Bia Công Đức (/dinh_bia_rua_da.glb)
+      archLoader.load('/dinh_bia_rua_da.glb', (gltf) => {
+        const stelePav = prepStaticModel(gltf.scene, true);
+        stelePav.position.set(-19.0, 0, 55.5);
+        stelePav.rotation.y = Math.PI * 0.5;
+        templeUpgradesGroup.add(stelePav);
+      }, undefined, (err) => console.error('Lỗi tải dinh_bia_rua_da.glb:', err));
+
+      // 11. Đôi Đỉnh Đồng Lộ Thiên Tam Túc Nghê Chầu Sân Chùa (/dinh_dong_san_chua.glb)
+      archLoader.load('/dinh_dong_san_chua.glb', (gltf) => {
+        const cauldronTpl = prepStaticModel(gltf.scene, false);
+        [-4.8, 4.8].forEach(cx => {
+          const cInst = cauldronTpl.clone();
+          cInst.position.set(cx, 0, 27.6);
+          cInst.rotation.y = cx < 0 ? 0.35 : -0.35;
+          templeUpgradesGroup.add(cInst);
+        });
+      }, undefined, (err) => console.error('Lỗi tải dinh_dong_san_chua.glb:', err));
+
+      // 12. Đèn Đá Bạch Ngọc Hoa Sen Dẫn Lối Thiền Hành (/den_da_hoa_sen.glb)
+      archLoader.load('/den_da_hoa_sen.glb', (gltf) => {
+        const stoneLampTpl = gltf.scene;
+        stoneLampTpl.traverse(c => {
+          if (c.isMesh) {
+            if (c.geometry) c.geometry.computeVertexNormals();
+            c.castShadow = false;
+            c.receiveShadow = false;
+          }
+        });
+        [
+          [-3.4, 21.8], [3.4, 21.8],
+          [-3.4, 29.2], [3.4, 29.2],
+          [-3.4, 48.8], [3.4, 48.8],
+          [14.6, 34.4], [-13.8, 35.2]
+        ].forEach(([lx, lz]) => {
+          const lamp = stoneLampTpl.clone();
+          lamp.position.set(lx, 0, lz);
+          templeUpgradesGroup.add(lamp);
+        });
+      }, undefined, (err) => console.error('Lỗi tải den_da_hoa_sen.glb:', err));
+
+      // 13. Cụm Hoa Sen Hồng, Bạch Liên & Lá Sen Trên Mặt Hồ (/cum_hoa_sen_ho.glb)
+      archLoader.load('/cum_hoa_sen_ho.glb', (gltf) => {
+        const lotusClusterTpl = gltf.scene;
+        lotusClusterTpl.traverse(c => {
+          if (c.isMesh) {
+            if (c.geometry) c.geometry.computeVertexNormals();
+            c.castShadow = false;
+            c.receiveShadow = false;
+          }
+        });
+        const lotusPondSpots = [
+          [-3.8, 34.8, 1.05, 0.4], [3.9, 35.2, 1.0, 2.1],
+          [-7.6, 37.5, 1.15, 1.2], [7.8, 37.8, 1.12, 3.8],
+          [-8.8, 42.5, 1.20, 2.7], [8.6, 42.8, 1.18, 0.9],
+          [-7.2, 46.8, 1.08, 4.5], [7.4, 46.5, 1.10, 1.7],
+          [-3.6, 46.2, 0.95, 3.2], [3.7, 45.8, 0.98, 5.1]
+        ];
+        lotusPondSpots.forEach(([lx, lz, sc, ry]) => {
+          const cl = lotusClusterTpl.clone();
+          cl.position.set(lx, 0.055, lz);
+          cl.scale.setScalar(sc);
+          cl.rotation.y = ry;
+          templeUpgradesGroup.add(cl);
+        });
+      }, undefined, (err) => console.error('Lỗi tải cum_hoa_sen_ho.glb:', err));
+    }
 
     // ========================================================
-    // 9. 100 BỒ ĐOÀN TỌA THIỀN ĐỒNG BỘ
+    // 9. 100 BỒ ĐOÀN TỌA THIỀN ĐỒNG BỘ (TỐI ƯU INSTANCEDMESH GIẢM ~300 DRAW CALLS)
     // ========================================================
     const cushionsGroup = new THREE.Group();
     scene.add(cushionsGroup);
     const cushionMeshes = [];
-    const cushionGeo = new THREE.CylinderGeometry(0.95, 1.05, 0.32, 24);
+    const cushionGeo = new THREE.CylinderGeometry(0.95, 1.05, 0.32, 18);
     const emptyCushionMat = new THREE.MeshStandardMaterial({ color: 0xb5652a, roughness: 0.55 });
     const takenCushionMat = new THREE.MeshStandardMaterial({ color: 0xba291a, roughness: 0.55 });
     const myCushionMat = new THREE.MeshStandardMaterial({ color: 0x2e7d32, roughness: 0.45 });
+    const sharedAuraRingGeo = new THREE.RingGeometry(1.05, 1.35, 20);
 
     function generateDefaultSeats() {
       const seats = [];
@@ -3709,35 +3839,50 @@
       cushionMeshes.length = 0;
       cushionsGroup.clear();
 
-      seatsData.forEach(seat => {
+      // Gom 100 viền vàng + 100 tâm sen thành 2 InstancedMesh duy nhất (chỉ tốn 2 draw calls!)
+      const ringGeo = new THREE.TorusGeometry(0.92, 0.05, 6, 18);
+      ringGeo.rotateX(Math.PI / 2);
+      const ringMat = new THREE.MeshStandardMaterial({ color: 0xf5cf47, metalness: 0.85, roughness: 0.22 });
+      const instRings = new THREE.InstancedMesh(ringGeo, ringMat, seatsData.length);
+
+      const centerGeo = new THREE.CircleGeometry(0.38, 14);
+      centerGeo.rotateX(-Math.PI / 2);
+      const centerMat = new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.35 });
+      const instCenters = new THREE.InstancedMesh(centerGeo, centerMat, seatsData.length);
+
+      const dummyMat = new THREE.Matrix4();
+
+      seatsData.forEach((seat, idx) => {
+        const cy = seat.y + 0.15;
         const cushion = new THREE.Mesh(cushionGeo, emptyCushionMat);
-        cushion.position.set(seat.x, seat.y + 0.15, seat.z);
-        cushion.receiveShadow = true;
+        cushion.position.set(seat.x, cy, seat.z);
+        cushion.receiveShadow = !isMobileDevice;
         cushion.userData = { seatId: seat.seatId, isOccupied: false };
 
-        const ring = new THREE.Mesh(new THREE.TorusGeometry(0.92, 0.05, 8, 24), new THREE.MeshStandardMaterial({ color: 0xf5cf47, metalness: 0.85, roughness: 0.2 }));
-        ring.rotation.x = Math.PI / 2;
-        ring.position.y = 0.16;
-        cushion.add(ring);
+        dummyMat.makeTranslation(seat.x, cy + 0.16, seat.z);
+        instRings.setMatrixAt(idx, dummyMat);
+        dummyMat.makeTranslation(seat.x, cy + 0.17, seat.z);
+        instCenters.setMatrixAt(idx, dummyMat);
 
-        const lotusCenter = new THREE.Mesh(new THREE.CircleGeometry(0.38, 16), new THREE.MeshStandardMaterial({ color: 0xd4af37, roughness: 0.35 }));
-        lotusCenter.rotation.x = -Math.PI / 2;
-        lotusCenter.position.y = 0.17;
-        cushion.add(lotusCenter);
-
-        // Hào quang hoa sen vàng dưới đáy bồ đoàn khi có người ngồi
+        // Hào quang dưới đáy bồ đoàn ẩn mặc định (visible = false) khi chưa có người ngồi để không tốn draw call
         const auraRing = new THREE.Mesh(
-          new THREE.RingGeometry(1.05, 1.35, 24),
+          sharedAuraRingGeo,
           new THREE.MeshBasicMaterial({ color: 0xffd700, side: THREE.DoubleSide, transparent: true, opacity: 0 })
         );
         auraRing.rotation.x = -Math.PI / 2;
         auraRing.position.y = 0.04;
+        auraRing.visible = false;
         cushion.add(auraRing);
         cushion.userData.auraRing = auraRing;
 
         cushionsGroup.add(cushion);
         cushionMeshes.push(cushion);
       });
+
+      instRings.instanceMatrix.needsUpdate = true;
+      instCenters.instanceMatrix.needsUpdate = true;
+      cushionsGroup.add(instRings);
+      cushionsGroup.add(instCenters);
     }
 
     initCushions(generateDefaultSeats());
@@ -4006,9 +4151,11 @@
       prop.add(smokeGroup);
       prop.userData.smokePuffs = smokePuffs;
 
-      const light = new THREE.PointLight(0xff5500, 0.9, 1.8);
-      light.position.set(0, 0.42, 0);
-      prop.add(light);
+      if (!isMobileDevice) {
+        const light = new THREE.PointLight(0xff5500, 0.9, 1.8);
+        light.position.set(0, 0.42, 0);
+        prop.add(light);
+      }
 
       prop.position.set(0, 0.46, 0.26);
       prop.visible = false;
@@ -4480,6 +4627,11 @@
       'mantraListModal', 'robeModal', 'divinationModal', 'lanternModal',
       'zenChatModal', 'nameChangeModal', 'mobileSettingsModal', 'lanternWishModal'
     ];
+
+    function isWelcomeBannerOpen() {
+      const ub = document.getElementById('audioUnlockBanner');
+      return !!(ub && window.getComputedStyle(ub).display !== 'none');
+    }
 
     function isAnyModalOpen() {
       return ALL_MODAL_IDS.some(id => {
@@ -6076,6 +6228,7 @@
                   const occupied = !!seat.occupant;
                   cushion.userData.isOccupied = occupied;
                   if (cushion.userData.auraRing) {
+                    cushion.userData.auraRing.visible = occupied;
                     cushion.userData.auraRing.material.opacity = occupied ? 0.75 : 0;
                   }
                   if (seat.occupant) {
@@ -6180,7 +6333,10 @@
               const cushion = cushionMeshes.find(c => c.userData.seatId === data.seatId);
               if (cushion) {
                 cushion.userData.isOccupied = false;
-                if (cushion.userData.auraRing) cushion.userData.auraRing.material.opacity = 0;
+                if (cushion.userData.auraRing) {
+                  cushion.userData.auraRing.visible = false;
+                  cushion.userData.auraRing.material.opacity = 0;
+                }
                 cushion.material = emptyCushionMat;
               }
             }
@@ -6194,6 +6350,7 @@
             if (cushion) {
               cushion.userData.isOccupied = occupied;
               if (cushion.userData.auraRing) {
+                cushion.userData.auraRing.visible = occupied;
                 cushion.userData.auraRing.material.opacity = occupied ? 0.75 : 0;
               }
               if (occupied) {
@@ -6666,9 +6823,9 @@
       // Bàn Thờ Tam Cấp Chánh Điện
       [-9.0, 9.0, -18.1, -11.9],
       // Giá treo Đại Hồng Chung
-      [12.0, 15.0, -11.8, -10.2],
-      // Bệ ngọc Đình Sa La Phật Nhập Niết Bàn (X = 18.0, Z = 40.0)
-      [13.1, 22.9, 37.9, 42.1],
+      [11.4, 15.6, -12.3, -9.7],
+      // Bệ ngọc Đình Sa La Phật Nhập Niết Bàn (X = 18.0, Z = 40.0, hướng Bắc-Nam 5.1m x 10.4m)
+      [15.4, 20.6, 34.8, 45.2],
       // Thành lan can hai bên Cầu Kiều gỗ son cong (chừa mặt cầu |X| <= 1.50 để đi qua)
       [-1.92, -1.50, 29.8, 48.1],
       [1.50, 1.92, 29.8, 48.1]
@@ -6682,12 +6839,27 @@
       { x: -5.9, z: 24.5, r: 0.62 },
       { x: 5.9, z: 24.5, r: 0.62 },
       { x: 12.0, z: 24.5, r: 0.62 },
-      // Lư hương đồng & Đại Mõ
+      // Lư hương đồng & Đại Mõ Gia Trì trên án kê
       { x: 0, z: -12.4, r: 0.72 },
-      { x: -13.5, z: -11.0, r: 1.25 },
+      { x: -13.5, z: -11.0, r: 1.45 },
       // Đài sen Quán Thế Âm Bồ Tát & Bảo đài A Di Đà
       { x: 0, z: 54.0, r: 4.42 },
       { x: -18.0, z: 40.0, r: 4.15 },
+      // Bảo Tháp Báo Ân 7 Tầng (Đông-Nam) & Nhà Bia Công Đức Rùa Đá (Tây-Nam)
+      { x: 19.0, z: 55.5, r: 3.05 },
+      { x: -19.0, z: 55.5, r: 2.85 },
+      // Đôi Đỉnh Đồng Tam Túc Nghê Chầu trước sân Tam Quan
+      { x: -4.8, z: 27.6, r: 0.88 },
+      { x: 4.8, z: 27.6, r: 0.88 },
+      // Đèn Đá Bạch Ngọc Hoa Sen dẫn lối thiền hành
+      { x: -3.4, z: 21.8, r: 0.46 },
+      { x: 3.4, z: 21.8, r: 0.46 },
+      { x: -3.4, z: 29.2, r: 0.46 },
+      { x: 3.4, z: 29.2, r: 0.46 },
+      { x: -3.4, z: 48.8, r: 0.46 },
+      { x: 3.4, z: 48.8, r: 0.46 },
+      { x: 14.6, z: 34.4, r: 0.46 },
+      { x: -13.8, z: 35.2, r: 0.46 },
       // Đá non bộ trong khuôn viên sân chùa
       ...rockLayouts
         .filter(cfg => Math.abs(cfg.x) < 25.2 && cfg.z > -19.0 && cfg.z < 62.0)
@@ -6806,7 +6978,7 @@
       return { x: currX, z: currZ };
     }
 
-    // Vật cản khối 3D dành cho Smart Camera (chống xuyên tường & bệ thờ)
+    // Vật cản khối 3D dành cho Smart Camera (chống xuyên tường, bệ thờ, bảo tháp & nhà bia)
     const CAMERA_OBSTACLE_AABBS = [
       [-18.5, 18.5, -20.4, -19.0, 5.2],
       [-18.5, -17.5, -19.7, 4.5, 5.2],
@@ -6816,7 +6988,7 @@
       [-18.5, -12.2, 24.0, 25.0, 5.2],
       [12.2, 18.5, 24.0, 25.0, 5.2],
       [-9.1, 9.1, -18.2, -11.8, 2.8],
-      [13.0, 23.0, 37.8, 42.2, 6.6]
+      [15.3, 20.7, 34.7, 45.3, 6.4]
     ];
 
     function isCameraPointBlocked(cx, cy, cz) {
@@ -6831,19 +7003,53 @@
       }
       if (cy < 4.5 && Math.hypot(cx, cz - 54.0) < 4.35) return true;
       if (cy < 4.5 && Math.hypot(cx + 18.0, cz - 40.0) < 4.05) return true;
+      if (cy < 12.0 && Math.hypot(cx - 19.0, cz - 55.5) < 3.0) return true;
+      if (cy < 7.5 && Math.hypot(cx + 19.0, cz - 55.5) < 2.8) return true;
       return false;
     }
 
-    // Phơi bày helper ra window phục vụ kiểm thử va chạm chuẩn xác
+    // Phơi bày helper ra window phục vụ kiểm thử va chạm & hiệu năng GPU chuẩn xác
     window.localPlayerObj = localPlayerObj;
     window.getGroundHeight = getGroundHeight;
     window.isPositionBlocked = isPositionBlocked;
     window.resolvePlayerMovement = resolvePlayerMovement;
+    window._zenRenderer = renderer;
+    window._zenScene = scene;
+    window._zenCamera = camera;
+    window._zenKoi = koiFishList;
+    window._setZenCameraYawPitch = (yaw, pitch, dist) => {
+      cameraYaw = yaw;
+      cameraPitch = pitch;
+      if (typeof dist === 'number') {
+        camDist = dist;
+        effectiveCamDist = dist;
+      }
+    };
 
     let effectiveCamDist = camDist;
     let walkPhase = 0;
     let lastNetworkSync = 0;
+    let koiFrameSkip = 0;
+    const _camTargetVec = new THREE.Vector3();
     const clock = new THREE.Clock();
+
+    function updateMonkIncenseSmoke(m, delta, time) {
+      if (m && m.userData && m.userData.incenseHandProp && m.userData.incenseHandProp.visible) {
+        const puffs = m.userData.incenseHandProp.userData.smokePuffs;
+        if (puffs) {
+          for (let idx = 0; idx < puffs.length; idx++) {
+            const p = puffs[idx];
+            p.mesh.position.y += delta * 0.18 * p.speed;
+            p.mesh.position.x += Math.sin(time * 3 + idx) * delta * 0.02;
+            p.mesh.scale.setScalar(p.baseScale * (1 + Math.sin(time * 4 + idx) * 0.15));
+            if (p.mesh.position.y > 0.88) {
+              p.mesh.position.y = 0.44;
+              p.mesh.position.x = (Math.random() - 0.5) * 0.04;
+            }
+          }
+        }
+      }
+    }
 
     function animate() {
       requestAnimationFrame(animate);
@@ -6872,7 +7078,7 @@
       candleLights.forEach((candle, idx) => {
         const flicker = 1.0 + Math.sin(time * 8 + idx * 3.14) * 0.18 + (Math.random() - 0.5) * 0.08;
         candle.mesh.scale.set(1.0, flicker, 1.0);
-        candle.light.intensity = 1.3 * flicker;
+        if (candle.light) candle.light.intensity = 1.2 * flicker;
       });
 
       // Mưa cánh sen hồng bay lượn
@@ -6900,9 +7106,13 @@
         scenicRiver.material.map.offset.y += delta * 0.025;
       }
 
-      // Cập nhật hoạt ảnh đàn cá 3D & nhân vật chú tiểu 3D Blender 5.2
-      if (typeof koiMixers !== 'undefined') {
-        koiMixers.forEach(m => m.update(delta));
+      // Cập nhật hoạt ảnh đàn cá Koi nhỏ (trên điện thoại cập nhật xương cách nhịp 30Hz tiết kiệm CPU)
+      if (typeof koiMixers !== 'undefined' && koiMixers.length > 0) {
+        koiFrameSkip = (koiFrameSkip + 1) & 1;
+        if (!isMobileDevice || koiFrameSkip === 0) {
+          const koiDelta = isMobileDevice ? delta * 2.0 : delta;
+          for (let i = 0; i < koiMixers.length; i++) koiMixers[i].update(koiDelta);
+        }
       }
       if (typeof monkMixers !== 'undefined') {
         monkMixers.forEach(m => m.update(delta));
@@ -6910,21 +7120,20 @@
 
       koiFishList.forEach(k => {
         k.angle += k.speed * delta;
-        const currentR = k.radius + Math.sin(time * 1.4 + k.phase) * 0.4;
+        const currentR = k.radius + Math.sin(time * 1.4 + k.phase) * 0.35;
         const posX = Math.cos(k.angle) * currentR;
         const posZ = 42 + Math.sin(k.angle) * currentR;
-        const posY = k.baseY + Math.sin(time * k.bobSpeed + k.phase) * 0.025;
+        const posY = k.baseY + Math.sin(time * k.bobSpeed + k.phase) * 0.012;
 
         k.instance.position.set(posX, posY, posZ);
 
-        // Hướng bơi tiếp tuyến theo chiều di chuyển
         const tangentRot = k.speed >= 0 ? -k.angle : (-k.angle + Math.PI);
         k.instance.rotation.y = tangentRot;
-        k.instance.rotation.z = Math.sin(time * 3 + k.phase) * 0.06;
-        k.instance.rotation.x = Math.sin(time * 2 + k.phase) * 0.03;
+        k.instance.rotation.z = Math.sin(time * 3 + k.phase) * 0.04;
+        k.instance.rotation.x = Math.sin(time * 2 + k.phase) * 0.02;
       });
 
-      // Cập nhật hoa đăng bập bềnh trôi trên mặt nước hồ sen & ánh nến lung linh
+      // Cập nhật hoa đăng bập bềnh trôi trên mặt nước hồ sen
       if (typeof floatingLanterns !== 'undefined') {
         floatingLanterns.forEach(l => {
           l.angle += l.speed * delta;
@@ -6933,8 +7142,9 @@
           l.mesh.position.y = 0.08 + Math.sin(time * 2.2 + l.bobPhase) * 0.012;
           l.mesh.rotation.y += delta * 0.12;
           l.mesh.rotation.z = Math.cos(time * 1.8 + l.bobPhase) * 0.025;
-          if (l.light) {
-            l.light.intensity = 2.6 + Math.sin(time * 8 + l.flamePhase) * 0.45;
+          if (l.auraMesh) {
+            const s = 0.92 + Math.sin(time * 7 + l.flamePhase) * 0.12;
+            l.auraMesh.scale.setScalar(s);
           }
         });
       }
@@ -6968,23 +7178,9 @@
         }
       }
 
-      // Hiệu ứng làn khói hương trầm bay lượn khi dâng hương
-      [localPlayerObj, ...Array.from(remoteMonkMeshes.values())].forEach(m => {
-        if (m && m.userData && m.userData.incenseHandProp && m.userData.incenseHandProp.visible) {
-          const puffs = m.userData.incenseHandProp.userData.smokePuffs;
-          if (puffs) {
-            puffs.forEach((p, idx) => {
-              p.mesh.position.y += delta * 0.18 * p.speed;
-              p.mesh.position.x += Math.sin(time * 3 + idx) * delta * 0.02;
-              p.mesh.scale.setScalar(p.baseScale * (1 + Math.sin(time * 4 + idx) * 0.15));
-              if (p.mesh.position.y > 0.88) {
-                p.mesh.position.y = 0.44;
-                p.mesh.position.x = (Math.random() - 0.5) * 0.04;
-              }
-            });
-          }
-        }
-      });
+      // Hiệu ứng làn khói hương trầm bay lượn khi dâng hương (không cấp phát mảng mới mỗi frame)
+      updateMonkIncenseSmoke(localPlayerObj, delta, time);
+      remoteMonkMeshes.forEach(m => updateMonkIncenseSmoke(m, delta, time));
 
       // Giảm mờ dần bong bóng niệm Phật của nhân vật hiện tại
       if (localPlayerObj.userData && localPlayerObj.userData.chatTimer > 0) {
@@ -7191,8 +7387,8 @@
       const interactPrompt = document.getElementById('interactPrompt');
       const actionPrompt = document.getElementById('spatialActionPrompt');
 
-      // NẾU CÓ BẤT KỲ BẢNG KINH, TƯỢNG PHẬT, THỜI KHÓA HOẶC MODAL NÀO ĐANG MỞ -> ẨN TOÀN BỘ NÚT TƯƠNG TÁC
-      if (isAnyModalOpen()) {
+      // NẾU CÓ BẤT KỲ BẢNG KINH, TƯỢNG PHẬT, THỜI KHÓA, MÀN HÌNH CHÀO HOẶC MODAL NÀO ĐANG MỞ -> ẨN TOÀN BỘ NÚT TƯƠNG TÁC
+      if (isAnyModalOpen() || isWelcomeBannerOpen()) {
         document.body.classList.add('modal-open');
         if (interactPrompt) interactPrompt.style.display = 'none';
         if (actionPrompt) actionPrompt.style.display = 'none';
@@ -7286,7 +7482,8 @@
       const minCamFloorY = getGroundHeight(targetCamX, targetCamZ) + 0.58;
       const targetCamY = Math.max(minCamFloorY, pivotY + rawOffsetY * distRatio);
 
-      camera.position.lerp(new THREE.Vector3(targetCamX, targetCamY, targetCamZ), 0.18);
+      _camTargetVec.set(targetCamX, targetCamY, targetCamZ);
+      camera.position.lerp(_camTargetVec, 0.18);
       camera.lookAt(localPlayerObj.position.x, localPlayerObj.position.y + 1.4, localPlayerObj.position.z);
 
       renderer.render(scene, camera);
