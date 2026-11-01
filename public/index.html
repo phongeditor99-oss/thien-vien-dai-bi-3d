@@ -1104,13 +1104,229 @@
       box-shadow: 0 0 12px rgba(255, 215, 0, 0.5);
     }
 
+    /* ========================================================
+       V6 UPGRADE STYLES: THANH LOADING HOA SEN, LỊCH ÂM, CÂY BỒ ĐỀ,
+       QUẺ XĂM 32 QUẺ TẢI ẢNH & CHẾ ĐỘ NGẮM CẢNH / CHỤP ẢNH CHECK-IN
+       ======================================================== */
+    #topStreamProgressBar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: linear-gradient(90deg, #ff9ebc, #ffd700, #fff4b0);
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.85);
+      z-index: 20005;
+      transition: width 0.25s ease, opacity 0.45s ease;
+      pointer-events: none;
+    }
+    #lotusLoadingWrap {
+      background: rgba(18, 9, 5, 0.82);
+      border: 1px solid rgba(245, 207, 71, 0.45);
+      border-radius: 12px;
+      padding: 10px 14px;
+      margin-bottom: 14px;
+      text-align: left;
+    }
+    .lotus-load-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.80rem;
+      color: #ffe28a;
+      margin-bottom: 6px;
+      font-weight: bold;
+    }
+    .lotus-load-track {
+      width: 100%;
+      height: 8px;
+      background: rgba(255, 255, 255, 0.10);
+      border-radius: 99px;
+      overflow: hidden;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+    }
+    #lotusLoadingBarFill {
+      width: 12%;
+      height: 100%;
+      background: linear-gradient(90deg, #ff7eb3 0%, #ffd700 60%, #fff3b0 100%);
+      border-radius: 99px;
+      transition: width 0.22s ease;
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.65);
+    }
+    .lotus-spin {
+      display: inline-block;
+      animation: lotusPulseSpin 2.8s infinite ease-in-out;
+    }
+    @keyframes lotusPulseSpin {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.14) rotate(8deg); }
+    }
+
+    /* Nút Lịch Âm lễ hội phát sáng x2 Công Đức */
+    #btnLunarCalendar.festival-active {
+      background: linear-gradient(135deg, rgba(168, 28, 28, 0.92), rgba(110, 16, 16, 0.95)) !important;
+      border-color: #ffd700 !important;
+      color: #ffe999 !important;
+      box-shadow: 0 0 14px rgba(255, 215, 0, 0.55);
+    }
+    .merit-x2-pill {
+      display: none;
+      background: #ffd700;
+      color: #2b0c06;
+      font-size: 0.64rem;
+      font-weight: 800;
+      padding: 1px 5px;
+      border-radius: 6px;
+      margin-left: 3px;
+    }
+    #btnLunarCalendar.festival-active .merit-x2-pill {
+      display: inline-block;
+    }
+    #btnAerialCamTop.aerial-active {
+      background: linear-gradient(135deg, #ffd700, #c8961e) !important;
+      color: #1f0e05 !important;
+      border-color: #fff2a6 !important;
+      font-weight: bold !important;
+      box-shadow: 0 0 14px rgba(255, 215, 0, 0.65);
+    }
+
+    /* Z-Index bảo vệ cho 4 Modal mới */
+    #lunarCalendarModal, #wishingTreeModal, #wishingCardViewModal, #photoPreviewModal {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle at center, #2e180e 0%, #140905 100%);
+      border: 2px solid var(--gold);
+      border-radius: 20px;
+      padding: 18px 22px;
+      box-shadow: 0 14px 55px rgba(0,0,0,0.94), 0 0 26px rgba(245, 207, 71, 0.38);
+      color: #f7ede1;
+      z-index: 10000 !important;
+      box-sizing: border-box;
+      max-height: 88vh;
+      overflow-y: auto;
+    }
+    #lunarCalendarModal { width: 520px; max-width: 94vw; }
+    #wishingTreeModal { width: 470px; max-width: 94vw; }
+    #wishingCardViewModal { width: 400px; max-width: 92vw; }
+    #photoPreviewModal { width: 540px; max-width: 95vw; text-align: center; }
+
+    /* Hiệu ứng lắc ống xăm tre */
+    #bambooCylinderAnim {
+      display: none;
+      padding: 18px 10px;
+      text-align: center;
+    }
+    .bamboo-shake-icon {
+      font-size: 3.3rem;
+      display: inline-block;
+      animation: shakeBamboo 0.36s infinite ease-in-out;
+    }
+    @keyframes shakeBamboo {
+      0% { transform: rotate(-14deg) translateY(0); }
+      25% { transform: rotate(14deg) translateY(-6px); }
+      50% { transform: rotate(-12deg) translateY(2px); }
+      75% { transform: rotate(12deg) translateY(-5px); }
+      100% { transform: rotate(-14deg) translateY(0); }
+    }
+
+    /* Nút chọn phân loại thẻ ước nguyện Bồ Đề */
+    .wish-cat-btn {
+      flex: 1 1 44%;
+      padding: 8px 8px;
+      border-radius: 10px;
+      border: 1.5px solid rgba(255, 215, 0, 0.35);
+      background: rgba(50, 22, 14, 0.78);
+      color: #f5dfc0;
+      font-weight: bold;
+      font-size: 0.82rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.18s;
+    }
+    .wish-cat-btn.active {
+      border-color: #ffd700;
+      background: linear-gradient(135deg, #8f1d1d, #5c0f0f);
+      color: #ffd700;
+      box-shadow: 0 0 12px rgba(255, 215, 0, 0.38);
+    }
+
+    /* Chế độ Tĩnh Tâm Ngắm Cảnh & Chụp Ảnh Check-in */
+    #zenPhotoFloatingBar {
+      display: none;
+      position: fixed;
+      bottom: max(16px, env(safe-area-inset-bottom, 12px));
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(20, 10, 6, 0.90);
+      border: 1.5px solid var(--gold);
+      border-radius: 24px;
+      padding: 6px 10px;
+      gap: 6px;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      width: max-content;
+      max-width: calc(100vw - 16px);
+      box-sizing: border-box;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.85), 0 0 18px rgba(245, 207, 71, 0.35);
+      backdrop-filter: blur(10px);
+      z-index: 9985;
+    }
+    body.zen-photo-mode #zenPhotoFloatingBar {
+      display: inline-flex;
+    }
+    body.zen-photo-mode .top-bar,
+    body.zen-photo-mode #mantraPlayer,
+    body.zen-photo-mode .zen-dock,
+    body.zen-photo-mode #joystickZone,
+    body.zen-photo-mode #controlsHelp,
+    body.zen-photo-mode #interactPrompt,
+    body.zen-photo-mode #spatialActionPrompt,
+    body.zen-photo-mode #scheduledSutraLiveBanner,
+    body.zen-photo-mode .feed-container {
+      display: none !important;
+      pointer-events: none !important;
+    }
+    .btn-photo-bar {
+      background: rgba(62, 32, 16, 0.92);
+      color: #ffd700;
+      border: 1px solid rgba(255, 215, 0, 0.55);
+      border-radius: 99px;
+      padding: 7px 13px;
+      font-size: 0.80rem;
+      font-weight: bold;
+      cursor: pointer;
+      white-space: nowrap;
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.18s;
+    }
+    .btn-photo-bar.primary-snap {
+      background: linear-gradient(135deg, #ffd700, #d4af37);
+      color: #211005;
+      border: none;
+      box-shadow: 0 0 14px rgba(255, 215, 0, 0.55);
+    }
+    @media (max-width: 768px) {
+      .btn-hud { padding: 4px 7px; font-size: 0.69rem; }
+      .hud-badge { padding: 4px 7px; font-size: 0.69rem; }
+      .btn-photo-bar { padding: 6px 10px; font-size: 0.74rem; }
+      #divinationModal { width: 94vw !important; max-width: 94vw !important; padding: 16px 16px !important; max-height: 88vh; overflow-y: auto; }
+    }
+
   </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
-  <script src="/SkeletonUtils.js"></script>
+  <script src="/SkeletonUtils.js?v=6"></script>
 </head>
 <body>
 
+  <div id="topStreamProgressBar"></div>
   <div id="canvas3d"></div>
 
   <!-- BẢNG MỞ KHÓA ÂM THANH BAN ĐẦU -->
@@ -1124,7 +1340,7 @@
       </p>
 
       <!-- KHUNG ĐẶT PHÁP DANH CHÚ TIỂU KHI VÀO -->
-      <div style="background: rgba(14, 8, 4, 0.75); border: 1.5px solid var(--gold); border-radius: 14px; padding: 14px 16px; margin-bottom: 18px; text-align: left;">
+      <div style="background: rgba(14, 8, 4, 0.75); border: 1.5px solid var(--gold); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; text-align: left;">
         <label for="inputMonkName" style="display:block; color: #ffd700; font-size: 0.92rem; font-weight: bold; margin-bottom: 8px;">
           🏷️ Đặt Pháp Danh / Tên Chú Tiểu của bạn:
         </label>
@@ -1141,6 +1357,17 @@
           <button type="button" class="quick-name-tag" onclick="selectSuggestedName('Chú Tiểu Trí Tuệ')">Trí Tuệ</button>
           <button type="button" class="quick-name-tag" onclick="selectSuggestedName('Chú Tiểu Minh Triết')">Minh Triết</button>
           <button type="button" class="quick-name-tag" onclick="selectSuggestedName('Chú Tiểu Giác Ngộ')">Giác Ngộ</button>
+        </div>
+      </div>
+
+      <!-- THANH LOADING HOA SEN THÔNG MINH -->
+      <div id="lotusLoadingWrap">
+        <div class="lotus-load-head">
+          <span><span class="lotus-spin">🪷</span> <span id="lotusLoadingText">Đang tải cảnh chùa 3D thanh tịnh...</span></span>
+          <span id="lotusLoadingPct">12%</span>
+        </div>
+        <div class="lotus-load-track">
+          <div id="lotusLoadingBarFill"></div>
         </div>
       </div>
 
@@ -1189,11 +1416,24 @@
         <span>Bộ Kinh Phật</span>
       </button>
       <button class="btn-hud" id="btnOpenScheduleTop" style="border-color:#ffd700; background:rgba(255,215,0,0.18); color:#ffd700; font-weight:bold;" title="Thời Khóa Tụng Kinh 19h Hàng Ngày">
-        <span>⏰ Lịch 19h</span>
+        <span>⏰ <span class="desktop-only-hud">Lịch </span>19h</span>
+      </button>
+      <button class="btn-hud" id="btnLunarCalendar" title="Lịch Âm Việt Nam & Sự Kiện Rằm / Mùng 1 (x2 Công Đức)">
+        <span id="lunarHudIcon">🌙</span>
+        <span id="lunarHudShort">--/-- ÂL</span>
+        <span class="merit-x2-pill">x2</span>
       </button>
     </div>
 
     <div class="hud-group">
+      <button class="btn-hud" id="btnAerialCamTop" title="Camera Toàn Cảnh Trên Cao Ngắm Quần Thể Chùa">
+        <span>🦅</span>
+        <span class="desktop-only-hud" id="aerialCamTopLabel">Toàn Cảnh</span>
+      </button>
+      <button class="btn-hud" id="btnPhotoModeTop" title="Chế Độ Tĩnh Tâm Ngắm Cảnh & Chụp Ảnh Check-in Đẹp">
+        <span>📷</span>
+        <span class="desktop-only-hud">Chụp Ảnh</span>
+      </button>
       <div class="hud-badge">
         <span>🙏 <span class="desktop-only-hud">Công Đức:</span></span>
         <b class="hud-gold" id="myMerits">0</b>
@@ -1208,7 +1448,7 @@
         <span>🔊 Âm Lượng</span>
       </button>
       <button class="btn-hud" id="btnMobileMenu" title="Tiện ích & Cài đặt nhanh">
-        <span>⚙️ Tiện Ích</span>
+        <span>⚙️<span class="desktop-only-hud"> Tiện Ích</span></span>
       </button>
     </div>
   </div>
@@ -1286,19 +1526,41 @@
     <button class="btn-hud" style="width:100%; justify-content:center;" onclick="changeRobe('yellow')">Hoàng Y Tôn Quý</button>
   </div>
 
-  <!-- QUẺ XĂM QUAN ÂM -->
+  <!-- QUẺ XĂM QUÁN THẾ ÂM LINH XÂM (32 QUẺ CỔ TRUYỀN + TẢI ẢNH THẺ XĂM CHIA SẺ FACEBOOK) -->
   <div id="divinationModal">
-    <div class="modal-header" style="justify-content:center;">
-      <span style="color:#ffd700;">📜 QUẺ QUÁN THẾ ÂM LINH XÂM</span>
+    <div class="modal-header" style="justify-content:space-between; align-items:center;">
+      <span style="color:#ffd700; font-weight:bold;">📜 QUÁN THẾ ÂM LINH XÂM (32 QUẺ)</span>
+      <span style="cursor:pointer; color:#ffd700; font-size:1.15rem;" id="btnTopCloseDivination">✕</span>
     </div>
-    <div id="divineNumber" style="font-size:1.15rem; color:#ffd700; font-weight:bold; margin-bottom:10px;">THƯỢNG THƯỢNG CÁT</div>
-    <div id="divinePoem" style="font-style:italic; line-height:1.7; color:#f0e4d0; margin-bottom:14px; background:rgba(0,0,0,0.3); padding:10px; border-radius:8px;">
-      "Sen nở đài hoa tỏa ngát hương,\\nTâm lành tích đức khắp mười phương.\\nMuôn ngàn duyên khởi đều như ý,\\nAn lạc tiêu dao thoát dặm trường."
+
+    <!-- Hoạt ảnh lắc ống xăm tre trước khi hiện quẻ -->
+    <div id="bambooCylinderAnim">
+      <div class="bamboo-shake-icon">🎋</div>
+      <div style="color:#ffd700; font-weight:bold; font-size:1rem; margin-top:8px;">Đang chí thành lắc Ống Xăm Quán Âm...</div>
+      <div style="color:#d8c4aa; font-size:0.80rem; margin-top:4px; font-style:italic;">Nam Mô Đại Bi Quán Thế Âm Bồ Tát cảm ứng chứng minh</div>
     </div>
-    <div id="divineAdvice" style="font-size:0.88rem; color:#81c784; margin-bottom:14px;">
-      <b>Lời giải:</b> Mọi sự thuận hòa, tâm nguyện sáng tỏ, giữ gìn giới định tuệ ắt gặt hái phúc lành viên mãn.
+
+    <div id="divinationResultWrap">
+      <div style="margin-bottom:6px;">
+        <span id="divineRankBadge" style="display:inline-block; background:linear-gradient(135deg,#8f1d1d,#5a1010); border:1px solid #ffd700; color:#ffe680; font-size:0.75rem; font-weight:bold; padding:3px 12px; border-radius:99px;">THƯỢNG THƯỢNG CÁT</span>
+      </div>
+      <div id="divineNumber" style="font-size:1.15rem; color:#ffd700; font-weight:bold; margin-bottom:10px;">QUẺ SỐ 1 - THƯỢNG THƯỢNG CÁT</div>
+      <div id="divinePoem" style="font-style:italic; line-height:1.75; color:#fff5e4; margin-bottom:12px; background:rgba(16,7,4,0.68); border:1px solid rgba(212,175,55,0.45); padding:12px 14px; border-radius:10px; font-size:0.95rem;">
+        "Sen nở đài hoa tỏa ngát hương,<br>Tâm lành tích đức khắp mười phương.<br>Muôn ngàn duyên khởi đều như ý,<br>An lạc tiêu dao thoát dặm trường."
+      </div>
+      <div id="divineAdvice" style="font-size:0.86rem; line-height:1.55; color:#a5e6a8; margin-bottom:14px; text-align:left; background:rgba(20,40,22,0.42); border:1px solid rgba(129,199,132,0.35); padding:10px 12px; border-radius:10px;">
+        <b>Lời giải:</b> Mọi sự thuận hòa, tâm nguyện sáng tỏ, giữ gìn giới định tuệ ắt gặt hái phúc lành viên mãn.
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px;">
+        <button type="button" id="btnDownloadFortuneCard" style="width:100%; padding:10px 14px; border-radius:10px; border:none; background:linear-gradient(135deg,#ffd700,#c8961e); color:#210e04; font-weight:bold; font-size:0.90rem; cursor:pointer; font-family:inherit; box-shadow:0 4px 14px rgba(255,215,0,0.35);">
+          📥 Tải Ảnh Thẻ Xăm Đẹp (Đăng Facebook / Zalo)
+        </button>
+        <div style="display:flex; gap:8px; justify-content:center;">
+          <button type="button" class="btn-hud" id="btnDrawAgainFortune" style="flex:1; justify-content:center; padding:8px 12px;">🎋 Xin Quẻ Khác</button>
+          <button type="button" class="btn-hud" id="btnCloseDivination" style="flex:1; justify-content:center; padding:8px 12px; border-color:#ffd700; color:#ffd700;">🙏 Hoan Hỷ Nhận</button>
+        </div>
+      </div>
     </div>
-    <button class="btn-hud" id="btnCloseDivination" style="margin:0 auto; padding:8px 24px;">Hoan Hỷ Tiếp Nhận</button>
   </div>
 
     <!-- MODAL CHIÊM BÁI & CHÚ GIẢI TÔN TƯỢNG PHẬT BỒ TÁT -->
@@ -1496,6 +1758,22 @@
         <span style="font-size:1.4rem;">⏰</span>
         <span>Thời Khóa 19h</span>
       </button>
+      <button type="button" class="mobile-menu-card" id="mobBtnLunar">
+        <span style="font-size:1.4rem;">🌙</span>
+        <span>Lịch Âm Lễ Vía</span>
+      </button>
+      <button type="button" class="mobile-menu-card" id="mobBtnWishingTree">
+        <span style="font-size:1.4rem;">🎀</span>
+        <span>Cây Bồ Đề Ước Nguyện</span>
+      </button>
+      <button type="button" class="mobile-menu-card" id="mobBtnAerialCam">
+        <span style="font-size:1.4rem;">🦅</span>
+        <span>Camera Toàn Cảnh</span>
+      </button>
+      <button type="button" class="mobile-menu-card" id="mobBtnPhotoMode">
+        <span style="font-size:1.4rem;">📷</span>
+        <span>Chụp Ảnh Check-in</span>
+      </button>
       <button type="button" class="mobile-menu-card" id="mobBtnAudio">
         <span style="font-size:1.4rem;">🔊</span>
         <span>Chỉnh Âm Lượng</span>
@@ -1513,6 +1791,147 @@
         <span id="mobAtmoText">Đổi Không Gian Ngày / Đêm</span>
       </button>
     </div>
+  </div>
+
+  <!-- MODAL 1: LỊCH ÂM VIỆT NAM TỰ ĐỘNG & SỰ KIỆN RẰM / MÙNG 1 (X2 CÔNG ĐỨC) -->
+  <div id="lunarCalendarModal">
+    <div class="modal-header">
+      <span style="color:#ffd700; font-weight:bold; font-size:1.05rem;">🌙 LỊCH ÂM VIỆT NAM & NGÀY TRAI GIỚI</span>
+      <span style="cursor:pointer; font-size:1.25rem; color:#ffd700;" id="btnCloseLunarModal">✕</span>
+    </div>
+    <div style="background:rgba(16,8,4,0.78); border:1.5px solid rgba(255,215,0,0.45); border-radius:14px; padding:14px 16px; text-align:center; margin-bottom:12px;">
+      <div id="lunarSolarLine" style="font-size:0.82rem; color:#d8c4aa; margin-bottom:4px;">Dương lịch: --/--/---- (Giờ Việt Nam UTC+7)</div>
+      <div id="lunarBigDate" style="font-size:1.45rem; font-weight:bold; color:#ffd700; letter-spacing:0.4px;">Mùng -- Tháng -- Âm Lịch</div>
+      <div id="lunarCanChiLine" style="font-size:0.86rem; color:#ffe6a3; margin-top:4px;">Năm -- • Tháng -- • Ngày --</div>
+      <div id="lunarEventBanner" style="margin-top:10px; padding:8px 12px; border-radius:10px; background:rgba(255,215,0,0.12); border:1px solid rgba(255,215,0,0.4); font-size:0.84rem; color:#fff2c2; line-height:1.45;">
+        Đang cập nhật lịch âm thiên văn...
+      </div>
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:12px;">
+      <button type="button" id="btnToggleFestivalPreview" class="btn-hud" style="flex:1; justify-content:center; padding:9px 12px; border-color:#ffd700; color:#ffd700; font-weight:bold;">
+        🏮 Bật Ngắm Đèn Lồng Lễ Hội Sân Chùa
+      </button>
+    </div>
+
+    <div style="font-size:0.80rem; color:#ffd700; font-weight:bold; margin-bottom:6px;">📿 LỊCH ĐẠI LỄ PHẬT GIÁO & TRAI GIỚI (TỰ ĐỘNG X2 CÔNG ĐỨC & TREO ĐÈN LỒNG):</div>
+    <div style="font-size:0.80rem; color:#e9dac7; line-height:1.65; background:rgba(12,6,3,0.65); border:1px solid #523018; border-radius:12px; padding:10px 14px;">
+      • <b>Mùng 1, 14, Rằm (15), 30 Âm Lịch hàng tháng:</b> Ngày Trai Giới Sám Hối — <b>Nhân đôi (x2) Công Đức</b><br>
+      • <b>Rằm Tháng Giêng (15/1 ÂL):</b> Đại Lễ Thượng Nguyên Cầu An Đầu Năm<br>
+      • <b>19/2, 19/6, 19/9 ÂL:</b> Đại Lễ Vía Đức Quán Thế Âm Bồ Tát<br>
+      • <b>Rằm Tháng Tư (15/4 ÂL):</b> Đại Lễ Phật Đản Sanh (Vesak)<br>
+      • <b>Rằm Tháng Bảy (15/7 ÂL):</b> Đại Lễ Vu Lan Báo Hiếu Cha Mẹ<br>
+      • <b>17/11 & 08/12 ÂL:</b> Vía Đức Phật A Di Đà & Phật Thành Đạo
+    </div>
+  </div>
+
+  <!-- MODAL 2: CÂY BỒ ĐỀ ƯỚC NGUYỆN (TREO THẺ LỤA ĐỎ CẦU PHÚC TRÊN CÀNH CÂY 3D) -->
+  <div id="wishingTreeModal">
+    <div class="modal-header">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:1.35rem;">🌳</span>
+        <b style="color:#ffd700; font-size:1.02rem;">CÂY BỒ ĐỀ ƯỚC NGUYỆN CẦU PHÚC</b>
+      </div>
+      <span style="cursor:pointer; font-size:1.25rem; color:#ffd700;" id="btnCloseWishingTree">✕</span>
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label style="display:block; color:#ffd700; font-size:0.80rem; font-weight:bold; margin-bottom:6px;">🎀 Chọn Thẻ Lụa Đỏ Cát Tường:</label>
+      <div style="display:flex; flex-wrap:wrap; gap:6px;">
+        <button type="button" class="wish-cat-btn active" data-wcat="binh_an">🌸 Cầu Bình An Gia Đạo</button>
+        <button type="button" class="wish-cat-btn" data-wcat="suc_khoe">🌿 Cầu Sức Khỏe Cha Mẹ</button>
+        <button type="button" class="wish-cat-btn" data-wcat="cong_danh">✨ Cầu Công Danh Thuần Thuận</button>
+        <button type="button" class="wish-cat-btn" data-wcat="tri_tue">☸️ Cầu Trí Tuệ Bồ Đề</button>
+      </div>
+    </div>
+
+    <div style="margin-bottom:10px;">
+      <label for="wishingTreeInput" style="display:block; color:#ffd700; font-size:0.80rem; font-weight:bold; margin-bottom:5px;">✍️ Viết tâm nguyện treo lên cành Bồ Đề thiêng:</label>
+      <textarea id="wishingTreeInput" rows="3" maxlength="160" placeholder="Kính nguyện chư Phật gia hộ cha mẹ mạnh khỏe bình an, gia đình hòa thuận hạnh phúc..." style="width:100%; box-sizing:border-box; padding:9px 12px; background:rgba(24,11,7,0.92); border:1.5px solid #d4af37; border-radius:9px; color:#fff; font-size:0.90rem; font-family:inherit; outline:none; resize:none;"></textarea>
+    </div>
+
+    <div style="margin-bottom:12px;">
+      <span style="color:#d5c5b2; font-size:0.76rem; font-weight:bold; display:block; margin-bottom:5px;">📿 Chọn nhanh lời cầu nguyện đẹp:</span>
+      <div style="display:flex; flex-direction:column; gap:5px;">
+        <button type="button" class="lantern-preset-btn wishing-preset-btn" data-wish="Kính cầu cha mẹ hai bên bách niên giai lão, thân không bệnh khổ, tâm thường an vui.">🌿 Cầu cha mẹ bách niên giai lão, thân tâm an vui</button>
+        <button type="button" class="lantern-preset-btn wishing-preset-btn" data-wish="Cầu gia đình trên thuận dưới hòa, tai qua nạn khỏi, bốn mùa bình an cát tường.">🌸 Cầu gia đình hòa thuận, bốn mùa bình an cát tường</button>
+        <button type="button" class="lantern-preset-btn wishing-preset-btn" data-wish="Cầu học hành đỗ đạt, công việc hanh thông, gặp nhiều thiện duyên lành.">✨ Cầu học hành đỗ đạt, sự nghiệp hanh thông thuận lợi</button>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-wrap:wrap; gap:8px;">
+      <button type="button" id="btnSubmitWishingCard" class="btn-chat-send" style="flex:1 1 210px; justify-content:center; padding:10px 12px; border-radius:10px; font-size:0.88rem; white-space:normal; text-align:center; line-height:1.25;">
+        🎀 Treo Thẻ Bồ Đề (+10 Công Đức 🙏)
+      </button>
+      <button type="button" id="btnWalkToWishingTree" class="btn-hud" style="padding:10px 12px; border-radius:10px; justify-content:center;" title="Đưa Chú Tiểu đến dưới gốc Cây Bồ Đề">
+        🚶 Đến Cây
+      </button>
+    </div>
+
+    <div style="margin-top:12px; border-top:1px dashed rgba(245,207,71,0.35); padding-top:9px;">
+      <div style="font-size:0.78rem; color:#ffd700; font-weight:bold; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center;">
+        <span>🎀 Thẻ Lụa Đang Đung Đưa Trên Cây Bồ Đề (<span id="wishingCountLabel">0</span>):</span>
+        <span style="font-size:0.71rem; color:#d5c5b2; font-weight:normal;">(Chạm thẻ đỏ 3D để xem)</span>
+      </div>
+      <div id="recentWishingCardsList" style="max-height:110px; overflow-y:auto; display:flex; flex-direction:column; gap:5px; padding-right:4px;"></div>
+    </div>
+  </div>
+
+  <!-- MODAL 3: XEM THẺ LỤA ĐỎ TRÊN CÂY BỒ ĐỀ 1 CHẠM -->
+  <div id="wishingCardViewModal">
+    <div class="modal-header">
+      <span style="color:#ffd700; font-weight:bold;">🎀 THẺ LỤA CẦU PHÚC CÂY BỒ ĐỀ</span>
+      <span style="cursor:pointer; font-size:1.15rem; color:#ffd700;" id="btnCloseWishingCardView">✕</span>
+    </div>
+    <div style="text-align:center; padding:6px 4px 8px 4px;">
+      <div id="wishingViewCategoryBadge" style="display:inline-block; background:linear-gradient(135deg,#991b1b,#5c0d0d); border:1px solid #ffd700; color:#ffe680; font-size:0.76rem; font-weight:bold; padding:3px 12px; border-radius:99px; margin-bottom:8px;">🌸 Cầu Bình An</div>
+      <div id="wishingViewAuthor" style="color:#ffd700; font-weight:bold; font-size:0.95rem; margin-bottom:8px;">🙏 Đồng Tu</div>
+      <div id="wishingViewText" style="background:linear-gradient(180deg,rgba(88,14,14,0.82),rgba(36,8,8,0.92)); border:1.5px solid #ffd700; border-radius:12px; padding:14px 16px; color:#fff8eb; font-style:italic; font-size:0.95rem; line-height:1.65; margin-bottom:10px;">
+        "Nguyện cầu bình an."
+      </div>
+      <div id="wishingViewBlessCount" style="font-size:0.80rem; color:#ffe082; margin-bottom:12px;">🙏 1 đồng tu đã tùy hỷ cầu phúc</div>
+      <div style="display:flex; gap:8px; justify-content:center;">
+        <button type="button" id="btnBlessWishingCard" class="btn-chat-send" style="flex:1; justify-content:center; padding:10px 14px; border-radius:10px; font-size:0.88rem;">
+          🙏 Tùy Hỷ Cầu Phúc (+1 Công Đức)
+        </button>
+        <button type="button" id="btnDoneWishingCardView" class="btn-hud" style="padding:10px 14px; border-radius:10px;">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 4: XEM TRƯỚC & TẢI ẢNH CHECK-IN THIỀN VIỆN 3D -->
+  <div id="photoPreviewModal">
+    <div class="modal-header">
+      <span style="color:#ffd700; font-weight:bold;">📸 ẢNH CHECK-IN THIỀN VIỆN ĐẠI BI 3D</span>
+      <span style="cursor:pointer; font-size:1.2rem; color:#ffd700;" id="btnClosePhotoPreview">✕</span>
+    </div>
+    <div style="background:rgba(10,5,3,0.85); border:1px solid rgba(255,215,0,0.45); border-radius:12px; padding:8px; margin-bottom:12px;">
+      <img id="capturedPhotoImg" alt="Ảnh Check-in Thiền Viện Đại Bi 3D" style="width:100%; max-height:56vh; object-fit:contain; border-radius:8px; display:block; margin:0 auto;">
+    </div>
+    <div style="font-size:0.78rem; color:#d8c4aa; margin-bottom:10px;">💡 Trên điện thoại iPhone/Zalo bạn có thể bấm nút Tải bên dưới hoặc nhấn giữ vào bức ảnh để Lưu về máy!</div>
+    <div style="display:flex; flex-wrap:wrap; gap:8px; justify-content:center;">
+      <button type="button" id="btnDownloadCapturedPhoto" class="btn-chat-send" style="flex:1; justify-content:center; padding:10px 16px; border-radius:10px; font-size:0.90rem;">
+        📥 Tải Ảnh Kỷ Niệm Đẹp Về Máy
+      </button>
+      <button type="button" id="btnShareCapturedPhoto" class="btn-hud" style="display:none; padding:10px 16px; border-radius:10px; border-color:#ffd700; color:#ffd700; font-weight:bold;">
+        📤 Chia Sẻ Ngay
+      </button>
+      <button type="button" id="btnRetakeZenPhoto" class="btn-hud" style="padding:10px 14px; border-radius:10px;">Chụp Góc Khác</button>
+    </div>
+  </div>
+
+  <!-- THANH ĐIỀU KHIỂN NỔI KHI BẬT CHẾ ĐỘ NGẮM CẢNH & CHỤP ẢNH (ẨN TOÀN BỘ GIAO DIỆN) -->
+  <div id="zenPhotoFloatingBar">
+    <button type="button" class="btn-photo-bar" id="btnPhotoCycleAerial" title="Đổi góc Camera Toàn Cảnh Trên Cao hoặc Về Chú Tiểu">
+      <span>🦅</span>
+      <span id="photoAerialLabel">Góc Nhìn Chú Tiểu</span>
+    </button>
+    <button type="button" class="btn-photo-bar primary-snap" id="btnSnapZenPhoto" title="Chụp & đóng khung vàng lưu niệm">
+      <span>📸 Chụp Ảnh Check-in</span>
+    </button>
+    <button type="button" class="btn-photo-bar" id="btnExitZenPhotoMode" title="Hiện lại giao diện tu tập">
+      <span>✕ Hiện Giao Diện</span>
+    </button>
   </div>
 
   <!-- MODAL ĐỔI PHÁP DANH CHÚ TIỂU TRONG GAME -->
@@ -1615,6 +2034,10 @@
       <span class="icon">🏮</span>
       <span>Hoa Đăng</span>
     </button>
+    <button class="btn-tool" id="btnOpenWishingTree" title="Treo Thẻ Lụa Đỏ Cầu Phúc Trên Cây Bồ Đề 3D">
+      <span class="icon">🎀</span>
+      <span>Cầu Phúc</span>
+    </button>
     <button class="btn-tool" id="btnZenChat" title="Bong bóng Niệm Phật Cát Tường">
       <span class="icon">💬</span>
       <span>Niệm Phật</span>
@@ -1638,6 +2061,61 @@
   <audio id="audioMuyuDeep" preload="none" src="/audio/muyu_deep.mp3"></audio>
 
   <script>
+    // ========================================================
+    // 0. CACHE 3D THÔNG MINH (?v=6) + THANH LOADING HOA SEN MƯỢT MÀ
+    // ========================================================
+    const ASSET_CACHE_VERSION = '6';
+    let lotusAssetsLoaded = false;
+    (function setupSmart3DCacheAndLotusLoader() {
+      if (typeof THREE === 'undefined' || !THREE.DefaultLoadingManager) return;
+      const barFill = document.getElementById('lotusLoadingBarFill');
+      const pctEl = document.getElementById('lotusLoadingPct');
+      const txtEl = document.getElementById('lotusLoadingText');
+      const topBar = document.getElementById('topStreamProgressBar');
+
+      THREE.DefaultLoadingManager.setURLModifier((url) => {
+        if (!url || typeof url !== 'string') return url;
+        if (url.startsWith('data:') || url.startsWith('blob:') || url.includes('?v=')) return url;
+        if (/\.(glb|jpg|jpeg|png|webp)$/i.test(url)) {
+          return url + '?v=' + ASSET_CACHE_VERSION;
+        }
+        return url;
+      });
+
+      const updateProgressUI = (pct, done) => {
+        const clamped = Math.max(10, Math.min(100, Math.round(pct)));
+        if (barFill) barFill.style.width = clamped + '%';
+        if (pctEl) pctEl.innerText = clamped + '%';
+        if (topBar) {
+          topBar.style.width = clamped + '%';
+          if (done) {
+            setTimeout(() => { topBar.style.opacity = '0'; }, 450);
+          } else {
+            topBar.style.opacity = '1';
+          }
+        }
+        if (txtEl) {
+          if (done) {
+            txtEl.innerText = 'Cảnh chùa 3D đã sẵn sàng viên mãn!';
+          } else if (clamped < 50) {
+            txtEl.innerText = 'Đang an vị Tôn Tượng & Chánh Điện 3D...';
+          } else {
+            txtEl.innerText = 'Đang điểm tô Hồ Liên Hoa & Cây Bồ Đề...';
+          }
+        }
+      };
+
+      THREE.DefaultLoadingManager.onProgress = (_url, itemsLoaded, itemsTotal) => {
+        if (itemsTotal > 0) {
+          updateProgressUI((itemsLoaded / itemsTotal) * 100, itemsLoaded >= itemsTotal);
+        }
+      };
+      THREE.DefaultLoadingManager.onLoad = () => {
+        lotusAssetsLoaded = true;
+        updateProgressUI(100, true);
+      };
+    })();
+
     // ========================================================
     // 1. KHO DỮ LIỆU ĐẠI TẠNG KINH ĐIỂN NHÀ PHẬT
     // ========================================================
@@ -3797,7 +4275,248 @@
           templeUpgradesGroup.add(cl);
         });
       }, undefined, (err) => console.error('Lỗi tải cum_hoa_sen_ho.glb:', err));
+
+      // 14. Cây Bồ Đề Ước Nguyện Cổ Thụ Bệ Đá Bát Giác (/cay_bo_de_uoc_nguyen.glb)
+      archLoader.load('/cay_bo_de_uoc_nguyen.glb', (gltf) => {
+        const bodhiTree = prepStaticModel(gltf.scene, true);
+        bodhiTree.position.set(-12.2, 0, 29.2);
+        bodhiTree.rotation.y = 0.42;
+        wishingTreeGroup.add(bodhiTree);
+      }, undefined, (err) => console.error('Lỗi tải cay_bo_de_uoc_nguyen.glb:', err));
+
+      // 15. Đèn Lồng Lễ Hội Rằm / Mùng 1 Đỏ Thếp Vàng (/den_long_le_hoi.glb - 0 PointLights)
+      archLoader.load('/den_long_le_hoi.glb', (gltf) => {
+        const festTpl = gltf.scene;
+        festTpl.traverse(c => {
+          if (c.isMesh) {
+            if (c.geometry) c.geometry.computeVertexNormals();
+            c.castShadow = false;
+            c.receiveShadow = false;
+          }
+        });
+        const festSpots = [
+          [-9.0, 5.15, 25.3, 1.05], [-3.1, 6.05, 25.5, 1.15],
+          [3.1, 6.05, 25.5, 1.15],  [9.0, 5.15, 25.3, 1.05],
+          [-4.5, 3.65, 30.2, 0.95], [4.5, 3.65, 30.2, 0.95],
+          [-9.4, 3.85, 29.2, 0.95], [9.4, 3.85, 29.2, 0.95],
+          [-4.5, 3.65, 48.2, 0.95], [4.5, 3.65, 48.2, 0.95]
+        ];
+        festSpots.forEach(([fx, fy, fz, sc], idx) => {
+          const inst = festTpl.clone();
+          inst.position.set(fx, fy, fz);
+          inst.scale.setScalar(sc);
+          inst.userData.swayPhase = idx * 0.85;
+          festivalLanternsGroup.add(inst);
+          festivalLanternMeshes.push(inst);
+        });
+      }, undefined, (err) => console.error('Lỗi tải den_long_le_hoi.glb:', err));
     }
+
+    // ========================================================
+    // 8.5. CÂY BỒ ĐỀ ƯỚC NGUYỆN 3D & THẺ LỤA ĐỎ CẦU PHÚC ĐUNG ĐƯA TRONG GIÓ
+    // ========================================================
+    const WISHING_TREE_POS = { x: -12.2, y: 0, z: 29.2 };
+    const wishingTreeGroup = new THREE.Group();
+    scene.add(wishingTreeGroup);
+
+    const wishingCardsGroup = new THREE.Group();
+    scene.add(wishingCardsGroup);
+
+    const festivalLanternsGroup = new THREE.Group();
+    festivalLanternsGroup.visible = false;
+    scene.add(festivalLanternsGroup);
+    const festivalLanternMeshes = [];
+
+    // Bia đá thếp vàng dưới gốc Cây Bồ Đề Ước Nguyện
+    const plaqueWishingTree = new THREE.Mesh(
+      new THREE.PlaneGeometry(3.0, 0.82),
+      new THREE.MeshStandardMaterial({
+        map: createStatuePlaqueTexture('CÂY BỒ ĐỀ ƯỚC NGUYỆN', 'Treo Thẻ Lụa Đỏ - Kết Duyên Lành Bồ Đề Tâm'),
+        roughness: 0.35, metalness: 0.2
+      })
+    );
+    plaqueWishingTree.rotation.y = 0.48;
+    plaqueWishingTree.position.set(-10.45, 0.62, 30.85);
+    wishingTreeGroup.add(plaqueWishingTree);
+
+    // 24 vị trí treo thẻ lụa đỏ dưới các tán cành Cây Bồ Đề (-12.2, 2.55..3.45, 29.2)
+    const WISHING_BRANCH_SLOTS = [];
+    for (let i = 0; i < 24; i++) {
+      const ring = i < 14 ? 0 : 1;
+      const countInRing = ring === 0 ? 14 : 10;
+      const idxInRing = ring === 0 ? i : (i - 14);
+      const ang = (idxInRing / countInRing) * Math.PI * 2 + (ring * 0.28);
+      const rad = ring === 0 ? (1.62 + (i % 3) * 0.16) : (1.18 + (i % 2) * 0.16);
+      const py = ring === 0 ? (2.68 + (i % 4) * 0.14) : (3.16 + (i % 3) * 0.14);
+      WISHING_BRANCH_SLOTS.push({
+        x: WISHING_TREE_POS.x + Math.cos(ang) * rad,
+        y: py,
+        z: WISHING_TREE_POS.z + Math.sin(ang) * rad,
+        rotY: -ang + Math.PI / 2
+      });
+    }
+
+    const WISHING_CATEGORY_META = {
+      binh_an:   { label: '🌸 Cầu Bình An', stamp: 'BÌNH AN' },
+      suc_khoe:  { label: '🌿 Cầu Sức Khỏe', stamp: 'PHƯỚC THỌ' },
+      cong_danh: { label: '✨ Cầu Công Danh', stamp: 'CÁT TƯỜNG' },
+      tri_tue:   { label: '☸️ Cầu Trí Tuệ', stamp: 'TRÍ TUỆ' }
+    };
+
+    const wishingPlaqueMaterials = {};
+    function getWishingPlaqueMaterial(catKey) {
+      const key = WISHING_CATEGORY_META[catKey] ? catKey : 'binh_an';
+      if (wishingPlaqueMaterials[key]) return wishingPlaqueMaterials[key];
+      const cv = document.createElement('canvas');
+      cv.width = 128;
+      cv.height = 256;
+      const ctx = cv.getContext('2d');
+
+      // Nền gấm lụa đỏ thẫm hoàng gia
+      const g = ctx.createLinearGradient(0, 0, 0, 256);
+      g.addColorStop(0, '#b71c1c');
+      g.addColorStop(0.5, '#8e1111');
+      g.addColorStop(1, '#680909');
+      ctx.fillStyle = g;
+      ctx.fillRect(0, 0, 128, 256);
+
+      // Dây treo vàng phía trên & tua rua vàng phía dưới
+      ctx.fillStyle = '#ffd700';
+      ctx.fillRect(58, 0, 12, 24);
+      ctx.beginPath();
+      ctx.arc(64, 24, 9, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Khung viền thếp vàng kép
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(10, 24, 108, 198);
+      ctx.strokeStyle = 'rgba(255, 235, 150, 0.65)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(18, 32, 92, 182);
+
+      // Ấn tròn chữ PHÚC vàng kim ở giữa
+      ctx.fillStyle = 'rgba(255, 215, 0, 0.16)';
+      ctx.beginPath();
+      ctx.arc(64, 98, 32, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      ctx.fillStyle = '#ffe57f';
+      ctx.font = 'bold 28px Georgia, serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('PHÚC', 64, 99);
+
+      const stamp = WISHING_CATEGORY_META[key].stamp;
+      ctx.font = 'bold 16px sans-serif';
+      ctx.fillStyle = '#ffd700';
+      ctx.fillText(stamp, 64, 158);
+      ctx.font = '13px serif';
+      ctx.fillStyle = '#ffecb3';
+      ctx.fillText('❀ ĐẠI BI TỰ ❀', 64, 188);
+
+      // Tua rua lụa vàng dưới đáy
+      for (let tx = 24; tx <= 104; tx += 10) {
+        ctx.fillStyle = '#f5c542';
+        ctx.fillRect(tx, 224, 4, 30);
+      }
+
+      const tex = new THREE.CanvasTexture(cv);
+      const mat = new THREE.MeshStandardMaterial({
+        map: tex,
+        roughness: 0.42,
+        metalness: 0.15,
+        emissive: 0x550a08,
+        emissiveIntensity: 0.45
+      });
+      wishingPlaqueMaterials[key] = mat;
+      return mat;
+    }
+
+    // 1 Geometry duy nhất cho toàn bộ thẻ lụa (pivot đặt ngay đầu dây treo phía trên để đung đưa tự nhiên)
+    const sharedWishingPlaqueGeo = new THREE.BoxGeometry(0.22, 0.44, 0.022);
+    sharedWishingPlaqueGeo.translate(0, -0.22, 0);
+
+    const hangingWishingCards = [];
+    const wishingCardMeshes = [];
+
+    function spawnWishingCardMesh(cardData) {
+      if (!cardData || !cardData.id) return;
+      const existing = hangingWishingCards.find(w => w.data.id === cardData.id);
+      if (existing) {
+        if (typeof cardData.blessCount === 'number') existing.data.blessCount = cardData.blessCount;
+        if (cardData.wish) existing.data.wish = cardData.wish;
+        if (cardData.nickname) existing.data.nickname = cardData.nickname;
+        return existing;
+      }
+
+      const slotIdx = (typeof cardData.slotIdx === 'number' ? Math.abs(cardData.slotIdx) : hangingWishingCards.length) % WISHING_BRANCH_SLOTS.length;
+      // Nếu slot đã có thẻ khác thì tìm slot trống tiếp theo, nếu đầy 24 slot thì thay thế thẻ cũ nhất
+      let finalSlotIdx = slotIdx;
+      if (hangingWishingCards.length >= WISHING_BRANCH_SLOTS.length) {
+        const oldest = hangingWishingCards.shift();
+        if (oldest && oldest.mesh) {
+          wishingCardsGroup.remove(oldest.mesh);
+          const mIdx = wishingCardMeshes.indexOf(oldest.mesh);
+          if (mIdx !== -1) wishingCardMeshes.splice(mIdx, 1);
+        }
+        finalSlotIdx = oldest ? oldest.slotIdx : slotIdx;
+      } else {
+        const used = new Set(hangingWishingCards.map(w => w.slotIdx));
+        for (let step = 0; step < WISHING_BRANCH_SLOTS.length; step++) {
+          const cand = (slotIdx + step) % WISHING_BRANCH_SLOTS.length;
+          if (!used.has(cand)) {
+            finalSlotIdx = cand;
+            break;
+          }
+        }
+      }
+
+      const slot = WISHING_BRANCH_SLOTS[finalSlotIdx];
+      const mat = getWishingPlaqueMaterial(cardData.category || 'binh_an');
+      const mesh = new THREE.Mesh(sharedWishingPlaqueGeo, mat);
+      mesh.position.set(slot.x, slot.y, slot.z);
+      mesh.rotation.y = slot.rotY;
+      mesh.castShadow = false;
+      mesh.receiveShadow = false;
+      wishingCardsGroup.add(mesh);
+      wishingCardMeshes.push(mesh);
+
+      const entry = {
+        data: {
+          id: cardData.id,
+          nickname: cardData.nickname || 'Đồng Tu',
+          wish: cardData.wish || 'Nguyện cầu bình an cát tường.',
+          category: cardData.category || 'binh_an',
+          blessCount: Number(cardData.blessCount) || 1
+        },
+        mesh,
+        slotIdx: finalSlotIdx,
+        baseRotY: slot.rotY,
+        swayPhase: finalSlotIdx * 0.7 + Math.random() * 1.2,
+        swaySpeed: 1.5 + (finalSlotIdx % 4) * 0.22
+      };
+      mesh.userData.wishingEntry = entry;
+      hangingWishingCards.push(entry);
+
+      if (typeof window.refreshWishingCardsListUI === 'function') {
+        window.refreshWishingCardsListUI();
+      }
+      return entry;
+    }
+
+    // Khởi tạo sẵn 6 thẻ ước nguyện đầu tiên trên Cây Bồ Đề (đồng bộ chính xác ID wish_seed_1..6 với Server)
+    [
+      { id: 'wish_seed_1', nickname: 'Chú Tiểu Diệu Âm', category: 'suc_khoe', wish: 'Nguyện cầu cha mẹ hai bên luôn dồi dào sức khỏe, thân tâm thường an lạc.', slotIdx: 0, blessCount: 12 },
+      { id: 'wish_seed_2', nickname: 'Phật Tử Liên Hoa', category: 'binh_an', wish: 'Cầu cho gia đạo thuận hòa, tai qua nạn khỏi, bốn mùa bình an cát tường.', slotIdx: 3, blessCount: 9 },
+      { id: 'wish_seed_3', nickname: 'Chú Tiểu Tĩnh Tâm', category: 'tri_tue', wish: 'Nguyện giữ tâm chánh niệm sáng trong, bồ đề tâm kiên cố, lan tỏa từ bi.', slotIdx: 7, blessCount: 15 },
+      { id: 'wish_seed_4', nickname: 'Thiện Nam Minh Đức', category: 'cong_danh', wish: 'Cầu cho công việc hanh thông, gặp nhiều thiện duyên lành, vạn sự như ý.', slotIdx: 11, blessCount: 8 },
+      { id: 'wish_seed_5', nickname: 'Tín Nữ Tâm An', category: 'binh_an', wish: 'Nguyện khắp muôn loài vơi bớt khổ đau, nhà nhà ấm no hạnh phúc.', slotIdx: 15, blessCount: 18 },
+      { id: 'wish_seed_6', nickname: 'Chú Tiểu Trí Tuệ', category: 'suc_khoe', wish: 'Kính chúc đại chúng đồng tu tinh tấn, phước huệ song tu, sở nguyện viên thành.', slotIdx: 19, blessCount: 11 }
+    ].forEach(w => spawnWishingCardMesh(w));
 
     // ========================================================
     // 9. 100 BỒ ĐOÀN TỌA THIỀN ĐỒNG BỘ (TỐI ƯU INSTANCEDMESH GIẢM ~300 DRAW CALLS)
@@ -3927,8 +4646,10 @@
       return clean;
     }
 
+    let currentMeritMultiplier = 1;
     function addMyMerits(delta) {
-      return setMyMerits(playerMerits + (Number(delta) || 0));
+      const mult = (currentMeritMultiplier > 1) ? currentMeritMultiplier : 1;
+      return setMyMerits(playerMerits + ((Number(delta) || 0) * mult));
     }
 
     function setMyBeadCount(val) {
@@ -4625,7 +5346,8 @@
     const ALL_MODAL_IDS = [
       'sutraModal', 'statueModal', 'weeklyScheduleModal', 'audioModal',
       'mantraListModal', 'robeModal', 'divinationModal', 'lanternModal',
-      'zenChatModal', 'nameChangeModal', 'mobileSettingsModal', 'lanternWishModal'
+      'zenChatModal', 'nameChangeModal', 'mobileSettingsModal', 'lanternWishModal',
+      'lunarCalendarModal', 'wishingTreeModal', 'wishingCardViewModal', 'photoPreviewModal'
     ];
 
     function isWelcomeBannerOpen() {
@@ -5389,6 +6111,24 @@
     if (mobBtnSutra) mobBtnSutra.onclick = () => openSutraModal();
     const mobBtnSchedule = document.getElementById('mobBtnSchedule');
     if (mobBtnSchedule) mobBtnSchedule.onclick = () => openScheduleModal();
+    const mobBtnLunar = document.getElementById('mobBtnLunar');
+    if (mobBtnLunar) mobBtnLunar.onclick = () => openLunarCalendarModal();
+    const mobBtnWishingTree = document.getElementById('mobBtnWishingTree');
+    if (mobBtnWishingTree) mobBtnWishingTree.onclick = () => openWishingTreeModal();
+    const mobBtnAerialCam = document.getElementById('mobBtnAerialCam');
+    if (mobBtnAerialCam) {
+      mobBtnAerialCam.onclick = () => {
+        closeAllModals();
+        cycleAerialCamMode();
+      };
+    }
+    const mobBtnPhotoMode = document.getElementById('mobBtnPhotoMode');
+    if (mobBtnPhotoMode) {
+      mobBtnPhotoMode.onclick = () => {
+        closeAllModals();
+        setZenPhotoMode(true);
+      };
+    }
     const mobBtnAudio = document.getElementById('mobBtnAudio');
     if (mobBtnAudio) mobBtnAudio.onclick = () => openExclusiveModal('audioModal', 'block');
     const mobBtnName = document.getElementById('mobBtnName');
@@ -5432,7 +6172,7 @@
       };
     });
 
-    document.querySelectorAll('.lantern-preset-btn').forEach(btn => {
+    document.querySelectorAll('#lanternModal .lantern-preset-btn').forEach(btn => {
       btn.onclick = () => {
         const wish = btn.getAttribute('data-wish');
         document.getElementById('lanternWishInput').value = wish;
@@ -5494,17 +6234,19 @@
         }));
       }
 
-      showFloatMerit('+10 Công Đức 🙏', window.innerWidth / 2, window.innerHeight / 2);
+      const ptsGain = 10 * currentMeritMultiplier;
+      showFloatMerit(`+${ptsGain} Công Đức 🙏`, window.innerWidth / 2, window.innerHeight / 2);
       addFeed(`🏮 ${myNickname} vừa thả một ngọn đèn Hoa Đăng cầu nguyện xuống Hồ Sen`);
       closeLanternModal();
       inputEl.value = '';
     };
 
     // ========================================================
-    // XEM LỜI NGUYỆN HOA ĐĂNG BẰNG 1 CHẠM (ĐIỆN THOẠI & MÁY TÍNH)
+    // XEM LỜI NGUYỆN HOA ĐĂNG & THẺ LỤA CÂY BỒ ĐỀ BẰNG 1 CHẠM
     // ========================================================
     const raycaster = new THREE.Raycaster();
     const mouseCoord = new THREE.Vector2();
+    const _projTempVec = new THREE.Vector3();
     const lanternWishTooltip = document.getElementById('lanternWishTooltip');
     let currentViewingLantern = null;
     const localBlessedLanternIds = new Set();
@@ -5556,7 +6298,7 @@
         btnBlessLantern.disabled = true;
         btnBlessLantern.style.opacity = '0.65';
         btnBlessLantern.innerText = '✓ Đã Tùy Hỷ Cầu An';
-        showFloatMerit('🙏 Tùy Hỷ Cầu An (+1 Công Đức)', e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2);
+        showFloatMerit(`🙏 Tùy Hỷ Cầu An (+${1 * currentMeritMultiplier} Công Đức)`, e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2);
       };
     }
 
@@ -5599,9 +6341,223 @@
       return null;
     }
 
-    // Rê chuột trên máy tính hiện tooltip nhanh
+    function pickWishingCardAtClientXY(clientX, clientY, allowScreenRadius = true) {
+      if (hangingWishingCards.length === 0) return null;
+      mouseCoord.x = (clientX / window.innerWidth) * 2 - 1;
+      mouseCoord.y = -(clientY / window.innerHeight) * 2 + 1;
+      raycaster.setFromCamera(mouseCoord, camera);
+      const hits = raycaster.intersectObjects(wishingCardMeshes, false);
+      if (hits.length > 0 && hits[0].object.userData.wishingEntry) {
+        return hits[0].object.userData.wishingEntry;
+      }
+      // Hỗ trợ chạm ngón tay dễ dàng trên điện thoại không cần thêm mesh phụ tốn GPU
+      if (allowScreenRadius) {
+        let bestEntry = null;
+        let bestDist = isMobileDevice ? 30 : 18;
+        for (let i = 0; i < hangingWishingCards.length; i++) {
+          const entry = hangingWishingCards[i];
+          _projTempVec.set(entry.mesh.position.x, entry.mesh.position.y - 0.22, entry.mesh.position.z);
+          const camD = camera.position.distanceTo(_projTempVec);
+          if (camD > 28) continue;
+          _projTempVec.project(camera);
+          if (_projTempVec.z < -1 || _projTempVec.z > 1) continue;
+          const sx = (_projTempVec.x * 0.5 + 0.5) * window.innerWidth;
+          const sy = (-_projTempVec.y * 0.5 + 0.5) * window.innerHeight;
+          const d = Math.hypot(clientX - sx, clientY - sy);
+          if (d < bestDist) {
+            bestDist = d;
+            bestEntry = entry;
+          }
+        }
+        return bestEntry;
+      }
+      return null;
+    }
+
+    // ========================================================
+    // CÂY BỒ ĐỀ ƯỚC NGUYỆN UI & TƯƠNG TÁC TREO THẺ LỤA ĐỎ
+    // ========================================================
+    let selectedWishingCategory = 'binh_an';
+    let currentViewingWishingCard = null;
+    const localBlessedWishingCardIds = new Set();
+
+    document.querySelectorAll('.wish-cat-btn').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.wish-cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        selectedWishingCategory = btn.getAttribute('data-wcat') || 'binh_an';
+      };
+    });
+
+    document.querySelectorAll('.wishing-preset-btn').forEach(btn => {
+      btn.onclick = () => {
+        const w = btn.getAttribute('data-wish');
+        const inp = document.getElementById('wishingTreeInput');
+        if (inp && w) inp.value = w;
+      };
+    });
+
+    window.refreshWishingCardsListUI = function() {
+      const countEl = document.getElementById('wishingCountLabel');
+      if (countEl) countEl.innerText = String(hangingWishingCards.length);
+      const listEl = document.getElementById('recentWishingCardsList');
+      if (!listEl) return;
+      listEl.innerHTML = '';
+      const recent = hangingWishingCards.slice(-12).reverse();
+      recent.forEach(entry => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.style.cssText = 'text-align:left; background:rgba(165,28,28,0.22); border:1px solid rgba(255,215,0,0.36); border-radius:8px; padding:6px 10px; color:#fff2de; font-size:0.79rem; cursor:pointer; font-family:inherit; line-height:1.35;';
+        const catMeta = WISHING_CATEGORY_META[entry.data.category] || WISHING_CATEGORY_META.binh_an;
+        const safeName = (entry.data.nickname || 'Đồng Tu').replace(/</g, '&lt;');
+        const rawW = entry.data.wish || '';
+        const shortW = (rawW.length > 54 ? rawW.substring(0, 54) + '...' : rawW).replace(/</g, '&lt;');
+        btn.innerHTML = `<b style="color:#ffd700;">${catMeta.label.split(' ')[0]} ${safeName}:</b> "${shortW}" <span style="color:#ffd700; font-size:0.72rem;">(🙏${entry.data.blessCount || 1})</span>`;
+        btn.onclick = () => openWishingCardViewModal(entry);
+        listEl.appendChild(btn);
+      });
+    };
+    window.refreshWishingCardsListUI();
+
+    function openWishingTreeModal() {
+      if (typeof window.refreshWishingCardsListUI === 'function') window.refreshWishingCardsListUI();
+      openExclusiveModal('wishingTreeModal', 'block');
+    }
+
+    function closeWishingTreeModal() {
+      const el = document.getElementById('wishingTreeModal');
+      if (el) el.style.display = 'none';
+      syncModalBodyClass();
+    }
+
+    const btnOpenWishingTree = document.getElementById('btnOpenWishingTree');
+    if (btnOpenWishingTree) btnOpenWishingTree.onclick = openWishingTreeModal;
+    const btnCloseWishingTree = document.getElementById('btnCloseWishingTree');
+    if (btnCloseWishingTree) btnCloseWishingTree.onclick = closeWishingTreeModal;
+
+    const btnWalkToWishingTree = document.getElementById('btnWalkToWishingTree');
+    if (btnWalkToWishingTree) {
+      btnWalkToWishingTree.onclick = () => {
+        if (isSitting) applySittingState(false, null);
+        if (aerialCamIdx > 0) setAerialCamMode(0);
+        localPlayerObj.position.set(-9.2, getGroundHeight(-9.2, 31.8), 31.8);
+        localPlayerObj.rotation.y = -2.25;
+        cameraYaw = 0.85;
+        cameraPitch = 0.18;
+        closeWishingTreeModal();
+        showFloatMerit('🌳 Đã đến dưới tán Cây Bồ Đề Ước Nguyện 🙏', window.innerWidth / 2, window.innerHeight / 2);
+      };
+    }
+
+    const btnSubmitWishingCard = document.getElementById('btnSubmitWishingCard');
+    if (btnSubmitWishingCard) {
+      btnSubmitWishingCard.onclick = () => {
+        const inp = document.getElementById('wishingTreeInput');
+        const wishText = (inp && inp.value ? inp.value.trim() : '') || 'Nguyện cầu cha mẹ bình an mạnh khỏe, gia đạo hòa thuận cát tường.';
+        isBowing = true;
+        bowTimer = 0;
+        SoundEngine.playSingingBowl();
+        addMyMerits(10);
+
+        const slotIdx = hangingWishingCards.length % WISHING_BRANCH_SLOTS.length;
+        const localId = 'wish_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6);
+        const cardObj = {
+          id: localId,
+          playerId: myPlayerId,
+          nickname: myNickname,
+          category: selectedWishingCategory,
+          wish: wishText,
+          slotIdx,
+          blessCount: 1
+        };
+        spawnWishingCardMesh(cardObj);
+
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({
+            type: 'HANG_WISHING_CARD',
+            id: localId,
+            category: selectedWishingCategory,
+            wish: wishText,
+            slotIdx
+          }));
+        }
+
+        if (inp) inp.value = '';
+        closeWishingTreeModal();
+        const ptsGain = 10 * currentMeritMultiplier;
+        showFloatMerit(`🎀 Đã treo Thẻ Cầu Phúc lên Cây Bồ Đề (+${ptsGain} Công Đức 🙏)`, window.innerWidth / 2, window.innerHeight / 2);
+      };
+    }
+
+    function openWishingCardViewModal(entry) {
+      if (!entry || !entry.data) return;
+      currentViewingWishingCard = entry;
+      const catMeta = WISHING_CATEGORY_META[entry.data.category] || WISHING_CATEGORY_META.binh_an;
+      const badgeEl = document.getElementById('wishingViewCategoryBadge');
+      const authorEl = document.getElementById('wishingViewAuthor');
+      const textEl = document.getElementById('wishingViewText');
+      const countEl = document.getElementById('wishingViewBlessCount');
+      const blessBtn = document.getElementById('btnBlessWishingCard');
+
+      if (badgeEl) badgeEl.innerText = catMeta.label;
+      if (authorEl) authorEl.innerText = '🙏 Người treo: ' + (entry.data.nickname || 'Đồng Tu');
+      if (textEl) textEl.innerText = '"' + (entry.data.wish || 'Nguyện cầu bình an.') + '"';
+      if (countEl) countEl.innerText = `🙏 ${entry.data.blessCount || 1} đồng tu đã tùy hỷ cầu phúc`;
+      if (blessBtn) {
+        const already = localBlessedWishingCardIds.has(entry.data.id);
+        blessBtn.disabled = already;
+        blessBtn.style.opacity = already ? '0.65' : '1';
+        blessBtn.innerText = already ? '✓ Đã Tùy Hỷ Cầu Phúc' : `🙏 Tùy Hỷ Cầu Phúc (+${1 * currentMeritMultiplier} Công Đức)`;
+      }
+      if (lanternWishTooltip) lanternWishTooltip.style.display = 'none';
+      openExclusiveModal('wishingCardViewModal', 'block');
+    }
+
+    const closeWishingCardView = () => {
+      const m = document.getElementById('wishingCardViewModal');
+      if (m) m.style.display = 'none';
+      syncModalBodyClass();
+    };
+    const btnCloseWishingCardView = document.getElementById('btnCloseWishingCardView');
+    if (btnCloseWishingCardView) btnCloseWishingCardView.onclick = closeWishingCardView;
+    const btnDoneWishingCardView = document.getElementById('btnDoneWishingCardView');
+    if (btnDoneWishingCardView) btnDoneWishingCardView.onclick = closeWishingCardView;
+
+    const btnBlessWishingCard = document.getElementById('btnBlessWishingCard');
+    if (btnBlessWishingCard) {
+      btnBlessWishingCard.onclick = (e) => {
+        if (!currentViewingWishingCard || !currentViewingWishingCard.data) return;
+        const cid = currentViewingWishingCard.data.id;
+        if (localBlessedWishingCardIds.has(cid)) return;
+        localBlessedWishingCardIds.add(cid);
+        currentViewingWishingCard.data.blessCount = (Number(currentViewingWishingCard.data.blessCount) || 1) + 1;
+        const countEl = document.getElementById('wishingViewBlessCount');
+        if (countEl) countEl.innerText = `🙏 ${currentViewingWishingCard.data.blessCount} đồng tu đã tùy hỷ cầu phúc`;
+        SoundEngine.playSingingBowl();
+        addMyMerits(1);
+        if (ws && ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({ type: 'BLESS_WISHING_CARD', cardId: cid }));
+        }
+        btnBlessWishingCard.disabled = true;
+        btnBlessWishingCard.style.opacity = '0.65';
+        btnBlessWishingCard.innerText = '✓ Đã Tùy Hỷ Cầu Phúc';
+        window.refreshWishingCardsListUI();
+        showFloatMerit(`🙏 Tùy Hỷ Cầu Phúc (+${1 * currentMeritMultiplier} Công Đức)`, e.clientX || window.innerWidth / 2, e.clientY || window.innerHeight / 2);
+      };
+    }
+
+    // Rê chuột trên máy tính hiện tooltip nhanh cho cả Hoa Đăng & Thẻ Lụa Bồ Đề
     window.addEventListener('mousemove', (e) => {
-      if (isMobileDevice || isAnyModalOpen() || floatingLanterns.length === 0 || !lanternWishTooltip) return;
+      if (isMobileDevice || isAnyModalOpen() || isZenPhotoMode || !lanternWishTooltip) return;
+      const wCard = pickWishingCardAtClientXY(e.clientX, e.clientY, false);
+      if (wCard) {
+        lanternWishTooltip.style.display = 'block';
+        lanternWishTooltip.style.left = e.clientX + 'px';
+        lanternWishTooltip.style.top = e.clientY + 'px';
+        document.getElementById('tooltipLanternOwner').innerText = '🎀 Thẻ Bồ Đề - ' + wCard.data.nickname;
+        document.getElementById('tooltipLanternWish').innerText = '"' + wCard.data.wish + '"';
+        return;
+      }
       const l = pickFloatingLanternAtClientXY(e.clientX, e.clientY);
       if (l) {
         lanternWishTooltip.style.display = 'block';
@@ -5614,7 +6570,7 @@
       }
     });
 
-    // 1 chạm trên Điện Thoại hoặc Click nhẹ trên Canvas 3D -> Mở bảng Tâm Nguyện Hoa Đăng
+    // 1 chạm trên Điện Thoại hoặc Click nhẹ trên Canvas 3D -> Mở Thẻ Bồ Đề hoặc Hoa Đăng
     let canvasTapDownX = 0, canvasTapDownY = 0, canvasTapDownTime = 0;
     canvasDom.addEventListener('pointerdown', (e) => {
       canvasTapDownX = e.clientX;
@@ -5622,10 +6578,15 @@
       canvasTapDownTime = performance.now();
     });
     canvasDom.addEventListener('pointerup', (e) => {
-      if (isAnyModalOpen()) return;
+      if (isAnyModalOpen() || isZenPhotoMode) return;
       const dt = performance.now() - canvasTapDownTime;
       const dist = Math.hypot(e.clientX - canvasTapDownX, e.clientY - canvasTapDownY);
       if (dt < 450 && dist < 12) {
+        const hitWish = pickWishingCardAtClientXY(e.clientX, e.clientY, true);
+        if (hitWish) {
+          openWishingCardViewModal(hitWish);
+          return;
+        }
         const hitLantern = pickFloatingLanternAtClientXY(e.clientX, e.clientY);
         if (hitLantern) {
           openLanternWishModal(hitLantern);
@@ -5633,44 +6594,595 @@
       }
     });
 
-    const DIVINATION_CARDS = [
-      {
-        num: "QUẺ SỐ 1 - THƯỢNG THƯỢNG CÁT",
-        poem: "Sen nở đài hoa tỏa ngát hương,\\\\nTâm lành tích đức khắp mười phương.\\\\nMuôn ngàn duyên khởi đều như ý,\\\\nAn lạc tiêu dao thoát dặm trường.",
-        adv: "Lời giải: Mọi sự thuận hòa, tâm nguyện sáng tỏ, giữ gìn giới định tuệ ắt gặt hái phúc lành viên mãn."
-      },
-      {
-        num: "QUẺ SỐ 8 - ĐẠI CÁT ĐẠI LỢI",
-        poem: "Gió lặng mây quang vầng nguyệt tỏ,\\\\nLòng trong dạ sáng vạn niềm vui.\\\\nBao năm tinh tấn gieo mầm thiện,\\\\nNay trổ nhành hoa phúc ngập tràn.",
-        adv: "Lời giải: Quả lành đã trổ, tiếp tục tinh cần tu học, rộng lòng cứu giúp kẻ hoạn nạn."
-      },
-      {
-        num: "QUẺ SỐ 19 - TRUNG CÁT BÌNH AN",
-        poem: "Nước biếc non xanh dạo bước thiền,\\\\nBụi trần chẳng vướng bến bình yên.\\\\nThong dong tự tại từng hơi thở,\\\\nHoa nở tâm hoan thoát não phiền.",
-        adv: "Lời giải: Buông bỏ lo toan, sống trọn vẹn trong chánh niệm hiện tại, tâm an ắt vạn sự bình an."
-      }
-    ];
-
-    document.getElementById('btnDivination').onclick = () => {
-      SoundEngine.playWoodenFish();
-      addFeed('📜 Đang chí thành lắc ống xăm cầu an...');
-      setTimeout(() => {
-        const card = DIVINATION_CARDS[Math.floor(Math.random() * DIVINATION_CARDS.length)];
-        document.getElementById('divineNumber').innerText = card.num;
-        document.getElementById('divinePoem').innerHTML = card.poem.replace(/\\\\n/g, '<br>');
-        document.getElementById('divineAdvice').innerHTML = '<b>' + card.adv.split(':')[0] + ':</b>' + card.adv.split(':')[1];
-        openExclusiveModal('divinationModal', 'block');
-        SoundEngine.playSingingBowl();
-      }, 700);
+    // ========================================================
+    // LỊCH ÂM VIỆT NAM TỰ ĐỘNG & SỰ KIỆN RẰM / MÙNG 1 (X2 CÔNG ĐỨC)
+    // ========================================================
+    let currentLunarInfo = {
+      solarDateStr: '--/--/----',
+      lunarShort: '--/-- ÂL',
+      lunarFullStr: 'Đang tải Lịch Âm Việt Nam...',
+      canChiYear: 'Bính Ngọ',
+      canChiMonth: '',
+      canChiDay: '',
+      isFestivalDay: false,
+      isTraiGioiDay: false,
+      festivalTitle: null,
+      meritMultiplier: 1,
+      daysUntilNextFestival: 1,
+      nextMilestoneName: 'Ngày Rằm / Mùng 1'
     };
-    document.getElementById('btnCloseDivination').onclick = () => {
+    let festivalPreviewOverride = null; // null = tự động theo lịch âm, true/false = bật/tắt thủ công
+
+    function syncFestivalLanternVisibility() {
+      const shouldShow = (festivalPreviewOverride !== null)
+        ? festivalPreviewOverride
+        : !!currentLunarInfo.isFestivalDay;
+      festivalLanternsGroup.visible = shouldShow;
+      const toggleBtn = document.getElementById('btnToggleFestivalPreview');
+      if (toggleBtn) {
+        toggleBtn.innerText = shouldShow
+          ? '🏮 Đang Thắp Đèn Lồng Lễ Hội Sân Chùa (Bấm Để Tắt)'
+          : '🏮 Bật Ngắm Đèn Lồng Lễ Hội Sân Chùa';
+      }
+    }
+
+    function applyLunarInfoToUI(info) {
+      if (!info) return;
+      const normalized = Object.assign({}, info);
+      if (!normalized.solarDateStr && info.solar && info.solar.day) {
+        normalized.solarDateStr = `${String(info.solar.day).padStart(2, '0')}/${String(info.solar.month).padStart(2, '0')}/${info.solar.year}`;
+      }
+      if (!normalized.lunarShort && info.lunar && info.lunar.day) {
+        normalized.lunarShort = `${info.lunar.day}/${info.lunar.month}${info.lunar.isLeap ? 'N' : ''} ÂL`;
+      }
+      if (!normalized.lunarFullStr && info.lunar && info.lunar.day) {
+        const dp = info.lunar.day <= 10 ? `Mùng ${info.lunar.day}` : (info.lunar.day === 15 ? 'Rằm 15' : `Ngày ${info.lunar.day}`);
+        normalized.lunarFullStr = `${dp} Tháng ${info.lunar.month}${info.lunar.isLeap ? ' Nhuận' : ''}`;
+      }
+      if (!normalized.festivalTitle && info.festivalName) normalized.festivalTitle = info.festivalName;
+      if (!normalized.nextMilestoneName && info.nextFestivalLabel) normalized.nextMilestoneName = info.nextFestivalLabel;
+
+      currentLunarInfo = Object.assign({}, currentLunarInfo, normalized);
+      currentMeritMultiplier = Number(currentLunarInfo.meritMultiplier) > 1 ? Number(currentLunarInfo.meritMultiplier) : 1;
+
+      const btnLunar = document.getElementById('btnLunarCalendar');
+      const shortEl = document.getElementById('lunarHudShort');
+      const iconEl = document.getElementById('lunarHudIcon');
+      if (shortEl) shortEl.innerText = currentLunarInfo.lunarShort || '--/-- ÂL';
+      if (iconEl) iconEl.innerText = currentLunarInfo.isFestivalDay ? '🏮' : '🌙';
+      if (btnLunar) {
+        btnLunar.classList.toggle('festival-active', !!currentLunarInfo.isFestivalDay);
+      }
+
+      const solarLine = document.getElementById('lunarSolarLine');
+      const bigDate = document.getElementById('lunarBigDate');
+      const canChiLine = document.getElementById('lunarCanChiLine');
+      const eventBanner = document.getElementById('lunarEventBanner');
+
+      if (solarLine) solarLine.innerText = `Dương lịch hôm nay: ${currentLunarInfo.solarDateStr} (Giờ Việt Nam UTC+7)`;
+      if (bigDate) bigDate.innerText = `${currentLunarInfo.lunarFullStr} Âm Lịch`;
+      if (canChiLine) {
+        canChiLine.innerText = `Năm ${currentLunarInfo.canChiYear} • Tháng ${currentLunarInfo.canChiMonth || '--'} • Ngày ${currentLunarInfo.canChiDay || '--'}`;
+      }
+      if (eventBanner) {
+        if (currentLunarInfo.isFestivalDay) {
+          eventBanner.style.background = 'linear-gradient(135deg, rgba(165, 28, 28, 0.55), rgba(95, 16, 16, 0.72))';
+          eventBanner.style.borderColor = '#ffd700';
+          eventBanner.innerHTML = `🏮 <b>HÔM NAY LÀ ${(currentLunarInfo.festivalTitle || 'NGÀY TRAI GIỚI').toUpperCase()}!</b><br>Toàn viện thắp Đèn Lồng Lễ Hội & <b>Nhân Đôi (x2) Công Đức</b> mọi thiện pháp tu tập!`;
+        } else {
+          eventBanner.style.background = 'rgba(255,215,0,0.10)';
+          eventBanner.style.borderColor = 'rgba(255,215,0,0.38)';
+          eventBanner.innerHTML = `☸️ Còn <b>${currentLunarInfo.daysUntilNextFestival || 1} ngày</b> nữa đến <b>${currentLunarInfo.nextMilestoneName || 'Ngày Trai Giới'}</b> (Tự động thắp đèn lễ hội & x2 Công Đức).`;
+        }
+      }
+
+      syncFestivalLanternVisibility();
+    }
+
+    function openLunarCalendarModal() {
+      applyLunarInfoToUI(currentLunarInfo);
+      openExclusiveModal('lunarCalendarModal', 'block');
+    }
+
+    const btnLunarCalendar = document.getElementById('btnLunarCalendar');
+    if (btnLunarCalendar) btnLunarCalendar.onclick = openLunarCalendarModal;
+    const btnCloseLunarModal = document.getElementById('btnCloseLunarModal');
+    if (btnCloseLunarModal) {
+      btnCloseLunarModal.onclick = () => {
+        document.getElementById('lunarCalendarModal').style.display = 'none';
+        syncModalBodyClass();
+      };
+    }
+    const btnToggleFestivalPreview = document.getElementById('btnToggleFestivalPreview');
+    if (btnToggleFestivalPreview) {
+      btnToggleFestivalPreview.onclick = () => {
+        const nextShow = !festivalLanternsGroup.visible;
+        festivalPreviewOverride = nextShow;
+        syncFestivalLanternVisibility();
+        showFloatMerit(
+          nextShow ? '🏮 Đã thắp sáng Đèn Lồng Lễ Hội khắp sân chùa!' : '🌙 Đã tắt chế độ xem trước Đèn Lồng Lễ Hội',
+          window.innerWidth / 2,
+          window.innerHeight / 2
+        );
+      };
+    }
+
+    fetch('/api/lunar')
+      .then(r => r.ok ? r.json() : null)
+      .then(data => { if (data && (data.lunarDay || (data.lunar && data.lunar.day))) applyLunarInfoToUI(data); })
+      .catch(() => {});
+
+    // ========================================================
+    // TRỌN BỘ 32 QUẺ QUÁN THẾ ÂM LINH XÂM CỔ TRUYỀN & XUẤT ẢNH THẺ XĂM HD
+    // ========================================================
+    const DIVINATION_CARDS = [
+      { id: 1, rank: 'THƯỢNG THƯỢNG CÁT', num: 'QUẺ SỐ 1 - THƯỢNG THƯỢNG CÁT', poem: 'Sen nở đài hoa tỏa ngát hương,\nTâm lành tích đức khắp mười phương.\nMuôn ngàn duyên khởi đều như ý,\nAn lạc tiêu dao thoát dặm trường.', adv: 'Lời giải: Đại cát khai vận, tâm nguyện sáng tỏ. Giữ gìn giới định tuệ, hiếu kính song thân ắt gặt hái phúc lành viên mãn.' },
+      { id: 2, rank: 'ĐẠI CÁT ĐẠI LỢI', num: 'QUẺ SỐ 2 - LONG VÂN TƯƠNG HỘI', poem: 'Mây lành quy tụ ánh trăng thanh,\nĐất tốt ươm mầm trổ lộc xanh.\nChí hướng kiên tâm trời Phật độ,\nCông thành danh toại phúc viên thành.', adv: 'Lời giải: Thời vận hanh thông, quý nhân tương trợ. Mọi việc học hành, cầu tài, lập nghiệp cứ giữ chánh tín mà tiến bước.' },
+      { id: 3, rank: 'THƯỢNG CÁT BÌNH AN', num: 'QUẺ SỐ 3 - XUÂN PHONG ĐẮC Ý', poem: 'Mưa xuân thấm đẫm nhánh dương cành,\nKhổ tận cam lai rạng phúc lành.\nMột niệm từ bi tiêu chướng nghiệp,\nGia đường ấm áp vạn niềm vui.', adv: 'Lời giải: Khó khăn cũ đã lùi xa, vận lành đang mở. Nên năng làm việc thiện, giúp người khốn khó để bồi đắp cội phúc.' },
+      { id: 4, rank: 'THƯỢNG CÁT GIA ĐẠO', num: 'QUẺ SỐ 4 - NGỌC THỤ KHAI HOA', poem: 'Cây ngọc đơm bông trước nắng mai,\nTrên hòa dưới thuận phúc lâu dài.\nChân thành đối đãi muôn duyên hợp,\nTịnh độ ngay nơi mỗi bước hài.', adv: 'Lời giải: Gia đạo hòa hợp, tình cảm gắn kết. Lấy chữ Nhẫn và chữ Hòa làm gốc thì bốn mùa trong ấm ngoài êm.' },
+      { id: 5, rank: 'TRUNG CÁT BÌNH AN', num: 'QUẺ SỐ 5 - TĨNH THỦ CHỜ THỜI', poem: 'Trăng còn khuất bóng dưới mây mờ,\nVững dạ an nhiên chớ vội lo.\nGió thoảng mây tan trăng lại sáng,\nBình tâm tu phước bến lành chờ.', adv: 'Lời giải: Việc cầu hiện tại cần thêm chút kiên nhẫn. Chớ nóng vội cưỡng cầu, cứ chăm chỉ gieo nhân lành ắt quả ngọt tự đến.' },
+      { id: 6, rank: 'ĐẠI CÁT CÁT TƯỜNG', num: 'QUẺ SỐ 6 - TỪ VÂN PHỔ CHIẾU', poem: 'Mây lành che chở khắp nhân gian,\nCam lộ rưới tan mọi nguy nan.\nChí thành niệm Phật tâm thanh tịnh,\nTai qua nạn khỏi phúc muôn vàn.', adv: 'Lời giải: Quán Thế Âm Bồ Tát thùy từ gia hộ, tật bệnh tiêu trừ, đi xa gặp lành, tâm bất động trước mọi sóng gió.' },
+      { id: 7, rank: 'THƯỢNG CÁT TRÍ TUỆ', num: 'QUẺ SỐ 7 - MINH CHÂU XUẤT HẢI', poem: 'Ngọc quý vươn lên giữa biển khơi,\nHào quang rực rỡ chiếu muôn nơi.\nBao công đèn sách nay đền đáp,\nTrí sáng tâm trong rạng cuộc đời.', adv: 'Lời giải: Trí tuệ khai mở, thi cử hanh thông, sự nghiệp thăng tiến. Hãy đem tài đức phụng sự lợi ích cho nhiều người.' },
+      { id: 8, rank: 'ĐẠI CÁT ĐẠI LỢI', num: 'QUẺ SỐ 8 - ĐẠI CÁT ĐẠI LỢI', poem: 'Gió lặng mây quang vầng nguyệt tỏ,\nLòng trong dạ sáng vạn niềm vui.\nBao năm tinh tấn gieo mầm thiện,\nNay trổ nhành hoa phúc ngập tràn.', adv: 'Lời giải: Quả lành đã chín muồi, cầu an đắc an, cầu lộc đắc lộc. Tiếp tục tinh cần tu học và rộng lòng bố thí.' },
+      { id: 9, rank: 'TRUNG CÁT TỰ TẠI', num: 'QUẺ SỐ 9 - TÙY DUYÊN AN LẠC', poem: 'Nước chảy mây trôi vốn tự nhiên,\nBuông đi chấp trước hết ưu phiền.\nViệc đời thành bại do nhân quả,\nGiữ trọn tâm lành phúc tự nhiên.', adv: 'Lời giải: Hãy thuận theo tự nhiên, làm hết sức nhưng lòng không dính mắc. Khi tâm nhẹ nhàng buông xả, lối đi sáng sủa sẽ mở ra.' },
+      { id: 10, rank: 'THƯỢNG CÁT PHƯỚC LỘC', num: 'QUẺ SỐ 10 - BẢO SƠN ĐẮC NGỌC', poem: 'Vào non tìm ngọc gặp duyên may,\nPhước đức tiền khiên trổ tháng ngày.\nChánh mạng siêng năng bền ý chí,\nThuận buồm xuôi gió lộc đầy tay.', adv: 'Lời giải: Tài lộc chánh đáng, công việc kinh doanh thuận lợi. Nhớ trích một phần phước lộc gieo duyên từ thiện cúng dường.' },
+      { id: 11, rank: 'THƯỢNG THƯỢNG CÁT', num: 'QUẺ SỐ 11 - LIÊN HOA TỊNH ĐỘ', poem: 'Giữa bùn sen trắng vẫn tinh khôi,\nChẳng nhiễm trần nhơ rạng đất trời.\nMột dạ quy y đường chánh giác,\nBình an hạnh phúc suốt muôn đời.', adv: 'Lời giải: Thượng thượng cát tường! Tâm giữ thanh bạch giữa đời thường sẽ chuyển hóa mọi nghịch cảnh thành thắng duyên.' },
+      { id: 12, rank: 'THƯỢNG CÁT TƯƠNG PHÙNG', num: 'QUẺ SỐ 12 - THIỆN HỮU TRI THỨC', poem: 'Đường xa gặp được bạn đồng hành,\nChỉ lối đưa đường tới bến thanh.\nHợp sức đồng tâm xây nghiệp lớn,\nMùa thu gặt hái quả thơm lành.', adv: 'Lời giải: Sắp gặp thiện duyên và người hiền giúp đỡ. Hợp tác làm ăn hay học đạo đều thuận hòa mỹ mãn.' },
+      { id: 13, rank: 'TRUNG CÁT CHÁNH NIỆM', num: 'QUẺ SỐ 13 - ẤN NHẪN HÒA QUANG', poem: 'Một câu nhẫn nhịn chín điều lành,\nSóng cả qua rồi biển lại xanh.\nLùi bước trời cao càng rộng mở,\nTâm từ hóa giải mọi tị hiềm.', adv: 'Lời giải: Lấy nhu thắng cương, lấy từ bi hóa giải bất đồng. Nhẫn nhịn lúc này chính là trí tuệ bảo toàn phước báu.' },
+      { id: 14, rank: 'THƯỢNG CÁT HIẾU ĐẠO', num: 'QUẺ SỐ 14 - BÁCH PHÚC LÂM MÔN', poem: 'Hiếu thảo mẹ cha Phật mỉm cười,\nCây cao bóng cả rợp sân tươi.\nÂn sâu nghĩa nặng luôn ghi nhớ,\nPhúc ấm con cháu rạng muôn đời.', adv: 'Lời giải: Công đức hiếu thuận cảm thông trời đất. Gia đình sắp đón tin vui về sức khỏe, con cái hoặc đoàn viên.' },
+      { id: 15, rank: 'ĐẠI CÁT VIÊN MÃN', num: 'QUẺ SỐ 15 - NGUYỆT VIÊN TRUNG THIÊN', poem: 'Trăng rằm mười lăm tròn vành vạnh,\nSoi sáng non sông vạn nẻo đường.\nSở nguyện bấy lâu nay thành tựu,\nHương lành lan tỏa khắp mười phương.', adv: 'Lời giải: Trăng tròn viên mãn, mưu sự tất thành. Tình duyên, gia đạo và công việc đều đạt đến độ hài hòa tốt đẹp.' },
+      { id: 16, rank: 'TRUNG CÁT THANH TỊNH', num: 'QUẺ SỐ 16 - TÙNG BÁCH KIÊN TRINH', poem: 'Tùng xanh đứng vững giữa sương đông,\nChẳng ngại phong ba giữ một lòng.\nQua khỏi đêm dài trời hửng nắng,\nBền gan vững chí ắt thành công.', adv: 'Lời giải: Giai đoạn thử thách rèn luyện bản lĩnh. Đừng nản lòng đổi hướng, kiên trì chánh đạo sẽ gặt thành quả xứng đáng.' },
+      { id: 17, rank: 'THƯỢNG CÁT KHỞI SẮC', num: 'QUẺ SỐ 17 - KHÔ MỘC PHÙNG XUÂN', poem: 'Cây khô gặp tiết nắng xuân sang,\nChồi biếc vươn lên nở rộ vàng.\nBệnh cũ tiêu tan thân khỏe mạnh,\nNiềm vui trở lại ngập thôn trang.', adv: 'Lời giải: Chuyển nguy thành an, sức khỏe hồi phục tốt lành. Người cầu việc mới hoặc hướng đi mới sẽ gặp cơ hội quý.' },
+      { id: 18, rank: 'ĐẠI CÁT HỶ TÍN', num: 'QUẺ SỐ 18 - SONG HỶ LÂM MÔN', poem: 'Chim khách đầu cành báo tin vui,\nDuyên lành hội ngộ rạng môi cười.\nTâm thành cầu nguyện nay linh ứng,\nPhước lộc song toàn đẹp thảnh thơi.', adv: 'Lời giải: Tin vui từ phương xa đưa tới, có hỷ sự trong nhà hoặc tin mừng về công việc, thi cử.' },
+      { id: 19, rank: 'TRUNG CÁT BÌNH AN', num: 'QUẺ SỐ 19 - SƠN THỦY THIỀN TÂM', poem: 'Nước biếc non xanh dạo bước thiền,\nBụi trần chẳng vướng bến bình yên.\nThong dong tự tại từng hơi thở,\nHoa nở tâm hoan thoát não phiền.', adv: 'Lời giải: Buông bỏ lo âu quá mức, sống trọn vẹn trong chánh niệm hiện tại. Tâm an thì vạn sự tự khắc bình an.' },
+      { id: 20, rank: 'THƯỢNG CÁT BẢO HỘ', num: 'QUẺ SỐ 20 - TỪ ĐÀM HỘ Niệm', poem: 'Thuyền từ vượt sóng biển mênh mông,\nBồ Tát gia trì thuận ngọn đông.\nĐi đến nơi đâu đều vững bước,\nBình an trở lại thỏa tấm lòng.', adv: 'Lời giải: Xuất hành đại cát, thay đổi chỗ ở hay công tác xa đều có thiện thần hộ trì, vạn dặm bình yên.' },
+      { id: 21, rank: 'ĐẠI CÁT PHƯỚC HUỆ', num: 'QUẺ SỐ 21 - PHƯỚC HUỆ SONG TU', poem: 'Vừa gieo ruộng phước vừa trau tâm,\nĐuốc tuệ soi đường khỏi lạc lầm.\nHai cánh chim bằng bay vạn dặm,\nĐời đạo viên dung sáng nguyệt rằm.', adv: 'Lời giải: Vừa chăm lo việc thiện giúp đời, vừa tụng kinh tĩnh tâm sẽ giúp vận trình thăng hoa bền vững nhất.' },
+      { id: 22, rank: 'TRUNG CÁT THẬN TRỌNG', num: 'QUẺ SỐ 22 - TÂM ĐĂNG CHIẾU MÊ', poem: 'Đêm tối thắp lên ngọn đèn tâm,\nBước đi chánh niệm chẳng sai lầm.\nLời ăn tiếng nói thêm hòa ái,\nChẳng sợ thị phi vướng bụi trần.', adv: 'Lời giải: Giữ lời nói từ hòa ái ngữ, cẩn trọng giấy tờ giao tiếp. Lấy sự chân thật làm đầu thì mọi hiểu lầm đều tan biến.' },
+      { id: 23, rank: 'THƯỢNG CÁT VIÊN DUNG', num: 'QUẺ SỐ 23 - KIM PHỤNG TRIỀU DƯƠNG', poem: 'Phượng hoàng cất cánh đón bình minh,\nRực rỡ mây năm sắc thái bình.\nCông khó bao ngày nay kết trái,\nRạng danh gia tộc trọn ân tình.', adv: 'Lời giải: Cơ hội tỏa sáng trong công việc và học thuật. Giữ tâm khiêm cung lễ độ thì phúc lộc càng thêm dày.' },
+      { id: 24, rank: 'THƯỢNG CÁT AN KHANG', num: 'QUẺ SỐ 24 - DƯỢC SƯ LƯU LY', poem: 'Ánh sáng Lưu Ly chiếu diệu kỳ,\nThân an tâm tịnh sạch sầu bi.\nĂn ngay ở thẳng trời ban phước,\nTrường thọ an khang vạn sự tùy.', adv: 'Lời giải: Quẻ đại an về sức khỏe và tinh thần. Nên giữ nếp sống điều độ, năng tụng niệm và phóng sanh hộ vật.' },
+      { id: 25, rank: 'TRUNG CÁT KIÊN ĐỊNH', num: 'QUẺ SỐ 25 - BỒ ĐỀ VỮNG CỘI', poem: 'Rễ sâu bám đất chẳng lung lay,\nDẫu gió mưa qua vẫn thẳng ngay.\nChậm rãi từng khâu nền móng chắc,\nLầu cao muôn trượng dựng mai này.', adv: 'Lời giải: Đừng ham lợi nhỏ trước mắt, hãy xây dựng nền tảng vững chắc. Sự bền bỉ chân chính sẽ đem lại thành tựu lâu dài.' },
+      { id: 26, rank: 'ĐẠI CÁT HÒA HỢP', num: 'QUẺ SỐ 26 - CẦM SẮT HÒA MINH', poem: 'Đàn thông gió thổi khúc thanh cao,\nTri kỷ tâm giao nghĩa dạt dào.\nTrên dưới đồng lòng muôn việc dễ,\nNhà vui cửa ấm phúc dâng trào.', adv: 'Lời giải: Nhân duyên tốt đẹp, vợ chồng hòa thuận, đồng nghiệp tương thân. Cầu duyên hay cầu hòa giải đều thành tựu.' },
+      { id: 27, rank: 'THƯỢNG CÁT TỊNH TÂM', num: 'QUẺ SỐ 27 - CHÚNG THỦY TRIỀU ĐÔNG', poem: 'Trăm sông đều hướng biển đông về,\nThiện nghiệp gom đầy sạch bến mê.\nTích tiểu thành đại nên công lớn,\nCửa nhà sung túc trọn lời thề.', adv: 'Lời giải: Tích lũy từng việc lành nhỏ, tiết kiệm và siêng năng sẽ tụ thành phúc lộc dồi dào vững chãi.' },
+      { id: 28, rank: 'THƯỢNG THƯỢNG CÁT', num: 'QUẺ SỐ 28 - PHẬT QUANG PHỔ CHIẾU', poem: 'Hào quang chư Phật rọi muôn phương,\nTan hết sương mù hiện chánh đường.\nMười phương Bồ Tát đồng gia hộ,\nSở cầu như ý vạn cát tường.', adv: 'Lời giải: Đại cát vô biên! Tâm thành đã cảm ứng Tam Bảo, việc thiện lành đang làm sẽ mang lại kết quả vượt ngoài mong đợi.' },
+      { id: 29, rank: 'TRUNG CÁT CHUYỂN HÓA', num: 'QUẺ SỐ 29 - VÂN KHAI KIẾN NHẬT', poem: 'Mây mù dần tạnh nắng hồng lên,\nGỡ nút tơ vò dạ vững bền.\nBiết lỗi sửa mình thêm phước mới,\nĐường quang lối rộng bước bình yên.', adv: 'Lời giải: Khúc mắc trong lòng hay trong công việc sắp được tháo gỡ. Mở rộng lòng bao dung tha thứ sẽ đón nhận vận may mới.' },
+      { id: 30, rank: 'THƯỢNG CÁT CÁT KHÁNH', num: 'QUẺ SỐ 30 - BẢO ĐỈNH HƯƠNG TRẦM', poem: 'Trầm hương quyện tỏa trước Tam Bảo,\nLòng kính dâng lên thấu chín tầng.\nPhước đức tổ tiên hằng che chở,\nCháu con hưng thịnh bước thăng bằng.', adv: 'Lời giải: Nhờ âm đức ông bà cha mẹ và lòng thành kính Tam Bảo, mọi nguy cơ đều hóa lành, gia nghiệp hưng vượng.' },
+      { id: 31, rank: 'ĐẠI CÁT AN NHIÊN', num: 'QUẺ SỐ 31 - BÁT NHÃ THUYỀN TỪ', poem: 'Thuyền từ nhẹ lướt bến mê tân,\nTrí sáng soi thông vạn sự trần.\nKhông sợ không lo lòng bất động,\nHoa sen nâng gót bước thanh vân.', adv: 'Lời giải: Tâm sáng suốt nhìn thấu bản chất sự việc, đưa ra quyết định đúng đắn. Rất tốt cho học tập, nghiên cứu và tu tập.' },
+      { id: 32, rank: 'ĐẠI CÁT VIÊN MÃN', num: 'QUẺ SỐ 32 - VẠN SỰ VIÊN THÀNH', poem: 'Ba mươi hai ứng hiện từ bi,\nCứu khổ ban vui chẳng ngại gì.\nGiữ trọn niềm tin nơi Chánh Pháp,\nTrăm năm hạnh phúc trọn đường đi.', adv: 'Lời giải: Quẻ kết viên mãn đại cát! Tâm từ bi rộng lớn bao nhiêu thì phước báu và bình an càng mênh mông bấy nhiêu.' }
+    ];
+    window._zenDivinationCards = DIVINATION_CARDS;
+    let currentDrawnFortune = DIVINATION_CARDS[0];
+    let divinationShakeTimer = null;
+
+    function performDrawFortune() {
+      SoundEngine.playWoodenFish();
+      openExclusiveModal('divinationModal', 'block');
+      const animEl = document.getElementById('bambooCylinderAnim');
+      const resEl = document.getElementById('divinationResultWrap');
+      if (animEl) animEl.style.display = 'block';
+      if (resEl) resEl.style.display = 'none';
+      if (divinationShakeTimer) clearTimeout(divinationShakeTimer);
+
+      divinationShakeTimer = setTimeout(() => {
+        const card = DIVINATION_CARDS[Math.floor(Math.random() * DIVINATION_CARDS.length)];
+        currentDrawnFortune = card;
+        if (animEl) animEl.style.display = 'none';
+        if (resEl) resEl.style.display = 'block';
+        const rankEl = document.getElementById('divineRankBadge');
+        if (rankEl) rankEl.innerText = card.rank;
+        document.getElementById('divineNumber').innerText = card.num;
+        document.getElementById('divinePoem').innerHTML = '"' + card.poem.replace(/\n/g, '<br>') + '"';
+        const advParts = card.adv.split(':');
+        document.getElementById('divineAdvice').innerHTML = '<b>' + advParts[0] + ':</b>' + advParts.slice(1).join(':');
+        SoundEngine.playSingingBowl();
+      }, 650);
+    }
+
+    document.getElementById('btnDivination').onclick = performDrawFortune;
+    const btnDrawAgainFortune = document.getElementById('btnDrawAgainFortune');
+    if (btnDrawAgainFortune) btnDrawAgainFortune.onclick = performDrawFortune;
+
+    const closeDivinationFn = () => {
+      if (divinationShakeTimer) clearTimeout(divinationShakeTimer);
       document.getElementById('divinationModal').style.display = 'none';
       syncModalBodyClass();
     };
+    document.getElementById('btnCloseDivination').onclick = closeDivinationFn;
+    const btnTopCloseDivination = document.getElementById('btnTopCloseDivination');
+    if (btnTopCloseDivination) btnTopCloseDivination.onclick = closeDivinationFn;
+
+    function wrapCanvasLines(ctx, text, maxWidth) {
+      const words = String(text || '').split(/\s+/);
+      const lines = [];
+      let cur = '';
+      for (let i = 0; i < words.length; i++) {
+        const test = cur ? (cur + ' ' + words[i]) : words[i];
+        if (ctx.measureText(test).width > maxWidth && cur) {
+          lines.push(cur);
+          cur = words[i];
+        } else {
+          cur = test;
+        }
+      }
+      if (cur) lines.push(cur);
+      return lines;
+    }
+
+    function drawGoldLotusOrnament(ctx, cx, cy, r) {
+      ctx.save();
+      ctx.translate(cx, cy);
+      const angles = [-0.88, -0.44, 0, 0.44, 0.88];
+      angles.forEach((ang, idx) => {
+        ctx.save();
+        ctx.rotate(ang);
+        const pw = idx === 2 ? r * 0.46 : r * 0.38;
+        const ph = idx === 2 ? r * 1.15 : r * 0.96;
+        ctx.beginPath();
+        ctx.moveTo(0, r * 0.18);
+        ctx.quadraticCurveTo(-pw, -ph * 0.35, 0, -ph);
+        ctx.quadraticCurveTo(pw, -ph * 0.35, 0, r * 0.18);
+        ctx.closePath();
+        ctx.fillStyle = idx === 2 ? '#ffe066' : '#f5b932';
+        ctx.fill();
+        ctx.strokeStyle = '#fff3b0';
+        ctx.lineWidth = Math.max(1, r * 0.07);
+        ctx.stroke();
+        ctx.restore();
+      });
+      // Đế đài sen vàng ngang bên dưới
+      ctx.beginPath();
+      ctx.ellipse(0, r * 0.24, r * 0.85, r * 0.18, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#d4af37';
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function generateFortuneCardDataURL(card) {
+      const target = card || currentDrawnFortune || DIVINATION_CARDS[0];
+      const W = 1080, H = 1520;
+      const cv = document.createElement('canvas');
+      cv.width = W;
+      cv.height = H;
+      const ctx = cv.getContext('2d');
+      const VN_SERIF = '"Times New Roman", "Noto Serif", serif';
+      const VN_SANS = '"Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif';
+
+      // Nền gấm đỏ thẫm hoàng kim
+      const bg = ctx.createLinearGradient(0, 0, 0, H);
+      bg.addColorStop(0, '#4a0c0c');
+      bg.addColorStop(0.5, '#6d1212');
+      bg.addColorStop(1, '#340707');
+      ctx.fillStyle = bg;
+      ctx.fillRect(0, 0, W, H);
+
+      // Hào quang vàng dịu phía trên
+      const glow = ctx.createRadialGradient(W / 2, 240, 20, W / 2, 240, 520);
+      glow.addColorStop(0, 'rgba(255, 215, 0, 0.25)');
+      glow.addColorStop(1, 'rgba(255, 215, 0, 0)');
+      ctx.fillStyle = glow;
+      ctx.fillRect(0, 0, W, H);
+
+      // Viền vàng cổ truyền 2 lớp
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 10;
+      ctx.strokeRect(36, 36, W - 72, H - 72);
+      ctx.strokeStyle = 'rgba(255, 232, 145, 0.65)';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(54, 54, W - 108, H - 108);
+
+      // Tiêu đề Thiền Viện + Hoa Sen Vàng Vector 2 bên
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#ffd700';
+      ctx.font = `bold 46px ${VN_SERIF}`;
+      ctx.fillText('THIỀN VIỆN ĐẠI BI 3D', W / 2, 138);
+      drawGoldLotusOrnament(ctx, W / 2 - 312, 124, 24);
+      drawGoldLotusOrnament(ctx, W / 2 + 312, 124, 24);
+
+      ctx.fillStyle = '#ffecb3';
+      ctx.font = `bold 27px ${VN_SANS}`;
+      ctx.fillText('QUÁN THẾ ÂM LINH XÂM  •  HỘ TRÌ BÌNH AN CÁT TƯỜNG', W / 2, 188);
+
+      ctx.fillStyle = '#f5d796';
+      ctx.font = `24px ${VN_SANS}`;
+      const dateStr = `${currentLunarInfo.solarDateStr || ''} (${currentLunarInfo.lunarShort || 'ÂL'})`;
+      ctx.fillText(`Đồng tu thỉnh quẻ: ${myNickname}   •   Ngày: ${dateStr}`, W / 2, 238);
+
+      // Tờ giấy xăm lụa kem ở trung tâm
+      const px = 92, py = 278, pw = W - 184, ph = 1040;
+      const parch = ctx.createLinearGradient(0, py, 0, py + ph);
+      parch.addColorStop(0, '#fffaf0');
+      parch.addColorStop(1, '#f7e7c8');
+      ctx.fillStyle = parch;
+      ctx.fillRect(px, py, pw, ph);
+      ctx.strokeStyle = '#c59428';
+      ctx.lineWidth = 6;
+      ctx.strokeRect(px, py, pw, ph);
+      ctx.strokeStyle = 'rgba(155, 28, 28, 0.35)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(px + 14, py + 14, pw - 28, ph - 28);
+
+      // Nhãn phẩm cấp quẻ
+      ctx.fillStyle = '#8e1414';
+      ctx.fillRect(W / 2 - 220, py + 42, 440, 56);
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 3;
+      ctx.strokeRect(W / 2 - 220, py + 42, 440, 56);
+      ctx.fillStyle = '#ffe57f';
+      ctx.font = `bold 27px ${VN_SANS}`;
+      ctx.fillText(target.rank || 'THƯỢNG CÁT BÌNH AN', W / 2, py + 79);
+
+      // Số quẻ & Tên quẻ (tự co cỡ chữ nếu tên dài để luôn nằm gọn trong khung kem)
+      ctx.fillStyle = '#7f1010';
+      let numFontSize = 42;
+      ctx.font = `bold ${numFontSize}px ${VN_SERIF}`;
+      while (ctx.measureText(target.num).width > pw - 64 && numFontSize > 30) {
+        numFontSize -= 2;
+        ctx.font = `bold ${numFontSize}px ${VN_SERIF}`;
+      }
+      ctx.fillText(target.num, W / 2, py + 168);
+
+      ctx.fillStyle = '#b8860b';
+      ctx.font = `28px ${VN_SERIF}`;
+      ctx.fillText('────────  ❖  ────────', W / 2, py + 216);
+
+      // 4 câu thơ Kệ Xăm
+      const poemLines = String(target.poem || '').replace(/\\n/g, '\n').split('\n');
+      ctx.fillStyle = '#2d1206';
+      ctx.font = `italic bold 38px ${VN_SERIF}`;
+      poemLines.forEach((ln, idx) => {
+        ctx.fillText(ln.trim(), W / 2, py + 295 + idx * 68);
+      });
+
+      // Khung Lời Giải & Khuyến Tấn
+      const boxX = px + 48, boxY = py + 600, boxW = pw - 96, boxH = 385;
+      ctx.fillStyle = 'rgba(139, 98, 32, 0.10)';
+      ctx.fillRect(boxX, boxY, boxW, boxH);
+      ctx.strokeStyle = '#c59428';
+      ctx.lineWidth = 2.5;
+      ctx.strokeRect(boxX, boxY, boxW, boxH);
+
+      ctx.fillStyle = '#8b1a1a';
+      ctx.font = `bold 31px ${VN_SERIF}`;
+      ctx.fillText('✦  LỜI GIẢI & PHÁP NGỮ HỘ TRÌ  ✦', W / 2, boxY + 54);
+
+      ctx.fillStyle = '#381c0c';
+      ctx.font = `32px ${VN_SERIF}`;
+      const cleanAdv = String(target.adv || '').replace(/^Lời giải:\s*/i, '');
+      const advLines = wrapCanvasLines(ctx, cleanAdv, boxW - 76);
+      advLines.slice(0, 5).forEach((ln, idx) => {
+        ctx.fillText(ln, W / 2, boxY + 122 + idx * 54);
+      });
+
+      // Ấn đỏ Đại Bi Tự & Chân trang chia sẻ
+      ctx.fillStyle = '#ffd700';
+      ctx.font = `bold 30px ${VN_SERIF}`;
+      ctx.fillText('✦  Nam Mô Đại Bi Quán Thế Âm Bồ Tát  ✦', W / 2, H - 122);
+
+      ctx.fillStyle = '#ffe299';
+      ctx.font = `24px ${VN_SANS}`;
+      ctx.fillText('Cùng vào lễ Phật, tụng kinh 19h & xin xăm online tại: thien-vien-dai-bi.onrender.com', W / 2, H - 76);
+
+      const url = cv.toDataURL('image/png');
+      window._lastFortuneCardDataUrl = url;
+      return url;
+    }
+    window.generateFortuneCardDataURL = generateFortuneCardDataURL;
+
+    function triggerDownloadDataUrl(dataUrl, filename) {
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      setTimeout(() => a.remove(), 200);
+    }
+
+    const btnDownloadFortuneCard = document.getElementById('btnDownloadFortuneCard');
+    if (btnDownloadFortuneCard) {
+      btnDownloadFortuneCard.onclick = () => {
+        const dataUrl = generateFortuneCardDataURL(currentDrawnFortune);
+        const qId = (currentDrawnFortune && currentDrawnFortune.id) ? currentDrawnFortune.id : 1;
+        triggerDownloadDataUrl(dataUrl, `Que-Xam-Quan-Am-So-${qId}-Thien-Vien-Dai-Bi.png`);
+        showFloatMerit('📥 Đã tải Thẻ Xăm Quán Âm sắc nét về máy!', window.innerWidth / 2, window.innerHeight / 2);
+      };
+    }
 
     // ========================================================
-    // 13. ĐIỀU KHIỂN CHUẨN CAMERA 3RD PERSON & BÀN PHÍM
+    // CHẾ ĐỘ NGẮM CẢNH / CHỤP ẢNH CHECK-IN & CAMERA TOÀN CẢNH TRÊN CAO
     // ========================================================
+    const AERIAL_VIEWPOINTS = [
+      null, // 0 = Góc nhìn Chú Tiểu 3rd-person mặc định
+      { name: 'Toàn Cảnh Đại Tự Trên Cao', targetX: 0, targetY: 3.5, targetZ: 25.0, yaw: 0.0, pitch: 0.42, dist: 52.0 },
+      { name: 'Toàn Cảnh Hồ Sen & Cây Bồ Đề', targetX: -2.0, targetY: 2.2, targetZ: 39.5, yaw: -0.46, pitch: 0.36, dist: 33.0 },
+      { name: 'Toàn Cảnh Bảo Tháp 7 Tầng & Vườn Sa La', targetX: 11.0, targetY: 4.5, targetZ: 47.5, yaw: -0.42, pitch: 0.34, dist: 32.0 },
+      { name: 'Toàn Cảnh Đại Hùng Bảo Điện', targetX: 0, targetY: 4.5, targetZ: 7.5, yaw: 0.36, pitch: 0.35, dist: 36.0 }
+    ];
+    let aerialCamIdx = 0;
+    let aerialYaw = 0;
+    let aerialPitch = 0.40;
+    let aerialDist = 48.0;
+    let isZenPhotoMode = false;
+    let lastCapturedPhotoDataUrl = '';
+
+    function syncAerialButtonsUI() {
+      const btnTop = document.getElementById('btnAerialCamTop');
+      const lblTop = document.getElementById('aerialCamTopLabel');
+      const lblPhoto = document.getElementById('photoAerialLabel');
+      if (btnTop) btnTop.classList.toggle('aerial-active', aerialCamIdx > 0);
+      if (aerialCamIdx > 0 && AERIAL_VIEWPOINTS[aerialCamIdx]) {
+        if (lblTop) lblTop.innerText = `Góc ${aerialCamIdx}/4`;
+        if (lblPhoto) lblPhoto.innerText = `Góc Cao ${aerialCamIdx}/4`;
+      } else {
+        if (lblTop) lblTop.innerText = 'Toàn Cảnh';
+        if (lblPhoto) lblPhoto.innerText = 'Đổi Góc Cao';
+      }
+    }
+
+    function setAerialCamMode(nextIdx, silent = false) {
+      aerialCamIdx = ((nextIdx % AERIAL_VIEWPOINTS.length) + AERIAL_VIEWPOINTS.length) % AERIAL_VIEWPOINTS.length;
+      if (aerialCamIdx > 0) {
+        const vp = AERIAL_VIEWPOINTS[aerialCamIdx];
+        aerialYaw = vp.yaw;
+        aerialPitch = vp.pitch;
+        aerialDist = vp.dist;
+        if (!silent) {
+          showFloatMerit(`🦅 ${vp.name} (Kéo xoay 360° • Chạm tiếp để đổi góc)`, window.innerWidth / 2, window.innerHeight / 2 - 40);
+        }
+      } else if (!silent) {
+        showFloatMerit('🚶 Đã trở về góc nhìn theo chân Chú Tiểu', window.innerWidth / 2, window.innerHeight / 2 - 40);
+      }
+      syncAerialButtonsUI();
+    }
+
+    function cycleAerialCamMode() {
+      setAerialCamMode((aerialCamIdx + 1) % AERIAL_VIEWPOINTS.length);
+    }
+    window._setAerialCamMode = setAerialCamMode;
+
+    function setZenPhotoMode(active) {
+      isZenPhotoMode = !!active;
+      document.body.classList.toggle('zen-photo-mode', isZenPhotoMode);
+      if (isZenPhotoMode) {
+        closeAllModals();
+        if (lanternWishTooltip) lanternWishTooltip.style.display = 'none';
+        showFloatMerit('📷 Chế độ Tĩnh Tâm Ngắm Cảnh: Xoay góc máy tùy ý & bấm Chụp Ảnh!', window.innerWidth / 2, 70);
+      }
+      syncAerialButtonsUI();
+    }
+    window._setZenPhotoMode = setZenPhotoMode;
+
+    function captureZenCheckinPhoto() {
+      // Render đồng bộ ngay lập tức để buffer WebGL đầy đủ sắc nét mà không cần bật preserveDrawingBuffer gây nặng điện thoại
+      renderer.render(scene, camera);
+      const srcCanvas = renderer.domElement;
+      const srcW = srcCanvas.width || 1280;
+      const srcH = srcCanvas.height || 720;
+      const scale = srcW < 1080 ? (1080 / srcW) : 1.0;
+      const outW = Math.round(srcW * scale);
+      const footerH = Math.round(Math.max(86, outW * 0.078));
+      const outH = Math.round(srcH * scale) + footerH;
+
+      const cv = document.createElement('canvas');
+      cv.width = outW;
+      cv.height = outH;
+      const ctx = cv.getContext('2d');
+
+      ctx.fillStyle = '#180b05';
+      ctx.fillRect(0, 0, outW, outH);
+      ctx.drawImage(srcCanvas, 0, 0, outW, outH - footerH);
+
+      // Khung viền lụa vàng thanh lịch quanh bức ảnh 3D
+      ctx.strokeStyle = 'rgba(255, 215, 0, 0.85)';
+      ctx.lineWidth = Math.max(4, Math.round(outW * 0.005));
+      ctx.strokeRect(10, 10, outW - 20, outH - 20);
+
+      // Dải chân trang lưu niệm Thiền Viện Đại Bi 3D
+      const barY = outH - footerH;
+      const grad = ctx.createLinearGradient(0, barY, 0, outH);
+      grad.addColorStop(0, '#2b1409');
+      grad.addColorStop(1, '#140804');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, barY, outW, footerH);
+
+      ctx.strokeStyle = '#ffd700';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(14, barY);
+      ctx.lineTo(outW - 14, barY);
+      ctx.stroke();
+
+      const titleSize = Math.max(18, Math.round(outW * 0.024));
+      const subSize = Math.max(13, Math.round(outW * 0.0165));
+      const lotusR = Math.max(10, Math.round(titleSize * 0.48));
+      drawGoldLotusOrnament(ctx, 26 + lotusR, barY + Math.round(footerH * 0.36), lotusR);
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#ffd700';
+      ctx.font = `bold ${titleSize}px "Times New Roman", "Noto Serif", serif`;
+      ctx.fillText('THIỀN VIỆN ĐẠI BI 3D', 36 + lotusR * 2, barY + Math.round(footerH * 0.44));
+
+      ctx.fillStyle = '#f5e4c8';
+      ctx.font = `${subSize}px "Segoe UI", Roboto, Arial, sans-serif`;
+      ctx.fillText(`Đồng tu: ${myNickname}  •  ${currentLunarInfo.solarDateStr || ''} (${currentLunarInfo.lunarShort || 'ÂL'})`, 28, barY + Math.round(footerH * 0.80));
+
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#ffe082';
+      ctx.font = `bold ${subSize}px "Segoe UI", Roboto, Arial, sans-serif`;
+      ctx.fillText('thien-vien-dai-bi.onrender.com', outW - 28, barY + Math.round(footerH * 0.62));
+
+      lastCapturedPhotoDataUrl = cv.toDataURL('image/png');
+      window._lastZenPhotoDataUrl = lastCapturedPhotoDataUrl;
+
+      const imgEl = document.getElementById('capturedPhotoImg');
+      if (imgEl) imgEl.src = lastCapturedPhotoDataUrl;
+
+      const shareBtn = document.getElementById('btnShareCapturedPhoto');
+      if (shareBtn) {
+        shareBtn.style.display = (navigator.share && navigator.canShare) ? 'inline-flex' : 'none';
+      }
+
+      setZenPhotoMode(false);
+      openExclusiveModal('photoPreviewModal', 'block');
+      SoundEngine.playSingingBowl();
+      return lastCapturedPhotoDataUrl;
+    }
+    window.captureZenCheckinPhoto = captureZenCheckinPhoto;
+
+    const btnAerialCamTop = document.getElementById('btnAerialCamTop');
+    if (btnAerialCamTop) btnAerialCamTop.onclick = cycleAerialCamMode;
+    const btnPhotoModeTop = document.getElementById('btnPhotoModeTop');
+    if (btnPhotoModeTop) btnPhotoModeTop.onclick = () => setZenPhotoMode(!isZenPhotoMode);
+    const btnPhotoCycleAerial = document.getElementById('btnPhotoCycleAerial');
+    if (btnPhotoCycleAerial) btnPhotoCycleAerial.onclick = cycleAerialCamMode;
+    const btnSnapZenPhoto = document.getElementById('btnSnapZenPhoto');
+    if (btnSnapZenPhoto) btnSnapZenPhoto.onclick = captureZenCheckinPhoto;
+    const btnExitZenPhotoMode = document.getElementById('btnExitZenPhotoMode');
+    if (btnExitZenPhotoMode) btnExitZenPhotoMode.onclick = () => setZenPhotoMode(false);
+
+    const btnClosePhotoPreview = document.getElementById('btnClosePhotoPreview');
+    if (btnClosePhotoPreview) {
+      btnClosePhotoPreview.onclick = () => {
+        document.getElementById('photoPreviewModal').style.display = 'none';
+        syncModalBodyClass();
+      };
+    }
+    const btnRetakeZenPhoto = document.getElementById('btnRetakeZenPhoto');
+    if (btnRetakeZenPhoto) {
+      btnRetakeZenPhoto.onclick = () => {
+        document.getElementById('photoPreviewModal').style.display = 'none';
+        syncModalBodyClass();
+        setZenPhotoMode(true);
+      };
+    }
+    const btnDownloadCapturedPhoto = document.getElementById('btnDownloadCapturedPhoto');
+    if (btnDownloadCapturedPhoto) {
+      btnDownloadCapturedPhoto.onclick = () => {
+        if (!lastCapturedPhotoDataUrl) return;
+        triggerDownloadDataUrl(lastCapturedPhotoDataUrl, `Checkin-Thien-Vien-Dai-Bi-3D-${Date.now()}.png`);
+        showFloatMerit('📥 Đã lưu bức ảnh Check-in Thiền Viện về máy!', window.innerWidth / 2, window.innerHeight / 2);
+      };
+    }
+    const btnShareCapturedPhoto = document.getElementById('btnShareCapturedPhoto');
+    if (btnShareCapturedPhoto) {
+      btnShareCapturedPhoto.onclick = async () => {
+        if (!lastCapturedPhotoDataUrl || !navigator.share) return;
+        try {
+          const res = await fetch(lastCapturedPhotoDataUrl);
+          const blob = await res.blob();
+          const file = new File([blob], 'Thien-Vien-Dai-Bi-3D.png', { type: 'image/png' });
+          if (navigator.canShare && navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              title: 'Thiền Viện Đại Bi 3D',
+              text: `${myNickname} kính chúc quý đạo hữu vạn sự bình an cát tường tại Thiền Viện Đại Bi 3D!`,
+              files: [file]
+            });
+          }
+        } catch (e) {}
+      };
+    }
+
+    // ========================================================
+    // 13. ĐIỀU KHIỂN CHUẨN CAMERA 3RD PERSON, TOÀN CẢNH & BÀN PHÍM
+    // ========================================================
+    let nearbyWishingTree = false;
     const keys = {};
     window.addEventListener('keydown', e => {
       // Nếu đang gõ phím vào ô nhập liệu (chat input, tên chú tiểu...), không kích hoạt di chuyển WASD
@@ -5689,13 +7201,23 @@
         return;
       }
 
-      if (e.key === 'Escape' && isAnyModalOpen()) {
-        closeAllModals();
-        return;
+      if (e.key === 'Escape') {
+        if (isAnyModalOpen()) {
+          closeAllModals();
+          return;
+        }
+        if (isZenPhotoMode) {
+          setZenPhotoMode(false);
+          return;
+        }
+        if (aerialCamIdx > 0) {
+          setAerialCamMode(0);
+          return;
+        }
       }
 
       // Nhấn Enter trong thế giới 3D để mở & focus ngay vào ô Chat Niệm Phật
-      if (e.key === 'Enter') {
+      if (e.key === 'Enter' && !isZenPhotoMode) {
         const modal = document.getElementById('zenChatModal');
         if (modal) {
           openExclusiveModal('zenChatModal', 'block');
@@ -5721,6 +7243,8 @@
           toggleSitNearbyCushion();
         } else if (nearbyStatue !== null) {
           openStatueModal(nearbyStatue);
+        } else if (nearbyWishingTree) {
+          openWishingTreeModal();
         } else if (nearbySeatId !== null) {
           toggleSitNearbyCushion();
         }
@@ -5737,7 +7261,7 @@
     let cameraPitch = 0.28;
     let camDist = 6.8;
 
-    const UI_OVERLAY_SELECTOR = '.zen-dock, .top-bar, #mantraPlayer, .unlock-card, #modalBackdrop, #audioModal, #robeModal, #mantraListModal, #divinationModal, #sutraModal, #statueModal, #weeklyScheduleModal, #mobileSettingsModal, #lanternWishModal, #nameChangeModal, #controlsHelp, #lanternModal, #zenChatModal, #interactPrompt, #spatialActionPrompt';
+    const UI_OVERLAY_SELECTOR = '.zen-dock, .top-bar, #mantraPlayer, .unlock-card, #modalBackdrop, #audioModal, #robeModal, #mantraListModal, #divinationModal, #sutraModal, #statueModal, #weeklyScheduleModal, #mobileSettingsModal, #lanternWishModal, #nameChangeModal, #controlsHelp, #lanternModal, #zenChatModal, #lunarCalendarModal, #wishingTreeModal, #wishingCardViewModal, #photoPreviewModal, #zenPhotoFloatingBar, #interactPrompt, #spatialActionPrompt';
 
     window.addEventListener('mousedown', e => {
       if (e.target.closest(UI_OVERLAY_SELECTOR)) return;
@@ -5760,14 +7284,23 @@
       const dy = e.clientY - prevMouseY;
       prevMouseX = e.clientX;
       prevMouseY = e.clientY;
-      cameraYaw += dx * 0.005;
-      cameraPitch = Math.max(-0.25, Math.min(0.9, cameraPitch + dy * 0.005));
+      if (aerialCamIdx > 0) {
+        aerialYaw += dx * 0.005;
+        aerialPitch = Math.max(0.10, Math.min(1.18, aerialPitch + dy * 0.005));
+      } else {
+        cameraYaw += dx * 0.005;
+        cameraPitch = Math.max(-0.25, Math.min(0.9, cameraPitch + dy * 0.005));
+      }
     });
 
     // Cuộn chuột để Zoom Camera xa/gần
     window.addEventListener('wheel', e => {
       if (e.target.closest(UI_OVERLAY_SELECTOR)) return;
-      camDist = Math.max(3.2, Math.min(13.5, camDist + e.deltaY * 0.005));
+      if (aerialCamIdx > 0) {
+        aerialDist = Math.max(15.0, Math.min(78.0, aerialDist + e.deltaY * 0.025));
+      } else {
+        camDist = Math.max(3.2, Math.min(13.5, camDist + e.deltaY * 0.005));
+      }
     }, { passive: true });
 
     // HỆ THỐNG ĐIỀU KHIỂN CẢM ỨNG ĐIỆN THOẠI (MOBILE TOUCH CONTROLS)
@@ -5805,7 +7338,11 @@
         const t2 = e.touches[1];
         const currentDist = Math.hypot(t1.clientX - t2.clientX, t1.clientY - t2.clientY);
         const pinchDelta = currentDist - prevPinchDist;
-        camDist = Math.max(3.2, Math.min(13.5, camDist - pinchDelta * 0.015));
+        if (aerialCamIdx > 0) {
+          aerialDist = Math.max(15.0, Math.min(78.0, aerialDist - pinchDelta * 0.08));
+        } else {
+          camDist = Math.max(3.2, Math.min(13.5, camDist - pinchDelta * 0.015));
+        }
         prevPinchDist = currentDist;
         return;
       }
@@ -5818,8 +7355,13 @@
           const dy = touch.clientY - prevTouchY;
           prevTouchX = touch.clientX;
           prevTouchY = touch.clientY;
-          cameraYaw += dx * 0.007;
-          cameraPitch = Math.max(-0.25, Math.min(0.9, cameraPitch + dy * 0.007));
+          if (aerialCamIdx > 0) {
+            aerialYaw += dx * 0.007;
+            aerialPitch = Math.max(0.10, Math.min(1.18, aerialPitch + dy * 0.007));
+          } else {
+            cameraYaw += dx * 0.007;
+            cameraPitch = Math.max(-0.25, Math.min(0.9, cameraPitch + dy * 0.007));
+          }
           break;
         }
       }
@@ -6130,6 +7672,8 @@
         toggleSitNearbyCushion();
       } else if (nearbyStatue !== null) {
         openStatueModal(nearbyStatue);
+      } else if (nearbyWishingTree) {
+        openWishingTreeModal();
       } else if (nearbySeatId !== null) {
         toggleSitNearbyCushion();
       } else {
@@ -6248,6 +7792,14 @@
             // Đồng bộ hoa đăng đang bập bềnh trên hồ sen
             if (data.roomState && data.roomState.lanterns) {
               data.roomState.lanterns.forEach(l => spawnLanternMesh(l));
+            }
+
+            // Đồng bộ Thẻ Lụa Ước Nguyện trên Cây Bồ Đề 3D & Lịch Âm Lễ Hội
+            if (data.roomState && Array.isArray(data.roomState.wishingCards)) {
+              data.roomState.wishingCards.forEach(wc => spawnWishingCardMesh(wc));
+            }
+            if (data.roomState && data.roomState.lunarInfo) {
+              applyLunarInfoToUI(data.roomState.lunarInfo);
             }
 
             // Kiểm tra khóa lễ 19h đang diễn ra khi vừa vào phòng
@@ -6500,6 +8052,36 @@
               addFeed(`🏮 ${data.lantern.nickname} vừa thả hoa đăng: "${data.lantern.wish ? data.lantern.wish.substring(0, 36) : ''}..."`);
             }
             if (typeof data.merits === 'number' && data.playerId === myPlayerId) {
+              setMyMerits(Math.max(playerMerits, data.merits));
+            }
+            break;
+          }
+
+          case 'WISHING_CARD_HUNG': {
+            if (data.card) {
+              if (data.card.playerId !== myPlayerId) {
+                spawnWishingCardMesh(data.card);
+                addFeed(`🎀 ${data.card.nickname} vừa treo thẻ ước nguyện lên Cây Bồ Đề`);
+              } else if (typeof data.merits === 'number') {
+                setMyMerits(Math.max(playerMerits, data.merits));
+              }
+            }
+            break;
+          }
+
+          case 'WISHING_CARD_BLESSED': {
+            if (data.cardId) {
+              const target = hangingWishingCards.find(w => w.data.id === data.cardId);
+              if (target && typeof data.blessCount === 'number') {
+                target.data.blessCount = data.blessCount;
+                if (currentViewingWishingCard && currentViewingWishingCard.data.id === data.cardId) {
+                  const countEl = document.getElementById('wishingViewBlessCount');
+                  if (countEl) countEl.innerText = `🙏 ${data.blessCount} đồng tu đã tùy hỷ cầu phúc`;
+                }
+                if (typeof window.refreshWishingCardsListUI === 'function') window.refreshWishingCardsListUI();
+              }
+            }
+            if (data.playerId === myPlayerId && typeof data.merits === 'number') {
               setMyMerits(Math.max(playerMerits, data.merits));
             }
             break;
@@ -6848,6 +8430,8 @@
       // Bảo Tháp Báo Ân 7 Tầng (Đông-Nam) & Nhà Bia Công Đức Rùa Đá (Tây-Nam)
       { x: 19.0, z: 55.5, r: 3.05 },
       { x: -19.0, z: 55.5, r: 2.85 },
+      // Bệ đá bát giác Cây Bồ Đề Ước Nguyện sân chùa (-12.2, 29.2)
+      { x: -12.2, z: 29.2, r: 2.38 },
       // Đôi Đỉnh Đồng Tam Túc Nghê Chầu trước sân Tam Quan
       { x: -4.8, z: 27.6, r: 0.88 },
       { x: 4.8, z: 27.6, r: 0.88 },
@@ -7005,6 +8589,7 @@
       if (cy < 4.5 && Math.hypot(cx + 18.0, cz - 40.0) < 4.05) return true;
       if (cy < 12.0 && Math.hypot(cx - 19.0, cz - 55.5) < 3.0) return true;
       if (cy < 7.5 && Math.hypot(cx + 19.0, cz - 55.5) < 2.8) return true;
+      if (cy < 5.5 && Math.hypot(cx + 12.2, cz - 29.2) < 2.35) return true;
       return false;
     }
 
@@ -7017,6 +8602,8 @@
     window._zenScene = scene;
     window._zenCamera = camera;
     window._zenKoi = koiFishList;
+    window._zenWishingCards = hangingWishingCards;
+    window._zenLunar = () => currentLunarInfo;
     window._setZenCameraYawPitch = (yaw, pitch, dist) => {
       cameraYaw = yaw;
       cameraPitch = pitch;
@@ -7147,6 +8734,25 @@
             l.auraMesh.scale.setScalar(s);
           }
         });
+      }
+
+      // Thẻ lụa đỏ ước nguyện trên Cây Bồ Đề đung đưa nhẹ theo làn gió thiền viện
+      if (hangingWishingCards.length > 0) {
+        for (let i = 0; i < hangingWishingCards.length; i++) {
+          const w = hangingWishingCards[i];
+          w.mesh.rotation.z = Math.sin(time * w.swaySpeed + w.swayPhase) * 0.085;
+          w.mesh.rotation.x = Math.cos(time * (w.swaySpeed * 0.78) + w.swayPhase) * 0.045;
+        }
+      }
+
+      // Đèn lồng lễ hội Rằm / Mùng 1 đung đưa nhẹ khi đang bật
+      if (festivalLanternsGroup.visible && festivalLanternMeshes.length > 0) {
+        for (let i = 0; i < festivalLanternMeshes.length; i++) {
+          const fl = festivalLanternMeshes[i];
+          const ph = fl.userData.swayPhase || 0;
+          fl.rotation.z = Math.sin(time * 1.35 + ph) * 0.045;
+          fl.rotation.x = Math.cos(time * 1.05 + ph) * 0.032;
+        }
       }
 
       // Đom đóm phát sáng bay lượn trên mặt hồ sen về đêm
@@ -7293,6 +8899,7 @@
 
       const inputLen = Math.hypot(inputForward, inputRight);
       if (inputLen > 0.05) {
+        if (aerialCamIdx > 0) setAerialCamMode(0, true);
         const moveVecX = (fwdX * inputForward + rightX * inputRight) / inputLen;
         const moveVecZ = (fwdZ * inputForward + rightZ * inputRight) / inputLen;
 
@@ -7381,45 +8988,62 @@
         }
       });
 
-      // KIỂM TRA MẶT HỒ SEN ĐỂ THẢ HOA ĐĂNG CẦU AN
+      // KIỂM TRA MẶT HỒ SEN ĐỂ THẢ HOA ĐĂNG CẦU AN & CÂY BỒ ĐỀ ƯỚC NGUYỆN
       const distToPond = Math.hypot(localPlayerObj.position.x, localPlayerObj.position.z - 42);
+      const distToWishingTree = Math.hypot(localPlayerObj.position.x - WISHING_TREE_POS.x, localPlayerObj.position.z - WISHING_TREE_POS.z);
 
       const interactPrompt = document.getElementById('interactPrompt');
       const actionPrompt = document.getElementById('spatialActionPrompt');
 
-      // NẾU CÓ BẤT KỲ BẢNG KINH, TƯỢNG PHẬT, THỜI KHÓA, MÀN HÌNH CHÀO HOẶC MODAL NÀO ĐANG MỞ -> ẨN TOÀN BỘ NÚT TƯƠNG TÁC
-      if (isAnyModalOpen() || isWelcomeBannerOpen()) {
-        document.body.classList.add('modal-open');
+      // NẾU CÓ BẤT KỲ BẢNG KINH, TƯỢNG PHẬT, THỜI KHÓA, MÀN HÌNH CHÀO, CHẾ ĐỘ NGẮM CẢNH HOẶC CAMERA TOÀN CẢNH ĐANG MỞ -> ẨN TOÀN BỘ NÚT TƯƠNG TÁC MẶT ĐẤT
+      if (isAnyModalOpen() || isWelcomeBannerOpen() || isZenPhotoMode || aerialCamIdx > 0) {
+        if (isAnyModalOpen() || isWelcomeBannerOpen()) {
+          document.body.classList.add('modal-open');
+        } else {
+          document.body.classList.remove('modal-open');
+        }
         if (interactPrompt) interactPrompt.style.display = 'none';
         if (actionPrompt) actionPrompt.style.display = 'none';
         nearbySeatId = null;
         nearbyStatue = null;
+        nearbyWishingTree = false;
         nearbySpatialTarget = null;
       } else {
         document.body.classList.remove('modal-open');
 
         if (closestStatue !== null && !isSitting) {
           nearbyStatue = closestStatue;
+          nearbyWishingTree = false;
           nearbySeatId = null;
           interactPrompt.style.display = 'block';
           interactPrompt.innerText = `Chạm hoặc Bấm [E]: Chiêm Bái ${closestStatue.name}`;
+        } else if (distToWishingTree < 4.6 && !isSitting) {
+          nearbyWishingTree = true;
+          nearbyStatue = null;
+          nearbySeatId = null;
+          interactPrompt.style.display = 'block';
+          interactPrompt.innerText = 'Chạm hoặc Bấm [E]: Treo Thẻ Ước Nguyện Cây Bồ Đề 🎀';
         } else if (minSeatDist < 1.7 && !isSitting) {
           nearbySeatId = closestSeat;
           nearbyStatue = null;
+          nearbyWishingTree = false;
           interactPrompt.style.display = 'block';
           interactPrompt.innerText = `Chạm hoặc Bấm [E]: Tọa Thiền Bồ Đoàn (#${nearbySeatId + 1})`;
         } else if (distToPond < 13.5 && !isSitting) {
           nearbyStatue = null;
+          nearbyWishingTree = false;
           nearbySeatId = null;
           interactPrompt.style.display = 'block';
           interactPrompt.innerText = 'Chạm hoặc Bấm [H]: Thả Đèn Hoa Đăng Cầu Nguyện 🏮';
         } else if (isSitting) {
           nearbyStatue = null;
+          nearbyWishingTree = false;
           interactPrompt.style.display = 'block';
           interactPrompt.innerText = 'Chạm hoặc Bấm [E]: Đứng Dậy Xả Thiền 🙏';
         } else {
           nearbySeatId = null;
           nearbyStatue = null;
+          nearbyWishingTree = false;
           interactPrompt.style.display = 'none';
         }
 
@@ -7446,48 +9070,66 @@
         }
       }
 
-      // CAMERA THÔNG MINH 360° (CHỐNG XUYÊN TƯỜNG, BỆ TƯỢNG & MẶT ĐẤT)
-      const camHeight = 2.65;
-      const pivotX = localPlayerObj.position.x;
-      const pivotY = localPlayerObj.position.y + 1.55;
-      const pivotZ = localPlayerObj.position.z;
-
-      const rawOffsetX = Math.sin(cameraYaw) * Math.cos(cameraPitch) * camDist;
-      const rawOffsetZ = Math.cos(cameraYaw) * Math.cos(cameraPitch) * camDist;
-      const rawOffsetY = (camHeight - 1.55) + Math.sin(cameraPitch) * camDist;
-
-      let safeFraction = 1.0;
-      const sampleSteps = 14;
-      for (let s = 3; s <= sampleSteps; s++) {
-        const t = s / sampleSteps;
-        const sx = pivotX + rawOffsetX * t;
-        const sy = pivotY + rawOffsetY * t;
-        const sz = pivotZ + rawOffsetZ * t;
-        if (isCameraPointBlocked(sx, sy, sz)) {
-          safeFraction = Math.max(0.28, (s - 1) / sampleSteps);
-          break;
-        }
-      }
-
-      const desiredDist = Math.max(2.0, camDist * safeFraction);
-      if (desiredDist < effectiveCamDist) {
-        effectiveCamDist += (desiredDist - effectiveCamDist) * 0.38;
+      // CAMERA TOÀN CẢNH TRÊN CAO HOẶC CAMERA THÔNG MINH 360° (CHỐNG XUYÊN TƯỜNG, BỆ TƯỢNG & MẶT ĐẤT)
+      if (aerialCamIdx > 0 && AERIAL_VIEWPOINTS[aerialCamIdx]) {
+        const vp = AERIAL_VIEWPOINTS[aerialCamIdx];
+        const ax = vp.targetX + Math.sin(aerialYaw) * Math.cos(aerialPitch) * aerialDist;
+        const az = vp.targetZ + Math.cos(aerialYaw) * Math.cos(aerialPitch) * aerialDist;
+        const ay = Math.max(getGroundHeight(ax, az) + 2.5, vp.targetY + Math.sin(aerialPitch) * aerialDist);
+        _camTargetVec.set(ax, ay, az);
+        camera.position.lerp(_camTargetVec, 0.14);
+        camera.lookAt(vp.targetX, vp.targetY, vp.targetZ);
       } else {
-        effectiveCamDist += (desiredDist - effectiveCamDist) * 0.12;
+        const camHeight = 2.65;
+        const pivotX = localPlayerObj.position.x;
+        const pivotY = localPlayerObj.position.y + 1.55;
+        const pivotZ = localPlayerObj.position.z;
+
+        const rawOffsetX = Math.sin(cameraYaw) * Math.cos(cameraPitch) * camDist;
+        const rawOffsetZ = Math.cos(cameraYaw) * Math.cos(cameraPitch) * camDist;
+        const rawOffsetY = (camHeight - 1.55) + Math.sin(cameraPitch) * camDist;
+
+        let safeFraction = 1.0;
+        const sampleSteps = 14;
+        for (let s = 3; s <= sampleSteps; s++) {
+          const t = s / sampleSteps;
+          const sx = pivotX + rawOffsetX * t;
+          const sy = pivotY + rawOffsetY * t;
+          const sz = pivotZ + rawOffsetZ * t;
+          if (isCameraPointBlocked(sx, sy, sz)) {
+            safeFraction = Math.max(0.28, (s - 1) / sampleSteps);
+            break;
+          }
+        }
+
+        const desiredDist = Math.max(2.0, camDist * safeFraction);
+        if (desiredDist < effectiveCamDist) {
+          effectiveCamDist += (desiredDist - effectiveCamDist) * 0.38;
+        } else {
+          effectiveCamDist += (desiredDist - effectiveCamDist) * 0.12;
+        }
+
+        const distRatio = effectiveCamDist / Math.max(0.01, camDist);
+        const targetCamX = pivotX + rawOffsetX * distRatio;
+        const targetCamZ = pivotZ + rawOffsetZ * distRatio;
+        const minCamFloorY = getGroundHeight(targetCamX, targetCamZ) + 0.58;
+        const targetCamY = Math.max(minCamFloorY, pivotY + rawOffsetY * distRatio);
+
+        _camTargetVec.set(targetCamX, targetCamY, targetCamZ);
+        camera.position.lerp(_camTargetVec, 0.18);
+        camera.lookAt(localPlayerObj.position.x, localPlayerObj.position.y + 1.4, localPlayerObj.position.z);
       }
-
-      const distRatio = effectiveCamDist / Math.max(0.01, camDist);
-      const targetCamX = pivotX + rawOffsetX * distRatio;
-      const targetCamZ = pivotZ + rawOffsetZ * distRatio;
-      const minCamFloorY = getGroundHeight(targetCamX, targetCamZ) + 0.58;
-      const targetCamY = Math.max(minCamFloorY, pivotY + rawOffsetY * distRatio);
-
-      _camTargetVec.set(targetCamX, targetCamY, targetCamZ);
-      camera.position.lerp(_camTargetVec, 0.18);
-      camera.lookAt(localPlayerObj.position.x, localPlayerObj.position.y + 1.4, localPlayerObj.position.z);
 
       renderer.render(scene, camera);
     }
+
+    window._zenWishingCards = hangingWishingCards;
+    window._festivalLanternsGroup = festivalLanternsGroup;
+    window._renderer = renderer;
+    window._scene = scene;
+    window._camera = camera;
+    window._localPlayer = localPlayerObj;
+    window._isPositionBlocked = isPositionBlocked;
 
     animate();
 
