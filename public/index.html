@@ -8634,14 +8634,14 @@
       let pStartX = 0;
       let pStartY = 0;
       let pMoved = false;
-      let pAccumDist = 0;
+      let beadPulledInSwipe = false;
       let isPointerDown = false;
 
       stage.addEventListener('pointerdown', (e) => {
         pStartX = e.clientX;
         pStartY = e.clientY;
         pMoved = false;
-        pAccumDist = 0;
+        beadPulledInSwipe = false;
         isPointerDown = true;
         try { stage.setPointerCapture(e.pointerId); } catch (_) {}
       });
@@ -8659,10 +8659,10 @@
           pStartX = e.clientX;
           pStartY = e.clientY;
         } else if (activeDharma3DMode === 'beads') {
-          pAccumDist += dy;
-          if (Math.abs(pAccumDist) > 32) {
+          // Mỗi lần vuốt (swipe) chỉ lần đúng 1 hạt trong suốt lượt vuốt ngón tay
+          if (!beadPulledInSwipe && (Math.abs(dy) >= 18 || dist >= 22)) {
+            beadPulledInSwipe = true;
             trigger3DBeadPull(1, e.clientX, e.clientY);
-            pAccumDist = 0;
           }
         }
       });
@@ -8672,10 +8672,14 @@
         isPointerDown = false;
         try { stage.releasePointerCapture(e.pointerId); } catch (_) {}
 
-        if (!pMoved) {
-          if (activeDharma3DMode === 'muyu') {
+        if (activeDharma3DMode === 'muyu') {
+          if (!pMoved) {
             trigger3DMuyuStrike(e.clientX, e.clientY);
-          } else if (activeDharma3DMode === 'beads') {
+          }
+        } else if (activeDharma3DMode === 'beads') {
+          // Nếu chạm (tap) nhanh mà chưa kích hoạt vuốt trong pointermove, lần đúng 1 hạt khi buông
+          if (!beadPulledInSwipe) {
+            beadPulledInSwipe = true;
             trigger3DBeadPull(1, e.clientX, e.clientY);
           }
         }
