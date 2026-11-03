@@ -104,49 +104,12 @@ const server = http.createServer((req, res) => {
     });
   } else if (reqPath.startsWith('/audio/')) {
     const fileName = path.basename(reqPath);
-    const audioPath = path.join(__dirname, '..', 'public', 'audio', fileName);
-
-    fs.stat(audioPath, (err, stats) => {
-      if (err || !stats.isFile()) {
-        res.writeHead(404);
-        return res.end('Audio Not Found');
-      }
-
-      const etag = makeWeakETag(stats);
-      const range = req.headers.range;
-      if (range) {
-        const parts = range.replace(/bytes=/, "").split("-");
-        const start = parseInt(parts[0], 10);
-        const end = parts[1] ? parseInt(parts[1], 10) : stats.size - 1;
-        const chunksize = (end - start) + 1;
-        const file = fs.createReadStream(audioPath, { start, end });
-        res.writeHead(206, {
-          'Content-Range': `bytes ${start}-${end}/${stats.size}`,
-          'Accept-Ranges': 'bytes',
-          'Content-Length': chunksize,
-          'Content-Type': 'audio/mpeg',
-          'ETag': etag,
-          'Cache-Control': 'public, max-age=604800'
-        });
-        file.pipe(res);
-      } else {
-        if (req.headers['if-none-match'] === etag) {
-          res.writeHead(304, {
-            'ETag': etag,
-            'Cache-Control': 'public, max-age=604800'
-          });
-          return res.end();
-        }
-        res.writeHead(200, {
-          'Content-Length': stats.size,
-          'Content-Type': 'audio/mpeg',
-          'Accept-Ranges': 'bytes',
-          'ETag': etag,
-          'Cache-Control': 'public, max-age=604800'
-        });
-        fs.createReadStream(audioPath).pipe(res);
-      }
+    // Chuyển hướng 302 toàn bộ yêu cầu âm thanh sang GitHub Global CDN để tiết kiệm 100% băng thông Render
+    res.writeHead(302, {
+      'Location': 'https://github.com/phongeditor99-oss/thien-vien-dai-bi-3d/releases/download/audio-assets-v1/' + fileName,
+      'Cache-Control': 'public, max-age=86400'
     });
+    return res.end();
   } else if (reqPath.endsWith('.js')) {
     const jsPath = path.join(__dirname, '..', 'public', path.basename(reqPath));
     serveCachedStaticFile(req, res, jsPath, 'application/javascript; charset=utf-8', 'public, max-age=604800, stale-while-revalidate=86400');
@@ -181,6 +144,8 @@ const server = http.createServer((req, res) => {
 // ==========================================
 // THỜI KHÓA TỤNG KINH 19H HÀNG NGÀY (GIỜ VIỆT NAM - UTC+7)
 // ==========================================
+const CDN_AUDIO_BASE = 'https://github.com/phongeditor99-oss/thien-vien-dai-bi-3d/releases/download/audio-assets-v1/';
+
 const WEEKLY_SUTRA_SCHEDULE = {
   1: { // Thứ Hai
     dayIndex: 1,
@@ -188,7 +153,7 @@ const WEEKLY_SUTRA_SCHEDULE = {
     sutraId: 'sutra_mon',
     title: 'Trì Tụng Chú Đại Bi & Niệm Bồ Tát Quán Thế Âm',
     subTitle: 'Khóa Lễ Đầu Tuần (22 phút) - Lòng Từ Bi che chở, cầu an lành vạn sự',
-    url: '/audio/sutra_mon_dai_bi.mp3',
+    url: CDN_AUDIO_BASE + 'sutra_mon_dai_bi.mp3',
     durationMinutes: 22.4,
     durationSec: 1342,
     merits: 30
@@ -199,7 +164,7 @@ const WEEKLY_SUTRA_SCHEDULE = {
     sutraId: 'sutra_tue',
     title: 'Kinh Dược Sư Lưu Ly Quang Vương Như Lai',
     subTitle: 'Khóa Lễ Cầu An (82 phút) - Tiêu trừ tật bệnh, thân tâm an lạc',
-    url: '/audio/sutra_tue_duoc_su.mp3',
+    url: CDN_AUDIO_BASE + 'sutra_tue_duoc_su.mp3',
     durationMinutes: 82.5,
     durationSec: 4950,
     merits: 35
@@ -210,7 +175,7 @@ const WEEKLY_SUTRA_SCHEDULE = {
     sutraId: 'sutra_wed',
     title: 'Kinh Bát Nhã Ba La Mật Đa (7 Biến)',
     subTitle: 'Khóa Lễ Trí Tuệ (24 phút) - Phá vô minh phiền não, khai mở giác ngộ',
-    url: '/audio/sutra_wed_bat_nha.mp3',
+    url: CDN_AUDIO_BASE + 'sutra_wed_bat_nha.mp3',
     durationMinutes: 24.1,
     durationSec: 1448,
     merits: 25
@@ -221,7 +186,7 @@ const WEEKLY_SUTRA_SCHEDULE = {
     sutraId: 'sutra_thu',
     title: 'Kinh Diệu Pháp Liên Hoa - Phẩm Phổ Môn',
     subTitle: 'Khóa Lễ Cứu Khổ (48 phút) - Linh ứng tầm thinh cứu khổ cứu nạn',
-    url: '/audio/sutra_thu_pho_mon.mp3',
+    url: CDN_AUDIO_BASE + 'sutra_thu_pho_mon.mp3',
     durationMinutes: 48.2,
     durationSec: 2892,
     merits: 30
@@ -232,7 +197,7 @@ const WEEKLY_SUTRA_SCHEDULE = {
     sutraId: 'sutra_fri',
     title: 'Kinh Địa Tạng Bồ Tát Bổn Nguyện (Trọn Bộ)',
     subTitle: 'Khóa Lễ Báo Hiếu (3.8 giờ) - Hồi hướng cửu huyền thất tổ, siêu tiến độ sanh',
-    url: '/audio/sutra_fri_dia_tang.mp3',
+    url: CDN_AUDIO_BASE + 'sutra_fri_dia_tang.mp3',
     durationMinutes: 232.1,
     durationSec: 13926,
     merits: 50
@@ -243,7 +208,7 @@ const WEEKLY_SUTRA_SCHEDULE = {
     sutraId: 'sutra_sat',
     title: 'Kinh Phật Thuyết A Di Đà',
     subTitle: 'Khóa Lễ Tịnh Độ Cuối Tuần (70 phút) - Gieo duyên Tịnh Độ Cực Lạc Tây Phương',
-    url: '/audio/sutra_sat_a_di_da.mp3',
+    url: CDN_AUDIO_BASE + 'sutra_sat_a_di_da.mp3',
     durationMinutes: 70.1,
     durationSec: 4206,
     merits: 35
@@ -254,7 +219,7 @@ const WEEKLY_SUTRA_SCHEDULE = {
     sutraId: 'sutra_sun',
     title: 'Kinh Phật Thuyết Đại Thừa Vô Lượng Thọ Trang Nghiêm',
     subTitle: 'Khóa Lễ Đại Hoan Hỷ (2.1 giờ) - Viên mãn tuần tu tập, phước huệ trang nghiêm',
-    url: '/audio/sutra_sun_vo_luong_tho.mp3',
+    url: CDN_AUDIO_BASE + 'sutra_sun_vo_luong_tho.mp3',
     durationMinutes: 128.6,
     durationSec: 7716,
     merits: 50
