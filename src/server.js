@@ -104,9 +104,9 @@ const server = http.createServer((req, res) => {
     });
   } else if (reqPath.startsWith('/audio/')) {
     const fileName = path.basename(reqPath);
-    // Chuyển hướng 302 toàn bộ yêu cầu âm thanh sang GitHub Global CDN để tiết kiệm 100% băng thông Render
+    // Chuyển hướng 302 toàn bộ yêu cầu âm thanh sang GitHub Pages CDN chuẩn audio/mp3 tương thích mobile và tiết kiệm 100% băng thông Render
     res.writeHead(302, {
-      'Location': 'https://github.com/phongeditor99-oss/thien-vien-dai-bi-3d/releases/download/audio-assets-v1/' + fileName,
+      'Location': 'https://phongeditor99-oss.github.io/thien-vien-dai-bi-3d/public/audio/' + fileName,
       'Cache-Control': 'public, max-age=86400'
     });
     return res.end();
@@ -144,7 +144,7 @@ const server = http.createServer((req, res) => {
 // ==========================================
 // THỜI KHÓA TỤNG KINH 19H HÀNG NGÀY (GIỜ VIỆT NAM - UTC+7)
 // ==========================================
-const CDN_AUDIO_BASE = 'https://github.com/phongeditor99-oss/thien-vien-dai-bi-3d/releases/download/audio-assets-v1/';
+const CDN_AUDIO_BASE = 'https://phongeditor99-oss.github.io/thien-vien-dai-bi-3d/public/audio/';
 
 const WEEKLY_SUTRA_SCHEDULE = {
   1: { // Thứ Hai
